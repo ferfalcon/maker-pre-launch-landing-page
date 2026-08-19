@@ -6,8 +6,8 @@
     "executionMode": "Gated"
   },
   "state": {
-    "stage": 0,
-    "status": "Ready",
+    "stage": 1,
+    "status": "In progress",
     "activeInputs": [
       "SRC-DS-001",
       "SRC-REPO-001"
@@ -114,6 +114,16 @@
       ],
       "statusChangedAt": "2026-08-19T20:00:44.677Z",
       "statusEvidence": "Stage 0 workflow state reviewed for blockers, assumptions, source history, profile/mode consistency, deviations, gate rules, and next permitted action."
+    },
+    {
+      "id": "ART-DESIGN-AUDIT",
+      "type": "DESIGN-AUDIT",
+      "path": "DESIGN-AUDIT.md",
+      "status": "Draft",
+      "baseline": [
+        "SRC-DS-001",
+        "SRC-REPO-001"
+      ]
     }
   ],
   "traceItems": [],
