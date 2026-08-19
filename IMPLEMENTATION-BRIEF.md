@@ -82,12 +82,12 @@ execution_mode: Gated
 
 - Classification: Confirmed
 - Priority: Must
-- Description: Interactive elements with source-supported states must expose the corresponding visible feedback, including the Notify button hover state and the email-control states demonstrated by the authorized components. The precise semantic meaning of the input `Active` variant remains a later specification decision.
+- Description: Interactive elements with source-supported states must expose the corresponding visible feedback, including the Notify button hover state and the email-control states demonstrated by the authorized components. The precise semantic meaning of the input `Active` variant is resolved by the approved Stage 4 specification as pointer-hover feedback from the live prototype wiring.
 - Rationale: The repository explicitly requires hover states and Figma contains Button Default/Hover/Focus plus Email Input Default/Active/Focus/Error variants.
 - Snapshot or evidence: `SRC-DS-001`, `SRC-REPO-001`, `EVD-009`, `EVD-010`, `AUD-001`, repository README “The job”.
 - Acceptance criteria:
   - `AC-007`: The Notify button provides the demonstrated hover feedback when hover is available.
-  - `AC-008`: Required input/button states are visually distinguishable without inventing state behavior not supported by the current requirements or later specification.
+  - `AC-008`: Required input/button states are visually distinguishable without inventing state behavior not supported by the current requirements or specification.
 
 #### REQ-FR-004 — Validate an empty email on form submission
 
@@ -265,29 +265,29 @@ The approved Stage 0 project context already defines `REQ-CON-001`–`REQ-CON-00
 ### Assumptions and recommendations
 
 - No unsupported product behavior is promoted to a confirmed requirement.
-- `REQ-AR-002`, `REQ-AR-004`, `REQ-AR-005`, and `REQ-AR-006` are classified as Recommended because the accessible project outcome is approved while those precise behaviors are not demonstrated by Figma. Human approval of Stage 2 would make them part of the approved requirement baseline.
+- `REQ-AR-002`, `REQ-AR-004`, `REQ-AR-005`, and `REQ-AR-006` are classified as Recommended because the accessible project outcome is approved while those precise behaviors are not demonstrated by Figma. Human approval of Stage 2 made them part of the approved requirement baseline.
 - Responsive interpolation between the three source examples is expected to be resolved during design intent/specification from observed layout needs, not by assuming familiar breakpoint values.
 
-### Open questions
+### Open questions and downstream resolutions
 
-#### Blocking before behavior specification / implementation
+#### Resolved downstream in Stage 4
 
-1. What happens after a syntactically valid email is submitted? No success state, navigation destination, persistence behavior, or delivery behavior is authorized by the current design/repository evidence (`AUD-003`). A successful-submit behavior must not be invented.
+1. **Valid email outcome:** Stage 4 resolves the current scope as a validation-only no-op: clear any current validation error, preserve the entered value, and perform no success, loading, navigation, network, persistence, delivery, or reset behavior (`SPEC-VAL-003`). This is an approved specification decision, not source-observed successful-submission behavior.
+2. **Email Input `Active`:** Stage 4 maps the source `Active` treatment to pointer-hover feedback from the live `ON_HOVER` prototype wiring (`SPEC-INT-001`).
+3. **Scroll indicator:** Stage 4 specifies the current cue as non-interactive after live inspection found no prototype reactions on the source component/instances (`SPEC-ACC-003`).
 
-#### Non-blocking for Stage 2
+#### Still non-blocking
 
-2. Should the Email Input `Active` design state represent hover, a filled/engaged state, typing, or another condition? Prototype wiring uses hover while the state name is broader (`AUD-001`).
-3. Is the mouse-scroll icon interactive (for example, an anchor) or purely instructional/decorative?
 4. What precise responsive thresholds best preserve the demonstrated compositions between 375, 768, and 1440 px? The source widths themselves are not breakpoint requirements (`AUD-004`).
 5. What formal accessibility conformance target, browser/device support matrix, and performance thresholds should be used for final validation? None is currently source-authorized.
-6. If successful submission later transports or stores email data, what privacy, retention, security, and delivery rules apply? These concerns are not currently in scope.
+6. If successful submission later transports or stores email data, what privacy, retention, security, and delivery rules apply? Those concerns require a later approved re-scope before implementation.
 
 ### Definition of Done for Stage 2 requirements
 
 - All source-supported product outcomes, validation rules, responsive expectations, accessibility needs, quality requirements, and constraints are represented with stable IDs.
 - Every material requirement is prioritized, classified, traceable, and paired with observable acceptance criteria.
-- Requirements do not invent backend behavior, billing behavior, a valid-email success flow, arbitrary breakpoints, browser targets, performance thresholds, or privacy policy.
-- Source contradictions/gaps remain explicit as open questions or recommended requirements rather than being silently resolved.
+- Requirements do not invent backend behavior, billing behavior, a source-observed valid-email success flow, arbitrary breakpoints, browser targets, performance thresholds, or privacy policy.
+- Source contradictions/gaps remain explicit as open questions, downstream resolutions, or recommended requirements rather than being silently resolved.
 - The requirements remain compatible with the Lite profile; no architecture-heavy scope has been introduced.
 
 ### Stage 2 Review Pass 1 — Completeness and correctness
@@ -297,9 +297,9 @@ The approved Stage 0 project context already defines `REQ-CON-001`–`REQ-CON-00
 - [x] The two repository-authorized validation messages are represented exactly and separately.
 - [x] Unsupported successful-submit behavior, billing, persistence, browser targets, performance thresholds, and privacy policy are not invented.
 
-Corrections applied during Pass 1:
+Corrections applied during Pass 1 and later consistency review:
 
-- Kept successful valid-email submission as a blocking question because neither Figma nor the pinned README defines the outcome.
+- Stage 2 correctly kept valid-submit behavior unresolved at the time; Stage 5 now records the approved Stage 4 validation-only resolution in the consolidated brief so it is no longer presented as a current blocker.
 - Classified keyboard/error-announcement/image-semantics/reflow details as Recommended rather than presenting them as directly observed Figma behavior.
 - Separated responsive reference outcomes from implementation breakpoint values.
 
@@ -361,7 +361,7 @@ The observed design system uses Manrope text styles; a dark neutral page surface
 - Intent: The hero illustrations frame and reinforce the centered proposition rather than interrupting its reading order. On larger references they flank the copy; on mobile they become a top cluster before the headline. Their visual presence should remain strong without displacing the headline, supporting copy, or scroll cue from the primary hierarchy.
 - Snapshot and evidence: `SRC-DS-001`, `EVD-003`, `EVD-004`; Hero set `79:3868`, asset components listed in `DESIGN-AUDIT.md` §14.
 - Requirement references: `REQ-FR-002`, `REQ-NFR-001`, `REQ-AR-005`.
-- Confidence: High for visual placement; semantic image treatment remains unresolved by Figma.
+- Confidence: High for visual placement; semantic image treatment remains unresolved by Figma itself.
 
 #### DES-006 — Preserve benefit-card content priority across layouts
 
@@ -395,7 +395,7 @@ The observed design system uses Manrope text styles; a dark neutral page surface
 - Intent: Treat 375, 768, and 1440 px as authoritative composition examples, not literal breakpoint mandates. Between them, allow widths, gaps, and section spacing to adapt fluidly until a demonstrated structural transformation is needed to prevent crowding, clipping, or loss of hierarchy.
 - Snapshot and evidence: `SRC-DS-001`, `EVD-004`, `AUD-004`.
 - Requirement references: `REQ-FR-002`, `REQ-NFR-002`, `REQ-AR-006`, `REQ-CON-007`.
-- Confidence: High for the transformation principle; exact thresholds remain a later specification/planning decision.
+- Confidence: High for the transformation principle; exact thresholds remain a later planning/implementation decision.
 
 #### DES-RWD-002 — Hero changes from flanking imagery to a top cluster
 
@@ -447,51 +447,51 @@ The observed design system uses Manrope text styles; a dark neutral page surface
 - Requirement references: `REQ-FR-003`, `REQ-AR-002`, `REQ-AR-003`.
 - Confidence: High.
 
-#### DES-INT-002 — Email control preserves state distinction without over-interpreting `Active`
+#### DES-INT-002 — Email control preserves state distinction; Stage 4 resolves the `Active` trigger
 
-- Classification: Observed with unresolved semantics
-- Intent: Preserve visually distinguishable Default, Active, Focus, and Error treatments. The live prototype maps hover to `State=Active`, while the variant name could also imply an engaged or filled state; Stage 3 therefore preserves the visual state but does not define its final semantic trigger.
+- Classification: Observed; trigger resolved in Stage 4
+- Intent: Preserve visually distinguishable Default, Active, Focus, and Error treatments. Stage 3 intentionally did not infer a semantic trigger from the broader `Active` variant name. Stage 4 `SPEC-INT-001` resolves the current implementation trigger as pointer hover because the live prototype explicitly wires `ON_HOVER → State=Active`; a filled or typing value alone does not imply the Active state.
 - Snapshot and evidence: `SRC-DS-001`, `EVD-008`, `EVD-009`, `EVD-011`, `AUD-001`; Email Input `32:17773`.
 - Requirement references: `REQ-FR-003`, `REQ-AR-003`.
-- Confidence: High for state inventory; Low for the semantic meaning of `Active` until specification resolves it.
+- Confidence: High for the current Stage 4 trigger and state inventory; the source variant name itself remains broader than its observed prototype wiring.
 
 #### DES-INT-003 — Validation errors use the source error treatment and remain attached to the email field
 
 - Classification: Confirmed design intent with requirement-supplied content
-- Intent: Empty and malformed email failures should share the source-authorized error visual treatment and occupy the field's error-message area, while using their distinct approved messages. The visual design must leave enough space for the message without breaking the form grouping. Programmatic association and announcement are accessibility requirements to be specified later, not visual evidence from Figma.
+- Intent: Empty and malformed email failures should share the source-authorized error visual treatment and occupy the field's error-message area, while using their distinct approved messages. The visual design must leave enough space for the message without breaking the form grouping. Programmatic association and announcement are accessibility requirements supplied by the approved accessibility baseline rather than visual evidence from Figma.
 - Snapshot and evidence: `SRC-DS-001`, `SRC-REPO-001`, `EVD-008`, `AUD-002`.
 - Requirement references: `REQ-FR-004`, `REQ-FR-005`, `REQ-AR-004`.
 - Confidence: High.
 
 #### DES-INT-004 — Do not invent a valid-submission success state or navigation
 
-- Classification: Open question / constraint
-- Intent: The current design contains no submit transition, success state, loading state, destination, persistence indication, or completion feedback. Stage 3 therefore defines no success-state visual behavior; that decision remains blocking before behavior specification can be completed.
-- Snapshot and evidence: `SRC-DS-001`, `AUD-003`.
+- Classification: Source constraint; current behavior resolved in Stage 4
+- Intent: The design contains no submit transition, success state, loading state, destination, persistence indication, or completion feedback. Stage 4 therefore resolves the current static/validation-only behavior conservatively: a syntactically valid email clears any validation error, preserves the entered value, and causes no success, loading, navigation, network, persistence, delivery, or reset behavior. Any real notification success flow remains a future re-scope rather than an implied source behavior.
+- Snapshot and evidence: `SRC-DS-001`, `SRC-REPO-001`, `AUD-003`; `SPEC-VAL-003`.
 - Requirement references: `REQ-DR-001`, `REQ-CON-006`.
-- Confidence: High that the current source is silent.
+- Confidence: High that the sources are silent on success behavior; the no-op valid-submit outcome is an approved Stage 4 specification decision rather than observed source behavior.
 
 ### Content, accessibility, and asset intent
 
 - Content examples are treated as approved display content, not evidence of dynamic data models. Benefit and pricing copy should preserve its intended grouping and hierarchy; longer or reflowed text must not overlap adjacent content (`DES-006`, `DES-007`, `DES-RWD-006`).
 - The logical reading order should follow the visual content order from `DES-001`; semantic heading levels remain an implementation/specification responsibility under `REQ-AR-001`, not something proven by Figma.
 - Email and Notify controls must retain explicit visible focus treatment and a straightforward single interaction order. Error communication must not rely only on color or visual placement (`REQ-AR-002`–`REQ-AR-004`).
-- Hero and benefit illustrations, pricing icons, the mouse-scroll icon, and decorative shapes have visual roles but Figma does not establish their accessibility semantics. Their decorative versus meaningful treatment remains to be resolved under `REQ-AR-005` and `AUD-006`.
-- The mouse-scroll icon's interaction role is still unresolved: no click/tap destination is demonstrated, so Stage 3 does not promote it to an interactive control.
-- Reduced-motion intent is not otherwise defined. The only observed prototype motion is the 200 ms hover dissolve for Email Input and Button states; later specification should avoid extrapolating additional motion from that evidence.
+- Hero and benefit illustrations, pricing icons, the mouse-scroll icon, and decorative shapes have visual roles but Figma does not establish their accessibility semantics. Stage 4 `SPEC-ACC-003` provides the current conservative semantic treatment under `REQ-AR-005`; that treatment is not reclassified as observed Figma semantics.
+- The mouse-scroll icon is treated as a non-interactive visual cue in the current Stage 4 specification after live inspection found no prototype reactions. Revisit that decision if new authoritative interaction evidence is introduced.
+- Reduced-motion intent is not otherwise defined. The only observed prototype motion is the 200 ms hover dissolve for Email Input and Button states; the specification does not extrapolate additional motion from that evidence.
 
-### Stage 3 open questions and downstream decisions
+### Stage 3 open questions and downstream resolutions
 
-#### Blocking before Stage 4 behavior specification can be finalized
+#### Resolved in Stage 4
 
-1. What is the intended outcome after a syntactically valid email is submitted? No success state, navigation, persistence, delivery, or completion feedback is currently authorized (`AUD-003`, `DES-INT-004`).
+1. **Valid email outcome:** resolved as the validation-only no-op in `SPEC-VAL-003`; no source-observed success flow was invented.
+2. **Email Input `Active` trigger:** resolved as pointer hover in `SPEC-INT-001` from the live prototype wiring.
+3. **Mouse-scroll icon role:** resolved for the current scope as non-interactive in `SPEC-ACC-003` after live inspection found no prototype reactions.
 
-#### Non-blocking for Stage 3 closure
+#### Remaining non-blocking downstream decisions
 
-2. What exact semantic trigger should map to the Email Input `Active` visual state (`AUD-001`, `DES-INT-002`)?
-3. Is the mouse-scroll icon interactive or purely instructional/decorative?
 4. What exact responsive thresholds best realize `DES-RWD-002`–`DES-RWD-005`? They should be chosen from layout failure/fit needs, not copied from the Figma frame widths.
-5. What formal contrast/conformance target, browser/device support matrix, and performance thresholds will govern final validation? These are not established by the design source.
+5. What formal contrast/conformance target, browser/device support matrix, and performance thresholds will govern final validation? These are not established by the approved source baseline.
 
 ### Stage 3 Review Pass 1 — Completeness and correctness
 
@@ -501,30 +501,31 @@ The observed design system uses Manrope text styles; a dark neutral page surface
 - [x] The design section does not prescribe implementation architecture, repository structure, or arbitrary breakpoint values.
 - [x] Unsupported success/loading/disabled states and unproven accessibility behavior are not presented as observed design facts.
 
-Corrections applied during Pass 1:
+Corrections applied during Pass 1 and later consistency review:
 
-- Kept the exact responsive thresholds unresolved and described transition triggers in terms of layout fit/failure.
-- Separated the observed Email Input `Active` visual from its unresolved semantic trigger.
-- Kept illustration/icon accessibility roles and mouse-scroll interactivity unresolved instead of treating their visual appearance as semantic proof.
+- Kept exact responsive thresholds unresolved and described transition triggers in terms of layout fit/failure.
+- Stage 3 correctly kept the Email Input `Active` trigger unresolved at the time; Stage 5 now records the approved Stage 4 pointer-hover resolution in the same consolidated brief.
+- Stage 3 correctly kept illustration/icon semantics and mouse-scroll interactivity separate from visual evidence; Stage 5 now records the conservative Stage 4 semantic resolution without presenting it as Figma fact.
 - Limited motion intent to the observed 200 ms hover dissolves and did not invent broader animation behavior.
+- Stage 3 correctly kept valid-submit behavior unresolved at the time; Stage 5 now records the approved Stage 4 validation-only resolution so it is no longer presented as a current blocker.
 
 ### Stage 3 Review Pass 2 — Consistency, traceability, risks, and uncertainty
 
 - [x] Design IDs use `DES-*`, `DES-RWD-*`, and `DES-INT-*` namespaces and are unique within the consolidated Lite brief.
 - [x] Every material design decision references approved `EVD-*`/`AUD-*` evidence, live source nodes, and relevant approved `REQ-*` requirements.
-- [x] Observed, Confirmed, Recommended, inferred transition triggers, and Open questions remain explicitly distinguished.
+- [x] Observed, Confirmed, Recommended, inferred transition triggers, source constraints, and specification resolutions remain explicitly distinguished.
 - [x] `DES-RWD-*` decisions preserve all three supplied reference outcomes without asserting 375, 768, or 1440 px as required CSS breakpoints.
 - [x] Interaction intent remains consistent with `EVD-008`–`EVD-011` and does not turn hover wiring into keyboard/focus semantics.
-- [x] No Stage 3 decision introduces backend delivery, billing, extra routes, dynamic plan behavior, or a valid-email success flow.
+- [x] No Stage 3 decision introduces backend delivery, billing, extra routes, dynamic plan behavior, or a source-observed valid-email success flow.
 - [x] The current design intent remains compatible with the Lite profile and does not require a separate architecture artifact.
 
 ## 4. Specification
 
 ### Specification boundary and state model
 
-Stage 4 converts the approved requirements and design intent into observable behavior for the current static/client-side scope. The live Stage 4 Figma inspection of `SRC-DS-001` confirms that Email Input `State=Default` changes to `State=Active` only on `ON_HOVER` through a 200 ms Ease In dissolve, Button `State=Default` changes to `State=Hover` through the same demonstrated interaction, and the Hero scroll-indicator instances have no prototype reactions. The specification therefore resolves those source ambiguities without assigning unsupported interaction meaning.
+Stage 4 converts the approved requirements and design intent into observable behavior for the current static/client-side scope. The live Stage 4 Figma inspection of `SRC-DS-001` confirms that Email Input `State=Default` changes to `State=Active` only on `ON_HOVER` through a 200 ms Ease In dissolve, Button `State=Default` changes to `State=Hover` through the same demonstrated interaction, and the Hero scroll-indicator instances have no prototype reactions. The specification therefore resolves those source ambiguities without assigning unsupported broader interaction meaning.
 
-The prior valid-submit blocker is resolved narrowly at the validation boundary: a syntactically valid email clears any current validation error but produces no success, loading, navigation, persistence, delivery, reset, or network behavior. This is not a successful-submission flow; it is the observable consequence of `REQ-DR-001`, `REQ-CON-006`, and `DES-INT-004` in the approved static scope. Any real notification delivery or success state requires a later source/requirement change.
+The prior valid-submit blocker is resolved narrowly at the validation boundary: a syntactically valid email clears any current validation error but produces no success, loading, navigation, persistence, delivery, reset, or network behavior. This is not a source-observed successful-submission flow; it is the approved Stage 4 observable behavior chosen to remain within `REQ-DR-001`, `REQ-CON-006`, and `DES-INT-004` in the static scope. Any real notification delivery or success state requires a later source/requirement change.
 
 ### SPEC-BEH-001 — Preserve one static single-page product narrative
 
@@ -601,21 +602,23 @@ The prior valid-submit blocker is resolved narrowly at the validation boundary: 
 
 - Requirement and design references: `REQ-FR-004`, `REQ-FR-005`, `DES-INT-003`.
 - Source snapshots: `SRC-REPO-001`, `SRC-DS-001`.
-- Preconditions and trigger: The form is submitted and the email value is evaluated.
+- Preconditions and trigger: The form is submitted and the native single-email input's current value is evaluated.
 - Observable behavior:
-  - If the value contains zero characters, show exactly `Oops! Please add your email`.
+  - Evaluate the email control's current value after its normal native email-input value sanitization.
+  - If that value is empty, show exactly `Oops! Please add your email`.
   - Otherwise, if the value is not valid as one email address under the browser's standard email-input validity rules, show exactly `Oops! That doesn’t look like an email address`.
   - Empty classification takes precedence over malformed classification.
-- States and edge cases: A value consisting only of whitespace is non-empty but does not satisfy email syntax, so it receives the malformed-email message rather than the empty-field message. Multiple-address input is not supported.
+- States and edge cases: Native email-input semantics strip leading and trailing ASCII whitespace from the value; therefore whitespace-only input resolves to empty and receives the empty-field message. Multiple-address input is not supported.
 - Acceptance criteria:
-  - `AC-042`: Submitting a zero-character value shows only `Oops! Please add your email`.
-  - `AC-043`: Submitting any non-empty value that fails single-email syntax, including whitespace-only input, shows only `Oops! That doesn’t look like an email address`.
+  - `AC-042`: Submitting a value that is empty after native email-input sanitization shows only `Oops! Please add your email`.
+  - `AC-043`: Submitting any remaining non-empty value that fails single-email syntax shows only `Oops! That doesn’t look like an email address`.
   - `AC-044`: A single submit never presents both validation messages simultaneously.
 
 ### SPEC-VAL-003 — Treat a valid email as the end of the current validation-only scope
 
 - Requirement and design references: `REQ-DR-001`, `REQ-CON-006`, `DES-INT-004`.
 - Source snapshots: `SRC-DS-001`, `SRC-REPO-001`.
+- Decision provenance: Approved Stage 4 specification decision chosen to keep current behavior inside the validation-only/static scope; neither Figma nor the pinned repository defines a successful-submission flow.
 - Preconditions and trigger: The form is submitted with a syntactically valid single email address.
 - Observable behavior: Any current validation error clears. The page does not navigate, reload, submit a network request, persist/store the value, reset the field, display success text, or enter loading/disabled state. The entered value remains available in the field.
 - Failure/recovery behavior: Because no delivery operation exists, there is no request failure/retry state in the current scope. Introducing one requires a later approved requirement/source change.
@@ -651,10 +654,11 @@ The prior valid-submit blocker is resolved narrowly at the validation boundary: 
 
 - Requirement and design references: `REQ-AR-005`, `DES-005`, `DES-006`, `DES-007`; Stage 3 asset intent.
 - Source snapshots: `SRC-DS-001`.
+- Decision provenance: Stage 4 accessibility resolution under `REQ-AR-005`; the Figma source does not itself assign semantic roles to these assets.
 - Observable behavior:
   - The Maker brand mark is exposed with the accessible name `Maker` when rendered as an image rather than equivalent text.
   - Hero/benefit illustrations, decorative background shapes, and pricing status icons are decorative where the adjacent approved text already communicates the same meaning; they do not create duplicate assistive-technology output.
-  - The Hero `Scroll Indicator Icon` is a non-interactive visual cue: live Stage 4 inspection found no reactions on the source component/instances, so it is not focusable and is not exposed as a button/link.
+  - The current specification treats the Hero `Scroll Indicator Icon` as a non-interactive visual cue. Live Stage 4 inspection found no reactions on its source component/instances, supporting that conservative treatment; it is not focusable and is not exposed as a button/link.
 - Acceptance criteria:
   - `AC-055`: The Maker brand identity has an accessible text equivalent when necessary, while decorative illustration/icon layers do not produce redundant announcements.
   - `AC-056`: The scroll-indicator cue has no pointer/keyboard activation behavior and is absent from the tab sequence.
@@ -700,13 +704,15 @@ The prior valid-submit blocker is resolved narrowly at the validation boundary: 
 - [x] The valid-email outcome stays inside the approved validation-only scope and introduces no unsupported success, loading, network, persistence, or delivery behavior.
 - [x] Keyboard, focus, error announcement, and decorative-image behavior are explicit without assigning modal/menu-style focus rules to this simple form.
 
-Corrections applied during Pass 1:
+Corrections applied during Pass 1 and later consistency review:
 
 - Resolved Email Input `Active` as pointer hover feedback from live Figma prototype wiring rather than from the ambiguous variant name.
-- Resolved the scroll indicator as non-interactive after live inspection showed no reactions on its component or instances.
+- Resolved the scroll indicator as non-interactive for the current scope after live inspection showed no reactions on its component or instances.
 - Resolved the Stage 3 valid-submit blocker as a validation-only no-op: clear validation error, preserve the entered value, and perform no success/network/navigation/persistence/reset behavior.
 - Added deterministic submit-time validation precedence and recovery behavior while preserving the source requirement that errors occur on submit.
 - Added explicit responsive failure/fit conditions instead of copying 375/768/1440 as breakpoint values.
+- Stage 5 corrected `SPEC-VAL-002` to follow native email-input sanitization: whitespace-only input resolves to the empty case rather than the malformed case.
+- Stage 5 clarified decision provenance for the valid-submit no-op and accessibility asset semantics so approved specification resolutions are not presented as source-observed facts.
 
 ### Stage 4 Review Pass 2 — Consistency, traceability, risks, and uncertainty
 
@@ -773,31 +779,43 @@ Create new `SRC-*` IDs and perform an impact assessment rather than silently upd
 |---|---|---|---|---|---|
 | ... | ... | ... | ... | ... | ... |
 
+Sections 5–10 are intentionally reserved for later Lite workflow stages. Their placeholders are not Stage 5 completeness failures and must not be treated as approved repository context, planning, architecture, source-change policy, risks, or traceability until those stages own and populate them.
+
 ## 11. Review Pass 1 — Completeness and Correctness
 
-- [ ] Scope and pinned repository context are accurate.
-- [ ] Snapshot IDs exist and were actually used.
-- [ ] Requirements, design intent, testable behavior, and implementation planning are complete for the Lite scope.
-- [ ] Responsive, accessibility, states, errors, content edge cases, and validation are integrated.
-- [ ] The work still qualifies for Lite.
+- [x] Stages 0–4 source/context/audit/requirements/design/specification content covers the current Lite scope and remains grounded in `SRC-DS-001` and `SRC-REPO-001`.
+- [x] Stale Stage 2/3 blockers and unresolved labels were reconciled with the approved Stage 4 resolutions instead of remaining contradictory inside the consolidated brief.
+- [x] Responsive behavior, accessibility, interactive states, validation/errors, data boundaries, and content edge behavior are integrated without inventing unsupported source behavior.
+- [x] Native email-input validation semantics are represented consistently; whitespace-only input is no longer incorrectly classified as a non-empty malformed value.
+- [x] Approved Stage 4 decisions that go beyond direct source observation are explicitly labeled as specification/accessibility resolutions rather than source facts.
+- [x] Sections 5–10 are future-stage placeholders and are intentionally excluded from the Stage 5 completeness judgment.
+- [x] The work still qualifies for Lite: no routing, persistence, authentication, external integration, migration, or other architecture-heavy concern has been introduced.
 
 ## 12. Corrections from Pass 1
 
-- ...
+- Synchronized Stage 2 and Stage 3 question/status language with the approved Stage 4 outcomes for valid-email submission, Email Input `Active`, and the scroll-indicator cue.
+- Updated `DES-INT-002` and `DES-INT-004` so historical design-source uncertainty remains traceable while current Stage 4 behavior is no longer presented as unresolved.
+- Corrected `SPEC-VAL-002` to classify whitespace-only input according to native email-input value sanitization before empty-versus-malformed validation.
+- Clarified decision provenance for `SPEC-VAL-003` and `SPEC-ACC-003`, separating approved Stage 4 resolutions from direct Figma/repository evidence.
+- Clarified that Sections 5–10 belong to later Lite stages and are not evidence of missing Stage 5 documentation coverage.
 
 ## 13. Review Pass 2 — Consistency, Traceability, Source Integrity, Risks, and Uncertainty
 
-- [ ] Ownership sections and identifiers remain distinct.
-- [ ] Every material plan item maps to approved requirements or specifications and pinned sources.
-- [ ] No source changed silently after the brief baseline was recorded.
-- [ ] No unsupported scope or assumption is presented as confirmed.
-- [ ] Blocking questions are visible.
-- [ ] Corrections from the first pass were included before this review.
+- [x] Requirement, design, specification, evidence, audit, and acceptance-criterion namespaces remain distinct and internally unique.
+- [x] Source authority remains consistent: Figma owns the authorized visual/component evidence inside page `29:4756`; the pinned repository owns implementation constraints and the two validation messages; approved downstream specification decisions remain labeled as decisions.
+- [x] Historical audit gaps remain traceable without being misrepresented as current blockers after Stage 4 resolved them.
+- [x] No backend delivery, persistence, billing, extra route, arbitrary breakpoint, browser matrix, performance threshold, or source-observed success flow has been silently added.
+- [x] Current Stage 4 source verifications are recorded in canonical workflow state; fresh Stage 5 pre-gate source verification remains required before recording the Stage 5 gate.
+- [x] The remaining uncertainties are non-blocking and owned by later planning/implementation or a future re-scope.
+- [x] Corrections from Pass 1 are included before this second-pass result.
+
+Pass 2 result: no Stage 5 blocking documentation inconsistency remains after corrections. Canonical Stage 5 source re-verification and stage preflight are still required before the Gated human decision.
 
 ## 14. Readiness
 
-Select exactly one:
+`Ready with documented non-blocking assumptions`
 
-- `Ready for task decomposition`
-- `Ready with documented non-blocking assumptions`
-- `Blocked by unresolved decisions`
+- Exact CSS breakpoint values remain a later planning/implementation choice constrained by the supplied responsive outcomes and `SPEC-BEH-002` fit/failure conditions.
+- Formal accessibility conformance target, browser/device matrix, and quantitative performance thresholds remain unestablished by the source baseline and must not be invented as source requirements.
+- Any real notification delivery, persistence, success state, request/retry flow, or related privacy/security behavior requires a future approved re-scope.
+- This readiness is for the Stage 5 gate/preflight only; it does not authorize task decomposition, implementation code edits, or a later stage.
