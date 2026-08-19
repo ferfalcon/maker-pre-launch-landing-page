@@ -158,6 +158,14 @@
       "method": "Pre-gate Stage 5 Git ancestry and changed-file comparison",
       "evidence": "Pinned repository input e49ba2886a9a982c4d8d0aa31d2a7adf7460778d remains the merge-base ancestor through 147d4f93f2ea28d834b2576e9975d2a3443c98c3. Comparison shows only workflow-control/generated files and workflow narrative artifacts, including the Stage 5 IMPLEMENTATION-BRIEF consistency corrections; no frontend implementation files changed.",
       "checkedAt": "2026-08-19T23:28:38.203Z"
+    },
+    {
+      "id": "VER-016",
+      "snapshot": "SRC-DS-001",
+      "result": "Unchanged",
+      "method": "Pre-gate Stage 6 live Figma structure re-verification",
+      "evidence": "Live read-only Stage 6 inspection of authorized Figma page 29:4756 confirms Style Guide 32:17743, Components 32:18709, and Main page 34:19665 remain present. Desktop/Tablet/Mobile references 32:10924/32:11410/32:11529 remain present with the same Hero, Benefits, Pricing, and Signup section instances; component families for Email Input 32:17773, Button 32:17765, Signup 72:2835, Hero 79:3868, Benefits 79:13338, and Pricing 79:14668 remain in scope. No material scoped design change affecting the Stage 6 architecture decision was detected.",
+      "checkedAt": "2026-08-19T23:47:20.990Z"
     }
   ],
   "artifacts": [
