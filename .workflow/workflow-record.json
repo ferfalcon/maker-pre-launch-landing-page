@@ -208,13 +208,13 @@
       "id": "ART-IMPLEMENTATION-BRIEF",
       "type": "IMPLEMENTATION-BRIEF",
       "path": "IMPLEMENTATION-BRIEF.md",
-      "status": "Approved",
+      "status": "Draft",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
       ],
-      "statusChangedAt": "2026-08-19T23:11:49.796Z",
-      "statusEvidence": "Stage 4 Implementation Brief specification approved by the project owner after review. Approval is limited to Stage 4 and explicitly does not authorize starting or advancing to Stage 5.",
+      "statusChangedAt": "2026-08-19T23:27:23.054Z",
+      "statusEvidence": "Stage 5 documentation-consistency review corrected stale Stage 2/3 resolution status, native email-input validation classification, and decision provenance in the consolidated Lite brief; reopen the approved Stage 4 revision for Stage 5 review.",
       "statusBy": "Fernando Falcon",
       "approvedRevision": {
         "algorithm": "sha256",
