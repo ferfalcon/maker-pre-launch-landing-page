@@ -192,13 +192,13 @@
       "id": "ART-IMPLEMENTATION-BRIEF",
       "type": "IMPLEMENTATION-BRIEF",
       "path": "IMPLEMENTATION-BRIEF.md",
-      "status": "Reviewed",
+      "status": "Draft",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
       ],
-      "statusChangedAt": "2026-08-19T21:17:37.480Z",
-      "statusEvidence": "Stage 3 Design Intent completed and reviewed in two passes against the approved requirements, live unchanged Figma source, pinned repository baseline, and Stage 3 DESIGN guidance. Responsive transformations, interaction states, accessibility intent, uncertainties, and traceability are explicit; implementation architecture and unsupported success behavior were not invented.",
+      "statusChangedAt": "2026-08-19T22:59:11.002Z",
+      "statusEvidence": "Stage 4 specification content updated after the Stage 3 reviewed revision; reopen the consolidated Lite brief for Stage 4 review.",
       "statusBy": "Fernando Falcon",
       "approvedRevision": {
         "algorithm": "sha256",
