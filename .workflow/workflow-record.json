@@ -114,6 +114,14 @@
       "method": "Pre-gate Stage 3 live Figma re-verification",
       "evidence": "Live inspection of Figma page 29:4756 confirms the authorized Workflow scope still contains Style Guide 32:17743, Components 32:18709, Main page 34:19665, and the same Desktop 32:10924, Tablet 32:11410, and Mobile 32:11529 compositions plus component/state structures used by the approved audit and Stage 3 design intent.",
       "checkedAt": "2026-08-19T21:16:33.410Z"
+    },
+    {
+      "id": "VER-011",
+      "snapshot": "SRC-REPO-001",
+      "result": "Expected workflow output",
+      "method": "Pre-gate Stage 3 Git ancestry and changed-file comparison",
+      "evidence": "Pinned repository input e49ba2886a9a982c4d8d0aa31d2a7adf7460778d remains the merge-base ancestor. Comparison through 425ed2a435de7b54cb466093b51f5cb33651b002 shows only workflow-control/generated files and workflow narrative artifacts, including the Stage 3 IMPLEMENTATION-BRIEF update; no frontend implementation files changed.",
+      "checkedAt": "2026-08-19T21:17:05.430Z"
     }
   ],
   "artifacts": [
