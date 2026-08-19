@@ -750,10 +750,40 @@ Do not create a separate late accessibility implementation phase.
 
 ## 7. Architecture Decision
 
-- Separate architecture needed: Yes / No
-- Reason:
+- Separate architecture needed: No
+- CLI decision: `not-required`
+- Reason: The approved scope is one static Astro landing page within `frontend/`, with one current page route and no shared application state, APIs or third-party integrations, persistence, authentication/authorization, background processing, migration, or new deployment boundary. Email handling is explicitly validation-only and client-local; notification delivery, storage, success/loading flows, and related privacy/security behavior remain out of scope. The existing repository uses a minimal Astro setup, so component organization, responsive structure, and form-validation implementation are planning concerns rather than architecture-document concerns.
+- Evidence:
+  - `SRC-REPO-001`: `frontend/package.json` contains Astro as the only application dependency and defines the existing Astro build/dev scripts.
+  - `SRC-REPO-001`: `frontend/astro.config.mjs` uses the default empty Astro configuration with no adapter, integration, middleware, or server runtime configuration.
+  - `SRC-REPO-001`: `frontend/src/pages/index.astro` is the only current page route and the starter source contains no application-state, service, persistence, or integration layer.
+  - Approved requirements/specification: `REQ-CON-006`, `REQ-DR-001`, `SPEC-VAL-003`, and `SPEC-DATA-001` explicitly prohibit backend delivery/persistence and keep email handling client-local.
+- Consequence: No separate `ARCHITECTURE.md` is created and no profile upgrade is required. Stage 7 may define repository/component/file organization and implementation sequencing inside the Lite brief, provided it preserves the approved static/client-side scope.
+- Revisit trigger: If later approved scope introduces meaningful routing, shared state, an API or external integration, email transport/persistence, authentication, background work, security/privacy architecture, deployment/runtime migration, or another architectural boundary, reopen this decision and upgrade from Lite before implementation.
 
-If the work requires meaningful routing, shared state, persistence, authentication, integrations, deployment, security, privacy, or migration decisions, upgrade to Standard or Full rather than overloading this brief.
+### Stage 6 Review Pass 1 — Completeness and correctness
+
+- [x] The decision is grounded in the actual approved scope and current repository rather than framework assumptions.
+- [x] Current repository structure, dependency/runtime shape, and the absence of application-level state/integration/persistence boundaries were inspected before deciding.
+- [x] The decision distinguishes ordinary component/file planning from architecture-level structural decisions.
+- [x] The decision does not silently authorize backend signup delivery, storage, success state, extra routes, or other excluded scope.
+- [x] A clear trigger is recorded for revisiting architecture if future approved scope becomes structurally meaningful.
+
+Corrections from Pass 1:
+
+- Made the no-architecture rationale explicit instead of relying only on the earlier Lite-profile statements.
+- Added repository evidence for dependency, Astro configuration, and current routing shape.
+- Added an explicit re-scope/profile-upgrade trigger so future delivery, persistence, integration, or runtime concerns cannot slip into implementation as incidental work.
+
+### Stage 6 Review Pass 2 — Consistency, traceability, risks, and uncertainty
+
+- [x] The `not-required` decision is consistent with `REQ-CON-006`, `REQ-DR-001`, `SPEC-VAL-003`, `SPEC-DATA-001`, and the Stage 4 conclusion that no architecture-heavy concern exists.
+- [x] No separate architecture artifact is introduced for a project that remains a small static/client-side page.
+- [x] The decision does not conflict with the existing Astro/Node/ESM/pnpm constraints or the authorized Figma scope.
+- [x] Exact component boundaries, CSS breakpoints, asset placement, validation code technique, and task sequencing remain correctly deferred to planning/implementation rather than mislabeled as architecture.
+- [x] Remaining uncertainty is non-blocking under the current scope and is bounded by the recorded revisit trigger.
+
+Pass 2 result: architecture is not required for the current approved Lite scope, and no profile upgrade is warranted.
 
 ## 8. Source-change Handling
 
@@ -779,7 +809,7 @@ Create new `SRC-*` IDs and perform an impact assessment rather than silently upd
 |---|---|---|---|---|---|
 | ... | ... | ... | ... | ... | ... |
 
-Sections 5–10 are intentionally reserved for later Lite workflow stages. Their placeholders are not Stage 5 completeness failures and must not be treated as approved repository context, planning, architecture, source-change policy, risks, or traceability until those stages own and populate them.
+Sections 5–6 and 8–10 remain reserved for later Lite workflow stages. Section 7 now records the Stage 6 architecture decision and must not be treated as a placeholder. The remaining placeholders are not Stage 6 completeness failures and must not be treated as approved repository context, planning, source-change policy, risks, or traceability until those stages own and populate them.
 
 ## 11. Review Pass 1 — Completeness and Correctness
 
@@ -815,7 +845,8 @@ Pass 2 result: no Stage 5 blocking documentation inconsistency remains after cor
 
 `Ready with documented non-blocking assumptions`
 
+- Stage 6 architecture decision is `not-required`; no separate `ARCHITECTURE.md` or profile upgrade is needed under the current approved scope.
 - Exact CSS breakpoint values remain a later planning/implementation choice constrained by the supplied responsive outcomes and `SPEC-BEH-002` fit/failure conditions.
 - Formal accessibility conformance target, browser/device matrix, and quantitative performance thresholds remain unestablished by the source baseline and must not be invented as source requirements.
-- Any real notification delivery, persistence, success state, request/retry flow, or related privacy/security behavior requires a future approved re-scope.
-- This readiness is for the Stage 5 gate/preflight only; it does not authorize task decomposition, implementation code edits, or a later stage.
+- Any real notification delivery, persistence, success state, request/retry flow, or related privacy/security behavior requires a future approved re-scope and architecture reconsideration.
+- This readiness is for the Stage 6 gate/preflight only; it does not authorize task decomposition, implementation code edits, or a later stage.
