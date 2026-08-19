@@ -244,13 +244,13 @@
       "id": "ART-IMPLEMENTATION-BRIEF",
       "type": "IMPLEMENTATION-BRIEF",
       "path": "IMPLEMENTATION-BRIEF.md",
-      "status": "Draft",
+      "status": "Reviewed",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
       ],
-      "statusChangedAt": "2026-08-19T23:41:04.866Z",
-      "statusEvidence": "Stage 6 requires replacing the consolidated Lite brief's architecture placeholder with the evidence-based architecture decision and rationale before review.",
+      "statusChangedAt": "2026-08-19T23:48:28.487Z",
+      "statusEvidence": "Stage 6 architecture review completed in two passes against the approved requirements/specification, current minimal Astro repository structure, fresh unchanged Figma scope verification, pinned repository ancestry/change verification, and canonical Stage 6 architecture guidance. The decision is explicitly not-required: the approved scope remains one static single-page Astro experience with no shared application state, API/integration, persistence, authentication, background processing, migration, or new deployment/runtime boundary; email behavior remains validation-only and client-local. The brief records evidence, consequences, and a clear re-scope/profile-upgrade trigger. No separate ARCHITECTURE.md or implementation-code change is justified.",
       "statusBy": "Fernando Falcon",
       "approvedRevision": {
         "algorithm": "sha256",
