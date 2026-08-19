@@ -244,17 +244,17 @@
       "id": "ART-IMPLEMENTATION-BRIEF",
       "type": "IMPLEMENTATION-BRIEF",
       "path": "IMPLEMENTATION-BRIEF.md",
-      "status": "Reviewed",
+      "status": "Approved",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
       ],
-      "statusChangedAt": "2026-08-19T23:48:28.487Z",
-      "statusEvidence": "Stage 6 architecture review completed in two passes against the approved requirements/specification, current minimal Astro repository structure, fresh unchanged Figma scope verification, pinned repository ancestry/change verification, and canonical Stage 6 architecture guidance. The decision is explicitly not-required: the approved scope remains one static single-page Astro experience with no shared application state, API/integration, persistence, authentication, background processing, migration, or new deployment/runtime boundary; email behavior remains validation-only and client-local. The brief records evidence, consequences, and a clear re-scope/profile-upgrade trigger. No separate ARCHITECTURE.md or implementation-code change is justified.",
+      "statusChangedAt": "2026-08-19T23:55:18.552Z",
+      "statusEvidence": "Stage 6 architecture decision approved by the project owner after successful Stage 6 preflight. Approval is limited to Stage 6 and explicitly does not authorize starting or advancing to Stage 7.",
       "statusBy": "Fernando Falcon",
       "approvedRevision": {
         "algorithm": "sha256",
-        "digest": "087943316d79b2249a6795d0514e1dfefbf94d984a685462d89eaf1f9690e3c8"
+        "digest": "40d728e367a00494ba1ce8cb6b8ac219a9c4e045e0e8aa7ec047e7684ccc1165"
       }
     }
   ],
