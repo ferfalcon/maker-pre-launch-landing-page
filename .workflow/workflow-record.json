@@ -7,7 +7,7 @@
   },
   "state": {
     "stage": 6,
-    "status": "In progress",
+    "status": "Ready",
     "activeInputs": [
       "SRC-DS-001",
       "SRC-REPO-001"
@@ -556,6 +556,60 @@
           "revision": {
             "algorithm": "sha256",
             "digest": "087943316d79b2249a6795d0514e1dfefbf94d984a685462d89eaf1f9690e3c8"
+          }
+        }
+      ]
+    },
+    {
+      "id": "GATE-007",
+      "stage": 6,
+      "status": "Active",
+      "result": "Passed",
+      "baseline": [
+        "SRC-DS-001",
+        "SRC-REPO-001"
+      ],
+      "verifications": [
+        "VER-016",
+        "VER-017"
+      ],
+      "artifacts": [
+        "ART-SOURCE-BASELINE",
+        "ART-PROJECT-CONTEXT",
+        "ART-WORKFLOW-STATE",
+        "ART-DESIGN-AUDIT",
+        "ART-IMPLEMENTATION-BRIEF"
+      ],
+      "evidence": "Stage 6 architecture review and canonical preflight passed with zero findings. The project owner explicitly approved Stage 6 and instructed not to start the next stage; this approval records the Stage 6 gate only and does not authorize advancing to Stage 7.",
+      "recordedAt": "2026-08-19T23:55:51.488Z",
+      "approvedBy": "Fernando Falcon",
+      "artifactRevisions": [
+        {
+          "artifact": "ART-SOURCE-BASELINE",
+          "revision": {
+            "algorithm": "sha256",
+            "digest": "78eb3f50ffe3a0127d03af369e74d0bda99df932bdbbc6149a1aaa39d867d46f"
+          }
+        },
+        {
+          "artifact": "ART-PROJECT-CONTEXT",
+          "revision": {
+            "algorithm": "sha256",
+            "digest": "cd7bd60180806b9a0dab37446e81cdd2b52e6cecbfe533f106c20eb73ef1364d"
+          }
+        },
+        {
+          "artifact": "ART-DESIGN-AUDIT",
+          "revision": {
+            "algorithm": "sha256",
+            "digest": "bcfa7165601324a22f86cc5b12b9c236cb09b4e827b5e34af571ddd031c2a154"
+          }
+        },
+        {
+          "artifact": "ART-IMPLEMENTATION-BRIEF",
+          "revision": {
+            "algorithm": "sha256",
+            "digest": "40d728e367a00494ba1ce8cb6b8ac219a9c4e045e0e8aa7ec047e7684ccc1165"
           }
         }
       ]
