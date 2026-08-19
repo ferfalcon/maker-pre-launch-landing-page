@@ -143,11 +143,13 @@
       "id": "ART-DESIGN-AUDIT",
       "type": "DESIGN-AUDIT",
       "path": "DESIGN-AUDIT.md",
-      "status": "Draft",
+      "status": "Reviewed",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
-      ]
+      ],
+      "statusChangedAt": "2026-08-19T20:13:34.536Z",
+      "statusEvidence": "Stage 1 audit completed with two review passes, responsive screenshots, component/variant inventory, variable/text-style inspection, prototype-state inspection, accessibility observations, traceable EVD/AUD identifiers, and pre-gate source re-verification."
     }
   ],
   "traceItems": [],
