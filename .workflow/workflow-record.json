@@ -130,6 +130,14 @@
       "method": "Pre-gate Stage 4 live Figma re-verification",
       "evidence": "Live Stage 4 inspection of authorized Figma page 29:4756 confirms the same Workflow scope and component structures. Email Input 32:17773 still maps Default to Active on ON_HOVER with a 200 ms Ease In dissolve, Button 32:17765 still maps Default to Hover the same way, Hero 79:3868 and Signup 72:2835 retain Desktop/Tablet/Mobile variants, and the scroll-indicator component/instances have no prototype reactions. No material scoped design change was detected.",
       "checkedAt": "2026-08-19T22:59:35.212Z"
+    },
+    {
+      "id": "VER-013",
+      "snapshot": "SRC-REPO-001",
+      "result": "Expected workflow output",
+      "method": "Pre-gate Stage 4 Git ancestry and changed-file comparison",
+      "evidence": "Pinned repository input e49ba2886a9a982c4d8d0aa31d2a7adf7460778d remains the merge-base ancestor. Comparison through 9e0a2f5d5f1f9f9042c4c9db719000edcf945cf5 shows only workflow-control/generated files and workflow narrative artifacts, including the Stage 4 IMPLEMENTATION-BRIEF specification update; no frontend implementation files changed.",
+      "checkedAt": "2026-08-19T23:00:10.607Z"
     }
   ],
   "artifacts": [
