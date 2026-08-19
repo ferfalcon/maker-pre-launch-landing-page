@@ -520,17 +520,202 @@ Corrections applied during Pass 1:
 
 ## 4. Specification
 
-### SPEC-BEH-001 — Behavior title
+### Specification boundary and state model
 
-- Requirement and design references:
-- Source snapshots:
+Stage 4 converts the approved requirements and design intent into observable behavior for the current static/client-side scope. The live Stage 4 Figma inspection of `SRC-DS-001` confirms that Email Input `State=Default` changes to `State=Active` only on `ON_HOVER` through a 200 ms Ease In dissolve, Button `State=Default` changes to `State=Hover` through the same demonstrated interaction, and the Hero scroll-indicator instances have no prototype reactions. The specification therefore resolves those source ambiguities without assigning unsupported interaction meaning.
+
+The prior valid-submit blocker is resolved narrowly at the validation boundary: a syntactically valid email clears any current validation error but produces no success, loading, navigation, persistence, delivery, reset, or network behavior. This is not a successful-submission flow; it is the observable consequence of `REQ-DR-001`, `REQ-CON-006`, and `DES-INT-004` in the approved static scope. Any real notification delivery or success state requires a later source/requirement change.
+
+### SPEC-BEH-001 — Preserve one static single-page product narrative
+
+- Requirement and design references: `REQ-FR-001`, `REQ-FR-006`, `REQ-BR-001`, `REQ-NFR-001`, `DES-001`, `DES-002`, `DES-007`, `DES-008`.
+- Source snapshots: `SRC-DS-001`, `SRC-REPO-001`.
+- Preconditions and trigger: The landing page is loaded at its primary route.
+- Observable behavior: The visitor encounters Header/Hero, four Benefits, Pricing, then Signup in that logical order. Free and Premium remain informational comparison content; no plan-selection, checkout, payment, or subscription interaction is introduced.
+- States and edge cases: Responsive composition may alter internal alignment and grouping, but the major reading order and Free → Premium plan order do not change.
+- Acceptance criteria:
+  - `AC-026`: At every supplied reference composition and between them, the logical major-section order is Header/Hero → Benefits → Pricing → Signup and all approved content remains present.
+  - `AC-027`: Pricing presents the approved Free and Premium information without adding interactive plan-selection, checkout, payment, or subscription controls.
+
+### SPEC-BEH-002 — Select responsive compositions by fit while preserving supplied outcomes
+
+- Requirement and design references: `REQ-FR-002`, `REQ-NFR-002`, `REQ-AR-006`, `REQ-CON-007`, `DES-RWD-001`–`DES-RWD-006`.
+- Source snapshots: `SRC-DS-001`, `SRC-REPO-001`.
+- Preconditions and trigger: Available inline space changes because of viewport width, zoom-driven reflow, or content rendering.
 - Observable behavior:
-- States and edge cases:
-- Acceptance criteria: `AC-*`
+  - At the 1440 px reference, Hero imagery flanks centered copy, Benefits are four columns, Pricing cards are side by side, and Signup controls are inline.
+  - At the 768 px reference, Hero retains the supplied tablet side-image treatment, Benefits use horizontal rows, Pricing cards are stacked Free → Premium, and Signup controls remain inline.
+  - At the 375 px reference, Hero imagery forms the supplied top cluster, Benefits are centered vertical cards, Pricing remains stacked Free → Premium, and Signup controls stack vertically.
+  - Between reference widths, a composition may transition only when the current arrangement would crowd, collide, clip, create unusably narrow content, or overflow; the source-frame widths themselves are not required breakpoint values.
+  - Above the desktop reference, primary content remains centered and bounded rather than stretching text/card measures indefinitely.
+- States and edge cases: At unusually narrow widths, content reflows/wraps and controls remain reachable without page-level horizontal scrolling. No responsive mode may hide approved primary content.
+- Acceptance criteria:
+  - `AC-028`: A 1440 px visual check reproduces the demonstrated desktop structural relationships.
+  - `AC-029`: A 768 px visual check reproduces the demonstrated tablet structural relationships.
+  - `AC-030`: A 375 px visual check reproduces the demonstrated mobile structural relationships.
+  - `AC-031`: Intermediate-width checks show no material overlap, clipping, or primary-content horizontal page scrolling and preserve the approved reading order.
+  - `AC-032`: Wider-than-reference checks keep the primary composition centered/bounded without materially distorting the source hierarchy or card/text proportions.
 
-Record applicable `SPEC-INT-*`, `SPEC-ACC-*`, `SPEC-VAL-*`, and `SPEC-DATA-*` items separately.
+### SPEC-INT-001 — Map Email Input visual states to observable interaction states
 
-Do not invent arbitrary breakpoints, focus behavior, thresholds, or unsupported business rules.
+- Requirement and design references: `REQ-FR-003`, `REQ-AR-003`, `DES-INT-002`, `DES-INT-003`.
+- Source snapshots: `SRC-DS-001`; live component set `32:17773`.
+- Preconditions and trigger: The email field is rendered, hovered, focused, edited, or placed in validation error.
+- Observable behavior:
+  - Default is the resting non-error, non-focused state.
+  - The source `Active` treatment is used as pointer hover feedback on hover-capable devices because the live prototype explicitly wires `ON_HOVER` from Default to Active with a 200 ms Ease In dissolve.
+  - Focus uses the explicit Focus treatment and remains visibly distinguishable from hover.
+  - Error uses the source Error treatment plus the applicable visible validation message.
+  - A filled or typing field does not become `Active` merely because it contains a value; `Active` is not used as a generic filled state.
+- State precedence: An invalid field remains programmatically and visibly in error while focused or hovered; focus indication must still be visible rather than clearing the error state.
+- Acceptance criteria:
+  - `AC-033`: On a hover-capable pointer, hovering the non-error email field produces the source Active feedback; value presence alone does not.
+  - `AC-034`: Keyboard focus produces a clearly visible focus indication that does not depend on hover.
+  - `AC-035`: Focusing or hovering an invalid field does not remove its active validation message or invalid state, while focus remains visually identifiable.
+
+### SPEC-INT-002 — Preserve native Notify button operation and demonstrated feedback
+
+- Requirement and design references: `REQ-FR-003`, `REQ-AR-001`, `REQ-AR-002`, `REQ-AR-003`, `DES-INT-001`.
+- Source snapshots: `SRC-DS-001`, `SRC-REPO-001`; live component set `32:17765`.
+- Preconditions and trigger: The Notify submission control is rendered and receives pointer hover, keyboard focus, or activation.
+- Observable behavior: Pointer hover uses the source Hover treatment with the demonstrated 200 ms Ease In dissolve. Keyboard focus uses the explicit Focus treatment. The control behaves as a native form submission button and is activatable by pointer and standard keyboard activation.
+- States and edge cases: No source-authorized loading, disabled, pressed/toggled, or success variant exists; implementation must not invent one for the current scope.
+- Acceptance criteria:
+  - `AC-036`: Hover-capable pointer interaction exposes the demonstrated button Hover feedback.
+  - `AC-037`: The Notify control is keyboard reachable, has a visible Focus state, and activates through native button keyboard behavior.
+  - `AC-038`: Submit activation does not introduce an unsupported loading, disabled, toggled, or success visual state.
+
+### SPEC-VAL-001 — Validate the email only when the form is submitted
+
+- Requirement and design references: `REQ-FR-004`, `REQ-FR-005`, `DES-INT-003`.
+- Source snapshots: `SRC-REPO-001`, `SRC-DS-001`.
+- Preconditions and trigger: The visitor activates Notify by pointer or keyboard.
+- Observable behavior: The page performs client-side validation at submit time and renders the project-defined message in the email field's error area when invalid. Browser-default validation bubbles must not replace or compete with the required project messages.
+- States and edge cases: Before the first submit, the form does not surface an email-format error merely because the user is typing. After an error, editing the email clears the stale visible/programmatic error; the next submit evaluates the new value.
+- Acceptance criteria:
+  - `AC-039`: No custom empty/malformed error is shown before submit solely because the field is being edited.
+  - `AC-040`: Submit-time invalid results use the project-defined visible messages rather than an alternative browser-default message.
+  - `AC-041`: Editing a field after an error clears the stale error state/message until the next submit evaluates the edited value.
+
+### SPEC-VAL-002 — Distinguish empty from malformed email input
+
+- Requirement and design references: `REQ-FR-004`, `REQ-FR-005`, `DES-INT-003`.
+- Source snapshots: `SRC-REPO-001`, `SRC-DS-001`.
+- Preconditions and trigger: The form is submitted and the email value is evaluated.
+- Observable behavior:
+  - If the value contains zero characters, show exactly `Oops! Please add your email`.
+  - Otherwise, if the value is not valid as one email address under the browser's standard email-input validity rules, show exactly `Oops! That doesn’t look like an email address`.
+  - Empty classification takes precedence over malformed classification.
+- States and edge cases: A value consisting only of whitespace is non-empty but does not satisfy email syntax, so it receives the malformed-email message rather than the empty-field message. Multiple-address input is not supported.
+- Acceptance criteria:
+  - `AC-042`: Submitting a zero-character value shows only `Oops! Please add your email`.
+  - `AC-043`: Submitting any non-empty value that fails single-email syntax, including whitespace-only input, shows only `Oops! That doesn’t look like an email address`.
+  - `AC-044`: A single submit never presents both validation messages simultaneously.
+
+### SPEC-VAL-003 — Treat a valid email as the end of the current validation-only scope
+
+- Requirement and design references: `REQ-DR-001`, `REQ-CON-006`, `DES-INT-004`.
+- Source snapshots: `SRC-DS-001`, `SRC-REPO-001`.
+- Preconditions and trigger: The form is submitted with a syntactically valid single email address.
+- Observable behavior: Any current validation error clears. The page does not navigate, reload, submit a network request, persist/store the value, reset the field, display success text, or enter loading/disabled state. The entered value remains available in the field.
+- Failure/recovery behavior: Because no delivery operation exists, there is no request failure/retry state in the current scope. Introducing one requires a later approved requirement/source change.
+- Acceptance criteria:
+  - `AC-045`: Valid input clears any current validation error without showing a success or loading state.
+  - `AC-046`: Valid submit produces no navigation/reload, network request, storage/persistence, or email delivery behavior.
+  - `AC-047`: The valid email value remains in the field after the validation-only submit; the form is not reset.
+
+### SPEC-ACC-001 — Use native document/form semantics and a logical keyboard order
+
+- Requirement and design references: `REQ-AR-001`, `REQ-AR-002`, `REQ-AR-003`, `DES-001`, `DES-002`, `DES-INT-001`, `DES-INT-002`.
+- Source snapshots: `SRC-DS-001`, `SRC-REPO-001`.
+- Observable behavior: The page has one primary page heading for the Hero proposition, followed by section-level headings that preserve the visual/content hierarchy. Signup is a real form containing a single email input with accessible name `Email address` and a native submit button named `Notify`.
+- Keyboard/focus behavior: Normal document source order determines navigation. The email field is reached before Notify; no decorative/visual-only element enters the tab sequence. Validation does not forcibly move focus away from the currently active form control.
+- Acceptance criteria:
+  - `AC-048`: Heading semantics expose one primary page heading and ordered section/subsection headings consistent with the visual hierarchy.
+  - `AC-049`: The email field and Notify control expose native form semantics and the accessible names `Email address` and `Notify`.
+  - `AC-050`: Keyboard navigation reaches the email field before Notify, both controls are operable without a pointer, and non-interactive decorative elements are not focusable.
+  - `AC-051`: Invalid submit does not introduce an unsupported programmatic focus jump; the focused form control retains visible focus.
+
+### SPEC-ACC-002 — Associate and announce validation errors without relying on color
+
+- Requirement and design references: `REQ-AR-003`, `REQ-AR-004`, `DES-INT-003`.
+- Source snapshots: `SRC-DS-001`, `SRC-REPO-001`.
+- Observable behavior: When a validation error is active, the email control exposes an invalid state programmatically, the visible error message is programmatically associated with the field, and the newly presented message is announced or otherwise immediately discoverable by assistive technology. Visual error styling is supplementary, not the only indication.
+- Recovery behavior: When the stale error clears on edit or validation succeeds, the programmatic invalid state and stale error relationship/announcement content clear with it.
+- Acceptance criteria:
+  - `AC-052`: An active validation error is programmatically associated with the email input and exposes the field as invalid.
+  - `AC-053`: Insertion of the active validation message is announced or equivalently surfaced without requiring the user to find it visually.
+  - `AC-054`: Clearing the error removes the stale invalid state and stale error relationship while preserving normal field accessibility.
+
+### SPEC-ACC-003 — Give images and visual cues explicit non-redundant semantics
+
+- Requirement and design references: `REQ-AR-005`, `DES-005`, `DES-006`, `DES-007`; Stage 3 asset intent.
+- Source snapshots: `SRC-DS-001`.
+- Observable behavior:
+  - The Maker brand mark is exposed with the accessible name `Maker` when rendered as an image rather than equivalent text.
+  - Hero/benefit illustrations, decorative background shapes, and pricing status icons are decorative where the adjacent approved text already communicates the same meaning; they do not create duplicate assistive-technology output.
+  - The Hero `Scroll Indicator Icon` is a non-interactive visual cue: live Stage 4 inspection found no reactions on the source component/instances, so it is not focusable and is not exposed as a button/link.
+- Acceptance criteria:
+  - `AC-055`: The Maker brand identity has an accessible text equivalent when necessary, while decorative illustration/icon layers do not produce redundant announcements.
+  - `AC-056`: The scroll-indicator cue has no pointer/keyboard activation behavior and is absent from the tab sequence.
+
+### SPEC-ACC-004 — Preserve state recognition without requiring motion
+
+- Requirement and design references: `REQ-FR-003`, `REQ-AR-003`, `DES-INT-001`, `DES-INT-002`.
+- Source snapshots: `SRC-DS-001`.
+- Observable behavior: The demonstrated 200 ms hover dissolves may be used for Email Input and Button pointer feedback, but state identity must remain understandable from the resulting visual treatment even when transition animation is not perceived. No additional motion is required or inferred by this specification.
+- Acceptance criteria:
+  - `AC-057`: Default, hover/active, focus, and error states remain visually distinguishable at their settled state without depending on motion perception.
+  - `AC-058`: No additional decorative or state-transition animation is introduced as required behavior beyond the two source-demonstrated hover dissolves.
+
+### SPEC-DATA-001 — Keep email data ephemeral and client-local
+
+- Requirement and design references: `REQ-DR-001`, `REQ-CON-006`, `DES-INT-004`.
+- Source snapshots: `SRC-DS-001`, `SRC-REPO-001`.
+- Observable behavior: Email is the only visitor-entered data. It exists only as current client-side form state needed for validation and is not transmitted, persisted, synchronized, cached in application storage, profiled, or reused by the current scope.
+- States and edge cases: Reloading/navigating away is allowed to discard the value because persistence is not authorized.
+- Acceptance criteria:
+  - `AC-059`: The implementation introduces no additional visitor data field and no application storage/network path for the email value.
+  - `AC-060`: Reloading the page does not restore a previously entered email from application persistence.
+
+### Stage 4 open questions and downstream decisions
+
+#### Blocking for Stage 4 closure
+
+- None under the approved validation-only/static scope. A real successful notification workflow is deliberately not specified and remains a future re-scope rather than a hidden Stage 4 assumption.
+
+#### Non-blocking downstream decisions
+
+1. Exact CSS breakpoint values remain a planning/implementation choice constrained by `SPEC-BEH-002` fit/failure conditions and the three supplied reference outcomes.
+2. Exact code technique for accessible error association/announcement remains an implementation choice provided `SPEC-ACC-002` behavior is met.
+3. A formal accessibility conformance target, browser/device matrix, and quantitative performance thresholds remain unestablished by the approved sources and must not be invented later as source requirements.
+4. If notification delivery, persistence, a success state, or a request/retry flow is later desired, return to requirements/specification with a new approved source/change before implementation.
+
+### Stage 4 Review Pass 1 — Completeness and correctness
+
+- [x] Material page behavior, interaction states, responsive transformations, form validation, recovery, accessibility, image semantics, data scope, and edge cases are specified as observable outcomes.
+- [x] Every material specification has preconditions/triggers where applicable, state/failure behavior, requirement/design references, and objectively testable acceptance criteria.
+- [x] Desktop, Tablet, Mobile, intermediate, unusually narrow, and wider-than-reference behavior are covered without inventing literal breakpoint values.
+- [x] Empty and malformed validation cases use the exact repository-authorized messages and have deterministic precedence.
+- [x] The valid-email outcome stays inside the approved validation-only scope and introduces no unsupported success, loading, network, persistence, or delivery behavior.
+- [x] Keyboard, focus, error announcement, and decorative-image behavior are explicit without assigning modal/menu-style focus rules to this simple form.
+
+Corrections applied during Pass 1:
+
+- Resolved Email Input `Active` as pointer hover feedback from live Figma prototype wiring rather than from the ambiguous variant name.
+- Resolved the scroll indicator as non-interactive after live inspection showed no reactions on its component or instances.
+- Resolved the Stage 3 valid-submit blocker as a validation-only no-op: clear validation error, preserve the entered value, and perform no success/network/navigation/persistence/reset behavior.
+- Added deterministic submit-time validation precedence and recovery behavior while preserving the source requirement that errors occur on submit.
+- Added explicit responsive failure/fit conditions instead of copying 375/768/1440 as breakpoint values.
+
+### Stage 4 Review Pass 2 — Consistency, traceability, risks, and uncertainty
+
+- [x] Specification identifiers use the canonical `SPEC-BEH-*`, `SPEC-INT-*`, `SPEC-VAL-*`, `SPEC-ACC-*`, and `SPEC-DATA-*` namespaces; new acceptance criteria continue at `AC-026` without redefining `AC-001`–`AC-025`.
+- [x] Every material specification references approved requirements, approved design intent, and the active `SRC-DS-001`/`SRC-REPO-001` baselines as applicable.
+- [x] Live Figma findings used to resolve interaction ambiguity remain inside the authorized page `29:4756`; no off-scope design state is treated as authority.
+- [x] The specification does not prescribe repository paths, component filenames, task order, backend architecture, arbitrary breakpoints, or unsupported business rules.
+- [x] Error/focus behavior satisfies accessibility requirements without treating Figma as proof of HTML or assistive-technology semantics.
+- [x] The current scope still qualifies for Lite; no routing, shared application state, persistence, authentication, integration, security, or migration decision requires a separate architecture artifact.
 
 ## 5. Repository Context
 
