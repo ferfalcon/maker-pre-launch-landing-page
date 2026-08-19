@@ -143,13 +143,18 @@
       "id": "ART-DESIGN-AUDIT",
       "type": "DESIGN-AUDIT",
       "path": "DESIGN-AUDIT.md",
-      "status": "Reviewed",
+      "status": "Approved",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
       ],
-      "statusChangedAt": "2026-08-19T20:13:34.536Z",
-      "statusEvidence": "Stage 1 audit completed with two review passes, responsive screenshots, component/variant inventory, variable/text-style inspection, prototype-state inspection, accessibility observations, traceable EVD/AUD identifiers, and pre-gate source re-verification."
+      "statusChangedAt": "2026-08-19T20:17:33.483Z",
+      "statusEvidence": "Stage 1 Design Audit approved by the project owner after review; approval explicitly does not authorize starting the next stage.",
+      "statusBy": "Fernando Falcon",
+      "approvedRevision": {
+        "algorithm": "sha256",
+        "digest": "bcfa7165601324a22f86cc5b12b9c236cb09b4e827b5e34af571ddd031c2a154"
+      }
     }
   ],
   "traceItems": [],
