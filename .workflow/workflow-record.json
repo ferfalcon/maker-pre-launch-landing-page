@@ -224,13 +224,13 @@
       "id": "ART-IMPLEMENTATION-BRIEF",
       "type": "IMPLEMENTATION-BRIEF",
       "path": "IMPLEMENTATION-BRIEF.md",
-      "status": "Approved",
+      "status": "Draft",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
       ],
-      "statusChangedAt": "2026-08-19T23:33:13.528Z",
-      "statusEvidence": "Stage 5 documentation-consistency review approved by the project owner after successful preflight. Approval is limited to Stage 5 and explicitly does not authorize starting or advancing to Stage 6.",
+      "statusChangedAt": "2026-08-19T23:41:04.866Z",
+      "statusEvidence": "Stage 6 requires replacing the consolidated Lite brief's architecture placeholder with the evidence-based architecture decision and rationale before review.",
       "statusBy": "Fernando Falcon",
       "approvedRevision": {
         "algorithm": "sha256",
