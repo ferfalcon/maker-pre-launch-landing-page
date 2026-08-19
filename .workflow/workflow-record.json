@@ -15,7 +15,11 @@
     "currentTask": null,
     "latestOutput": null,
     "latestValidationRuntime": null,
-    "architectureDecision": null
+    "architectureDecision": {
+      "result": "Not required",
+      "reason": "The approved scope is one static Astro landing page with no additional routes, shared application state, APIs or third-party integrations, persistence, authentication, background processing, migration, or new deployment boundary. Email handling is validation-only and client-side; backend delivery and storage are explicitly out of scope. Existing Astro/Vercel hosting is already established, so remaining component organization and validation behavior belong in planning rather than separate architecture documentation.",
+      "recordedAt": "2026-08-19T23:42:04.284Z"
+    }
   },
   "snapshots": [
     {
