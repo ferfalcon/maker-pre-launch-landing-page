@@ -1,16 +1,13 @@
 import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
-import { dirname, isAbsolute, resolve } from 'node:path';
+import { isAbsolute, resolve } from 'node:path';
 import { resolveRepositoryWorkspace } from './repository-binding.mjs';
 import { runtimeToolkitPin, toolkitBindingFromRecord } from './toolkit-binding.mjs';
+import { projectRootForRecord } from './workspace.mjs';
 
 const SHA256_PATTERN = /^[0-9a-f]{64}$/;
 const EXECUTED_VALIDATION_STATUSES = new Set(['Passed', 'Failed']);
-
-function projectRootForRecord(recordPath) {
-  return resolve(dirname(recordPath), '..');
-}
 
 function sha256(content) {
   return createHash('sha256').update(content).digest('hex');

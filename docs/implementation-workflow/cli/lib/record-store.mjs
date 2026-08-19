@@ -2,14 +2,16 @@ import { createHash } from 'node:crypto';
 import {
   existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync,
 } from 'node:fs';
+import { hostname } from 'node:os';
 import { dirname, resolve } from 'node:path';
+import { inspectWorkflowRecord, validateWorkflowRecord } from './canonical-validation.mjs';
 import { renderGeneratedState } from './generated-state.mjs';
 import {
   isPortableRepositoryReference, portableRepositoryReference, resolveRepositoryWorkspace,
 } from './repository-binding.mjs';
 import { enrichIntegrityCandidate, subjectIntegrityFindings } from './subject-integrity.mjs';
 import { initializationToolkitPin } from './toolkit-binding.mjs';
-import { inspectWorkflowRecord, validateWorkflowRecord } from './canonical-validation.mjs';
+import { projectRootForRecord } from './workspace.mjs';
 
 const recordVersions = new WeakMap();
 
@@ -51,10 +53,6 @@ function isStrictRepair(before, after) {
   if (after.length >= before.length) return false;
   const beforeSet = new Set(before);
   return after.every((finding) => beforeSet.has(finding));
-}
-
-function projectRootForRecord(recordPath) {
-  return resolve(dirname(recordPath), '..');
 }
 
 function repositorySnapshots(record) {
@@ -108,21 +106,74 @@ function canonicalizeRepositoryReferences(recordPath, candidate, currentRecord =
   return candidate;
 }
 
+function processIsRunning(pid) {
+  try {
+    process.kill(pid, 0);
+    return true;
+  } catch (error) {
+    return error?.code !== 'ESRCH';
+  }
+}
+
+function staleLocalLock(lockPath) {
+  let lock;
+  try {
+    lock = JSON.parse(readFileSync(lockPath, 'utf8'));
+  } catch {
+    return false;
+  }
+  if (!Number.isInteger(lock?.pid) || lock.pid <= 0) return false;
+  if (lock.hostname !== hostname()) return false;
+  return !processIsRunning(lock.pid);
+}
+
+function lockMetadata() {
+  return `${JSON.stringify({
+    pid: process.pid,
+    hostname: hostname(),
+    acquiredAt: new Date().toISOString(),
+  })}\n`;
+}
+
+function writeRecordLock(lockPath) {
+  writeFileSync(lockPath, lockMetadata(), { flag: 'wx' });
+}
+
+function recoverStaleLock(lockPath) {
+  const recoveryPath = `${lockPath}.reap`;
+  try {
+    writeFileSync(recoveryPath, lockMetadata(), { flag: 'wx' });
+  } catch (error) {
+    if (error?.code === 'EEXIST') return false;
+    throw error;
+  }
+
+  try {
+    if (!existsSync(lockPath) || !staleLocalLock(lockPath)) return false;
+    rmSync(lockPath);
+    return true;
+  } finally {
+    rmSync(recoveryPath, { force: true });
+  }
+}
+
 function acquireRecordLock(recordPath) {
   const lockPath = `${recordPath}.lock`;
   mkdirSync(dirname(lockPath), { recursive: true });
-  try {
-    writeFileSync(lockPath, `${JSON.stringify({
-      pid: process.pid,
-      acquiredAt: new Date().toISOString(),
-    })}\n`, { flag: 'wx' });
-  } catch (error) {
-    if (error?.code === 'EEXIST') {
-      throw new Error(`Workflow record is locked by another workflow mutation at ${lockPath}. If no design-workflow process is running, remove the stale lock and retry.`);
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      writeRecordLock(lockPath);
+      return () => rmSync(lockPath, { force: true });
+    } catch (error) {
+      if (error?.code !== 'EEXIST') throw error;
+      if (attempt === 0 && recoverStaleLock(lockPath)) continue;
+      throw new Error(
+        `Workflow record is locked by another workflow mutation at ${lockPath}. `
+        + 'The lock is active or cannot be safely identified as stale; inspect it before removing it manually.',
+      );
     }
-    throw error;
   }
-  return () => rmSync(lockPath, { force: true });
+  throw new Error(`Could not acquire workflow record lock at ${lockPath}.`);
 }
 
 function rollback(committed, originals) {

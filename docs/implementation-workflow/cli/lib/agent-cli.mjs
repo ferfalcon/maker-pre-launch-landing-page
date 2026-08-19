@@ -1,12 +1,13 @@
 import { existsSync } from 'node:fs';
-import { runCli as runWorkflowCli } from './workflow-cli.mjs';
 import {
   AGENT_PROTOCOL_VERSION,
   buildAgentContext,
   buildAgentContextWhenMissing,
 } from './agent-context.mjs';
 import { readStoredRecord } from './record-store.mjs';
-import { fail, parseArgs, resolveRecordPath, write } from './utils.mjs';
+import { fail, parseArgs, write } from './utils.mjs';
+import { runCli as runWorkflowCli } from './workflow-cli.mjs';
+import { resolveWorkflowWorkspace } from './workspace.mjs';
 
 function json(stdout, value) {
   write(stdout, JSON.stringify(value, null, 2));
@@ -42,16 +43,17 @@ export async function runCli(args, environment) {
     return result;
   }
 
-  const recordPath = resolveRecordPath(cwd, options.record);
+  const workspace = resolveWorkflowWorkspace(cwd, options.record);
+  const { recordPath, projectRoot } = workspace;
   if (!existsSync(recordPath)) {
-    const value = buildAgentContextWhenMissing(recordPath, { cwd });
+    const value = buildAgentContextWhenMissing(recordPath, { cwd: projectRoot });
     if (options.json) json(stdout, value); else printAgentContext(stdout, value);
     return 0;
   }
 
   try {
     const { record } = readStoredRecord(recordPath);
-    const value = buildAgentContext(recordPath, record, { cwd });
+    const value = buildAgentContext(recordPath, record, { cwd: projectRoot });
     if (options.json) json(stdout, value); else printAgentContext(stdout, value);
     return value.workflow.valid ? 0 : 1;
   } catch (error) {

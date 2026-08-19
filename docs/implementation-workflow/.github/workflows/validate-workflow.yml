@@ -16,6 +16,13 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version:
+          - 22
+          - 24
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,10 +30,15 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: ${{ matrix.node-version }}
 
       - name: Run the repository validation contract
         run: npm run validate
 
       - name: Verify package contents
         run: npm pack --dry-run
+
+      - name: Verify packaging leaves no generated provenance or repository drift
+        run: |
+          test ! -e cli/toolkit-provenance.json
+          git diff --exit-code

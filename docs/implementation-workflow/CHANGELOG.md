@@ -8,6 +8,11 @@ The format follows Keep a Changelog principles. Version numbers describe toolkit
 
 ### Added
 
+- Canonical workspace resolution for explicit `--record` paths, including project-root inference, outside-project invocation coverage, and local repository bindings that remain attached to the resolved workflow project.
+- Packed-install provenance regression coverage that installs the toolkit tarball inside an unrelated Git repository and verifies the executing toolkit never inherits consumer repository identity.
+- Release-metadata validation that keeps `LICENSE`, `package.json`, `package-lock.json`, and README licensing consistent.
+- Command-ownership regression coverage that keeps core lifecycle execution in one engine and prevents `workflow-cli.mjs` from reintroducing shadow implementations.
+- Conservative stale-lock recovery for parseable same-host workflow locks whose recorded process is demonstrably no longer running.
 - Git working-tree policy tests covering strict task-start reproducibility, task-completion leftovers, workflow-managed narrative dirtiness, and mixed implementation/workflow commits.
 - Task-start checkpoint regression coverage for committed planning state, workflow-control commits between tasks, rejection of unexpected committed implementation changes, and implementation changes that are later reverted before task start.
 - Canonical schema-v2 invariant regression coverage for exact Task-start shape, current-task reciprocity, executable repository baselines, reciprocal output lineage, and latest output/runtime pointers.
@@ -21,6 +26,14 @@ The format follows Keep a Changelog principles. Version numbers describe toolkit
 
 ### Changed
 
+- Active profile-upgrade reconciliation now takes precedence over the generic Blocked-state message when deriving the canonical next action.
+- Core lifecycle commands now own canonical workflow diagnostics, task Git lineage, stage rewind, and profile-upgrade replanning directly; `workflow-cli.mjs` is limited to extension routing for toolkit, repository binding, orchestration context, stage preflight, initialization provenance, and task-ID convenience.
+- Explicit `--record` execution now resolves one canonical project workspace across artifact paths, subject integrity, repository lookup, task lineage, local bindings, and agent context instead of mixing record-relative and invocation-relative roots.
+- Task completion now resolves the output repository through the portable repository-binding layer instead of relying on a hydrated repository path as a second lineage implementation.
+- Mutation-lock documentation now distinguishes rollback-capable handled failures from filesystem-wide crash atomicity and documents conservative stale-lock recovery.
+- Git task documentation now distinguishes workflow-control files from the broader workflow-managed set, requires approved planning/task narratives to be committed before task start, and documents automatic Task-start checkpoints across workflow-only intervening history.
+- Package metadata and README licensing now consistently declare the MIT License.
+- GitHub Actions now validates the repository on Node.js 22 and 24 and verifies package provenance generation leaves no working-tree drift.
 - `task start` now requires approved planning/task narratives to be committed while allowing canonical workflow-control files to remain dirty.
 - `task start` now resolves the effective repository anchor against actual `HEAD`: exact matches reuse the planned baseline or latest Implementation output; descendant `HEAD` values are accepted only when every intervening commit touches workflow-managed paths, producing a new immutable Task start checkpoint when needed. Any implementation-scope path touched anywhere in the intervening history blocks task start for impact assessment, even if a later commit reverts it.
 - When a task is restarted after replanning, the replaced Task-start checkpoint is preserved as a Superseded Historical reference pointing to the new checkpoint; the new checkpoint uses the prior executable parent or latest Implementation output rather than parenting a historical snapshot.

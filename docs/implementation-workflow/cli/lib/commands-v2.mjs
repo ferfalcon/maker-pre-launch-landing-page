@@ -1,26 +1,34 @@
-import { execFileSync } from 'node:child_process';
 import {
   existsSync, mkdirSync, renameSync, rmSync, writeFileSync,
 } from 'node:fs';
 import { dirname, isAbsolute, relative, resolve } from 'node:path';
-import {
-  allowedTraceOwnerTypes, GATE_RESULTS, ID_PATTERNS, MODES, PROFILE_RANK,
-  PROFILES, SNAPSHOT_KINDS, STAGES, VALIDATION_KINDS, VALIDATION_STATUSES,
-  VERIFICATION_RESULTS, artifactTypesForStage, artifactTypesThroughStage,
-} from './workflow-model.mjs';
 import { renderArtifactFile } from './artifact-renderer.mjs';
-import { deriveNextAction, generatedStateFindings, syncGeneratedState } from './generated-state.mjs';
+import { syncGeneratedState } from './generated-state.mjs';
+import { taskCompletionGitFindings } from './git-worktree-policy.mjs';
 import { migrateRecordV1, migrationSummary } from './migrate-record.mjs';
 import {
   commitRecordCandidate, mutateRecord, prepareRecordMutation, readStoredRecord,
   requireMutableRecord,
 } from './record-store.mjs';
-import { validateWorkflowRecord } from '../../scripts/lib/validate-workflow-record.mjs';
+import { verifyRepositoryCommit } from './repository-binding.mjs';
+import { startTaskAtCurrentHead } from './task-lineage.mjs';
 import {
   artifactId, artifactType, commaList, fail, gitCommit, nextId, nextTaskId,
   normalizeChoice, parseArgs, printFindings, relativeDisplay, resolveRecordPath,
   values, write,
 } from './utils.mjs';
+import { deriveNextAction, stageAdvanceFindings } from './workflow-actions.mjs';
+import { workflowDiagnostics } from './workflow-diagnostics.mjs';
+import {
+  GATE_RESULTS, ID_PATTERNS, MODES, PROFILES, SNAPSHOT_KINDS, STAGES,
+  VALIDATION_KINDS, VALIDATION_STATUSES, VERIFICATION_RESULTS,
+  artifactTypesForStage,
+} from './workflow-model.mjs';
+import {
+  rewindStageForReplanning, startProfileUpgradeForReplanning,
+} from './workflow-transitions.mjs';
+import { projectRootForRecord } from './workspace.mjs';
+import { validateWorkflowRecord } from '../../scripts/lib/validate-workflow-record.mjs';
 
 function now() {
   return new Date().toISOString();
@@ -139,10 +147,6 @@ function writeNewNarratives(fileChanges) {
   return committed;
 }
 
-function snapshotForRepository(record, id) {
-  return record.snapshots.find((item) => item.id === id && item.id.startsWith('SRC-REPO-'));
-}
-
 function latestVerificationIds(record) {
   const ids = [];
   const snapshotIds = [
@@ -158,10 +162,7 @@ function latestVerificationIds(record) {
 }
 
 function requireCleanCurrent(recordPath, record, action) {
-  const findings = [
-    ...validateWorkflowRecord(record),
-    ...generatedStateFindings(recordPath, record),
-  ];
+  const findings = workflowDiagnostics(recordPath, record).findings;
   if (findings.length > 0) {
     throw new Error(`Current workflow state must be clean before ${action}:\n${findings.map((item) => `- ${item}`).join('\n')}\nRun "design-workflow sync" after resolving record findings.`);
   }
@@ -195,41 +196,6 @@ function taskById(record, id) {
 
 function parseValidationStatus(value) {
   return normalizeChoice(value, VALIDATION_STATUSES);
-}
-
-function git(repository, args) {
-  try {
-    return execFileSync('git', ['-C', repository, ...args], {
-      encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'],
-    }).trim();
-  } catch {
-    return null;
-  }
-}
-function gitSucceeds(repository, args) {
-  try {
-    execFileSync('git', ['-C', repository, ...args], { stdio: 'ignore' });
-    return true;
-  } catch {
-    return false;
-  }
-}
-
-
-function verifyCommitLineage(record, task, commit) {
-  const baseline = snapshotForRepository(record, task.baseline);
-  if (!baseline?.commit) throw new Error(`Task baseline ${task.baseline} does not record a Git commit.`);
-  const repository = baseline.reference;
-  if (!repository || !git(repository, ['rev-parse', '--is-inside-work-tree'])) {
-    throw new Error(`Task baseline ${task.baseline} does not reference an accessible Git repository.`);
-  }
-  if (!gitSucceeds(repository, ['cat-file', '-e', `${commit}^{commit}`])) throw new Error(`Commit ${commit} does not exist in the current Git repository.`);
-  const head = git(repository, ['rev-parse', 'HEAD']);
-  if (head !== commit) throw new Error(`Commit ${commit} is not HEAD (${head ?? 'unavailable'}).`);
-  if (!gitSucceeds(repository, ['merge-base', '--is-ancestor', baseline.commit, commit]) && baseline.commit !== commit) {
-    throw new Error(`Commit ${commit} does not descend from task baseline ${baseline.commit}.`);
-  }
-  return repository;
 }
 
 export function commandHelp(stdout) {
@@ -361,7 +327,7 @@ export function commandMigrate(cwd, stdout, stderr, options) {
 export function commandStatus(cwd, stdout, stderr, options) {
   try {
     const { path, record } = loadRecord(cwd, options);
-    const findings = [...validateWorkflowRecord(record), ...generatedStateFindings(path, record)];
+    const diagnostics = workflowDiagnostics(path, record);
     if (options.json) {
       write(stdout, JSON.stringify({
         record: relativeDisplay(cwd, path), project: record.project, state: record.state,
@@ -376,11 +342,12 @@ export function commandStatus(cwd, stdout, stderr, options) {
           tasks: record.tasks.length,
           completeTasks: record.tasks.filter((task) => task.status === 'Complete').length,
         },
-        generatedViewsCurrent: !findings.some((item) => item.startsWith('Generated workflow view')),
-        valid: findings.length === 0,
-        findings,
+        generatedViewsCurrent: diagnostics.generatedViewsCurrent,
+        subjectIntegrityCurrent: diagnostics.subjectIntegrityCurrent,
+        valid: diagnostics.valid,
+        findings: diagnostics.findings,
       }, null, 2));
-      return findings.length === 0 ? 0 : 1;
+      return diagnostics.valid ? 0 : 1;
     }
     write(stdout, record.project.name);
     write(stdout, `Schema: v${record.schemaVersion}${record.schemaVersion === 1 ? ' (read-only)' : ''}`);
@@ -389,8 +356,8 @@ export function commandStatus(cwd, stdout, stderr, options) {
     write(stdout, `Stage: ${record.state.stage} — ${STAGES[record.state.stage]}`);
     write(stdout, `Status: ${record.state.status}`);
     write(stdout, `Next action: ${deriveNextAction(record)}`);
-    printFindings(stdout, findings);
-    return findings.length === 0 ? 0 : 1;
+    printFindings(stdout, diagnostics.findings);
+    return diagnostics.valid ? 0 : 1;
   } catch (error) {
     return commandFailure(stderr, error);
   }
@@ -399,8 +366,10 @@ export function commandStatus(cwd, stdout, stderr, options) {
 export function commandNext(cwd, stdout, stderr, options) {
   try {
     const { path, record } = loadRecord(cwd, options);
-    const findings = [...validateWorkflowRecord(record), ...generatedStateFindings(path, record)];
-    if (findings.length > 0) throw new Error(`Resolve workflow findings before advancing:\n${findings.map((item) => `- ${item}`).join('\n')}`);
+    const diagnostics = workflowDiagnostics(path, record);
+    if (diagnostics.findings.length > 0) {
+      throw new Error(`Resolve workflow findings before advancing:\n${diagnostics.findings.map((item) => `- ${item}`).join('\n')}`);
+    }
     write(stdout, `Next action: ${deriveNextAction(record)}`);
     return 0;
   } catch (error) {
@@ -411,6 +380,7 @@ export function commandNext(cwd, stdout, stderr, options) {
 export function commandStage(cwd, stdout, stderr, positionals, options) {
   const action = positionals[1];
   if (action === 'set') return fail(stderr, '"stage set" is non-mutating compatibility syntax. Use "stage review", "stage advance", or "stage rewind".');
+  if (action === 'rewind') return rewindStageForReplanning(cwd, stdout, stderr, positionals, options);
   try {
     const path = recordPathFor(cwd, options);
     if (action === 'review') {
@@ -442,12 +412,9 @@ export function commandStage(cwd, stdout, stderr, positionals, options) {
       const prepared = prepareRecordMutation(path);
       requireCleanCurrent(path, prepared.record, 'stage advancement');
       const record = prepared.candidate;
+      const findings = stageAdvanceFindings(record);
+      if (findings.length > 0) throw new Error(findings.join('\n'));
       const stage = record.state.stage;
-      if (stage >= 11) throw new Error('Stage 11 is the final stage; completion is recorded with "review set-result".');
-      const gate = [...record.gates].reverse().find((item) => item.stage === stage && item.status === 'Active');
-      if (!gate || !['Passed', 'Passed with assumptions'].includes(gate.result)) throw new Error(`Stage ${stage} requires an active passing gate.`);
-      if (record.profileTransitions.some((item) => item.status === 'In progress')) throw new Error('Profile upgrade must finish before stage advancement.');
-      if (record.project.executionMode === 'Continuous documentation' && stage + 1 >= 10) throw new Error('Continuous-documentation mode cannot enter Stage 10.');
       const nextStage = stage + 1;
       record.state.stage = nextStage;
       record.state.status = 'In progress';
@@ -462,35 +429,6 @@ export function commandStage(cwd, stdout, stderr, positionals, options) {
       commitRecordCandidate({ recordPath: path, currentRecord: prepared.record, candidate: record, fileChanges });
       write(stdout, `Advanced to Stage ${nextStage} — ${STAGES[nextStage]}`);
       if (scaffolded.length) write(stdout, `Scaffolded: ${scaffolded.join(', ')}`);
-      return 0;
-    }
-    if (action === 'rewind') {
-      const target = Number(positionals[2]);
-      if (!Number.isInteger(target) || target < 0 || target > 11) throw new Error('Rewind stage must be an integer from 0 through 11.');
-      const reason = optionString(options, 'reason', { required: true });
-      const prepared = prepareRecordMutation(path);
-      const record = prepared.candidate;
-      if (target >= record.state.stage) throw new Error(`Rewind target must be lower than current Stage ${record.state.stage}.`);
-      const fromStage = record.state.stage;
-      for (const gate of record.gates) if (gate.stage >= target && gate.status === 'Active') gate.status = 'Superseded';
-      record.gates.push({
-        id: nextId(record.gates, 'GATE-'),
-        stage: fromStage,
-        status: 'Superseded',
-        result: 'Blocked',
-        baseline: [...record.state.activeInputs],
-        verifications: latestVerificationIds(record),
-        artifacts: record.artifacts.filter((item) => item.status !== 'Superseded').map((item) => item.id),
-        evidence: `Rewind to Stage ${target}: ${reason}`,
-        recordedAt: now(),
-      });
-      record.state.stage = target;
-      record.state.status = 'In progress';
-      record.state.currentTask = null;
-      commitRecordCandidate({ recordPath: path, currentRecord: prepared.record, candidate: record });
-      write(stdout, `Rewound to Stage ${target} — ${STAGES[target]}`);
-      write(stdout, `Reason: ${reason}`);
-      write(stdout, 'Artifact baselines were preserved; rebaseline explicitly if required.');
       return 0;
     }
     throw new Error('Usage: design-workflow stage <review|advance|rewind>');
@@ -557,57 +495,11 @@ export function commandMode(cwd, stdout, stderr, positionals, options) {
 }
 
 export function commandProfile(cwd, stdout, stderr, positionals, options) {
+  if (positionals[1] !== 'upgrade') return fail(stderr, 'Usage: design-workflow profile upgrade <start|finish> ...');
+  const action = positionals[2];
+  if (action === 'start') return startProfileUpgradeForReplanning(cwd, stdout, stderr, positionals, options);
   try {
-    if (positionals[1] !== 'upgrade') throw new Error('Usage: design-workflow profile upgrade <start|finish> ...');
-    const action = positionals[2];
     const path = recordPathFor(cwd, options);
-    if (action === 'start') {
-      const target = normalizeChoice(positionals[3], PROFILES);
-      if (!target) throw new Error(`Unknown target profile. Choose: ${PROFILES.join(', ')}`);
-      const resumeStage = Number(options['resume-stage']);
-      if (!Number.isInteger(resumeStage) || resumeStage < 0 || resumeStage > 11) throw new Error('--resume-stage must be an integer from 0 through 11.');
-      const reason = optionString(options, 'reason', { required: true });
-      const prepared = prepareRecordMutation(path);
-      const record = prepared.candidate;
-      const from = record.project.profile;
-      if ((PROFILE_RANK.get(target) ?? -1) <= (PROFILE_RANK.get(from) ?? -1)) throw new Error('Profile changes are upgrade-only; downgrades and lateral changes are unsupported.');
-      if (record.profileTransitions.some((item) => item.status === 'In progress')) throw new Error('A profile upgrade is already in progress.');
-      if (resumeStage > record.state.stage) throw new Error('Resume stage cannot be later than the current stage.');
-      const sourceArtifacts = record.artifacts.filter((item) => item.status !== 'Superseded').map((item) => item.id);
-      record.project.profile = target;
-      record.state.stage = resumeStage;
-      record.state.status = 'Blocked';
-      record.state.currentTask = null;
-      for (const gate of record.gates) if (gate.stage >= resumeStage && gate.status === 'Active') gate.status = 'Superseded';
-      const fileChanges = new Map();
-      const targetTypes = artifactTypesThroughStage(target, resumeStage, record.state.architectureDecision);
-      const targetProfileTypes = new Set(artifactTypesThroughStage(target, 11, record.state.architectureDecision));
-      const obsoleteOwnerIds = new Set(record.artifacts.filter((artifact) => (
-        sourceArtifacts.includes(artifact.id)
-        && ['WORKPACK', 'IMPLEMENTATION-BRIEF'].includes(artifact.type)
-      )).map((artifact) => artifact.id));
-      for (const item of record.traceItems.filter((candidate) => (
-        candidate.status === 'Active' && obsoleteOwnerIds.has(candidate.owner)
-      ))) {
-        const ownerType = allowedTraceOwnerTypes(item.id).find((type) => targetProfileTypes.has(type));
-        if (!ownerType) throw new Error(`Target profile ${target} has no compatible owner artifact for ${item.id}.`);
-        if (!targetTypes.includes(ownerType)) targetTypes.push(ownerType);
-      }
-      const targetArtifacts = [];
-      for (const type of targetTypes) {
-        const artifact = addArtifactCandidate(cwd, record, type, fileChanges);
-        if (!targetArtifacts.includes(artifact.id)) targetArtifacts.push(artifact.id);
-      }
-      const transition = {
-        id: nextId(record.profileTransitions, 'PROFILE-'), from, to: target,
-        resumeStage, reason, status: 'In progress', sourceArtifacts,
-        targetArtifacts, startedAt: now(),
-      };
-      record.profileTransitions.push(transition);
-      commitRecordCandidate({ recordPath: path, currentRecord: prepared.record, candidate: record, fileChanges });
-      write(stdout, `Started ${transition.id}: ${from} → ${target}, resume at Stage ${resumeStage}`);
-      return 0;
-    }
     if (action === 'finish') {
       const evidence = optionString(options, 'evidence', { required: true });
       const approvedBy = optionString(options, 'approved-by');
@@ -1053,28 +945,8 @@ export function commandTask(cwd, stdout, stderr, positionals, options) {
       return 0;
     }
     if (action === 'start') {
-      const prepared = prepareRecordMutation(path);
-      requireCleanCurrent(path, prepared.record, 'task execution');
-      const record = prepared.candidate;
-      if (record.state.stage !== 10) {
-        throw new Error('Task execution requires an approved Stage 9 gate and entry into Stage 10.');
-      }
-      if (record.project.executionMode === 'Continuous documentation') {
-        throw new Error('Continuous-documentation mode cannot execute tasks.');
-      }
-      const task = taskById(record, id);
-      if (task.status !== 'Ready') throw new Error(`${id} must be Ready before start.`);
-      const incomplete = task.prerequisites.filter((dependency) => taskById(record, dependency).status !== 'Complete');
-      if (incomplete.length) throw new Error(`Incomplete prerequisites: ${incomplete.join(', ')}`);
-      if (record.state.currentTask && record.state.currentTask !== id) {
-        throw new Error(`${record.state.currentTask} is already in progress.`);
-      }
-      task.status = 'In progress';
-      record.state.currentTask = id;
-      record.state.status = 'In progress';
-      invalidateCurrentGate(record);
-      commitRecordCandidate({ recordPath: path, currentRecord: prepared.record, candidate: record });
-      write(stdout, `Started ${id}`);
+      const start = startTaskAtCurrentHead(path, id);
+      write(stdout, `Started ${id} from ${start.baseline} at HEAD ${start.commit}`);
       return 0;
     }
     if (action === 'block') {
@@ -1121,7 +993,12 @@ export function commandTask(cwd, stdout, stderr, positionals, options) {
       const commit = optionString(options, 'commit', { required: true }).toLowerCase();
       if (!ID_PATTERNS.commit.test(commit)) throw new Error('--commit must be a full 40-character Git SHA.');
       const prepared = prepareRecordMutation(path);
-      requireCleanCurrent(path, prepared.record, 'task completion');
+      const currentTask = prepared.record.tasks.find((item) => item.id === id);
+      const findings = [
+        ...workflowDiagnostics(path, prepared.record).findings,
+        ...(currentTask ? taskCompletionGitFindings(path, prepared.record, currentTask, commit) : []),
+      ];
+      if (findings.length > 0) throw new Error(findings.join('\n'));
       const record = prepared.candidate;
       if (record.state.stage !== 10) throw new Error('Task completion is allowed only during Stage 10.');
       const task = taskById(record, id);
@@ -1152,7 +1029,9 @@ export function commandTask(cwd, stdout, stderr, positionals, options) {
       if (unresolved.length) {
         throw new Error(`Validation remains unresolved: ${unresolved.map((check) => check.name).join(', ')}`);
       }
-      const repository = verifyCommitLineage(record, task, commit);
+      const baseline = record.snapshots.find((snapshot) => snapshot.id === task.baseline && snapshot.id.startsWith('SRC-REPO-'));
+      if (!baseline) throw new Error(`Task baseline ${task.baseline} does not reference a repository snapshot.`);
+      const verified = verifyRepositoryCommit(projectRootForRecord(path), baseline, commit);
       const outputId = optionString(options, 'output') ?? nextId(record.snapshots, 'SRC-REPO-');
       if (record.snapshots.some((snapshot) => snapshot.id === outputId)) {
         throw new Error(`Snapshot ${outputId} already exists.`);
@@ -1162,7 +1041,7 @@ export function commandTask(cwd, stdout, stderr, positionals, options) {
         role: 'Implementation output',
         pinStrength: 'Immutable',
         status: 'Active',
-        reference: repository,
+        reference: verified.reference,
         commit,
         parent: task.baseline,
         task: id,
@@ -1253,9 +1132,9 @@ export function commandSync(cwd, stdout, stderr, options) {
 export function commandValidate(cwd, stdout, stderr, options) {
   try {
     const { path, record } = loadRecord(cwd, options);
-    const findings = [...validateWorkflowRecord(record), ...generatedStateFindings(path, record)];
-    printFindings(stdout, findings);
-    return findings.length === 0 ? 0 : 1;
+    const diagnostics = workflowDiagnostics(path, record);
+    printFindings(stdout, diagnostics.findings);
+    return diagnostics.valid ? 0 : 1;
   } catch (error) {
     return commandFailure(stderr, error);
   }

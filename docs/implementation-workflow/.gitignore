@@ -2,5 +2,7 @@ node_modules/
 *.tgz
 *.tar.gz
 .workflow/**/*.tmp
+.workflow/**/*.lock
+.workflow/**/*.reap
 .workflow/local.json
 cli/toolkit-provenance.json

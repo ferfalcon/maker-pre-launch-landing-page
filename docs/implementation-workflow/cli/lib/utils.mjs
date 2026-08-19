@@ -1,7 +1,6 @@
 import { execFileSync } from 'node:child_process';
-import { isAbsolute, join, resolve } from 'node:path';
 import { ARTIFACT_ALIASES, ARTIFACT_FILES } from './constants.mjs';
-
+export { resolveRecordPath } from './workspace.mjs';
 
 export function write(stream, message = '') { stream.write(`${message}\n`); }
 export function fail(stderr, message) { write(stderr, `Error: ${message}`); return 1; }
@@ -45,12 +44,6 @@ export function normalizeChoice(value, choices) {
   if (typeof value !== 'string') return null;
   return choices.find((choice) => choice.toLowerCase() === value.trim().toLowerCase()) ?? null;
 }
-
-export function resolveRecordPath(cwd, option) {
-  if (typeof option === 'string') return isAbsolute(option) ? option : resolve(cwd, option);
-  return join(cwd, '.workflow', 'workflow-record.json');
-}
-
 
 export function nextId(items, prefix, field = 'id') {
   const escaped = prefix.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -139,7 +132,6 @@ export function artifactId(record, type, suffix = '') {
 export function relativeDisplay(cwd, path) {
   return path?.startsWith(cwd) ? path.slice(cwd.length + 1) : path;
 }
-
 
 export function gitCommit(repositoryPath) {
   try {

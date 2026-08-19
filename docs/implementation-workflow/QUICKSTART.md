@@ -128,11 +128,22 @@ design-workflow stage advance
 
 ## 5. Implement against verified Git lineage
 
+Before task start, commit the approved planning/task narrative. `task start` permits canonical record/generated control files to remain dirty, but it rejects dirty narrative or implementation-scope paths. For Express, for example:
+
+```bash
+git add WORKPACK.md
+git commit -m "Record approved implementation plan"
+```
+
+Then start the task:
+
 ```bash
 design-workflow task start P01-T01
 ```
 
-Implement and commit the result. Supply the real full `HEAD` SHA:
+The CLI verifies the actual repository `HEAD`. If committed history since the planned baseline contains only workflow-managed files, it records an immutable Task-start checkpoint at the real `HEAD`; unexpected implementation-scope history blocks execution for impact assessment.
+
+Implement and commit only the task result. Do not include `.workflow/*` or active workflow narratives in the Implementation-output commit. Supply the real full `HEAD` SHA:
 
 ```bash
 design-workflow task complete P01-T01 \
@@ -140,7 +151,7 @@ design-workflow task complete P01-T01 \
   --check "Build=Production build completed successfully"
 ```
 
-The shorthand updates only the already-declared Build check. Completion rejects an unknown check, missing commit, non-HEAD commit, or commit that does not descend from the task baseline. On success it creates the Implementation-output snapshot.
+The shorthand updates only the already-declared Build check and binds the executed result to the current implementation commit. Completion rejects an unknown check, missing commit, non-HEAD commit, stale validation subject, dirty implementation leftovers, or an Implementation-output commit containing workflow-managed files. On success it creates the Implementation-output snapshot.
 
 Review and advance Stage 10:
 
@@ -191,7 +202,7 @@ design-workflow sync --check
 design-workflow status
 ```
 
-Commit the implementation, narrative artifact, workflow record, and generated views together.
+Commit remaining narrative, workflow-record, and generated-state changes as a separate workflow/documentation commit. Do not amend or replace the recorded Implementation-output commit merely to add workflow bookkeeping.
 
 ## Recovery and source change
 

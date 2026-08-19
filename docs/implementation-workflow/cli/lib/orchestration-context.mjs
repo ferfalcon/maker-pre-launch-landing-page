@@ -1,9 +1,10 @@
-import { dirname, relative, resolve } from 'node:path';
-import { STAGES } from './workflow-model.mjs';
+import { relative } from 'node:path';
+import { checkStage } from './stage-check.mjs';
 import { toolkitBindingFromRecord, toolkitPromptSource } from './toolkit-binding.mjs';
 import { deriveNextAction, readyTask } from './workflow-actions.mjs';
 import { workflowDiagnostics } from './workflow-diagnostics.mjs';
-import { checkStage } from './stage-check.mjs';
+import { STAGES } from './workflow-model.mjs';
+import { projectRootForRecord } from './workspace.mjs';
 
 export const STAGE_PROMPTS = [
   'prompts/00-intake.md',
@@ -164,8 +165,7 @@ function taskSummary(task) {
 }
 
 function projectRootDisplay(recordPath, cwd) {
-  const projectRoot = resolve(dirname(recordPath), '..');
-  return relative(cwd, projectRoot).split('\\').join('/') || '.';
+  return relative(cwd, projectRootForRecord(recordPath)).split('\\').join('/') || '.';
 }
 
 export function canEditImplementation(record, diagnostics, currentTask) {

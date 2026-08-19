@@ -2,6 +2,7 @@ import { execFileSync } from 'node:child_process';
 import { dirname, isAbsolute, relative, resolve } from 'node:path';
 import { GENERATED_STATE_DIRECTORY, GENERATED_STATE_FILES } from './generated-state.mjs';
 import { resolveRepositoryWorkspace } from './repository-binding.mjs';
+import { projectRootForRecord } from './workspace.mjs';
 
 const FULL_COMMIT = /^[0-9a-f]{40}$/i;
 
@@ -37,7 +38,7 @@ export function workflowControlPaths(recordPath, repository) {
 
 export function workflowManagedPaths(recordPath, repository, record) {
   const managed = workflowControlPaths(recordPath, repository);
-  const projectRoot = resolve(dirname(recordPath), '..');
+  const projectRoot = projectRootForRecord(recordPath);
   for (const artifact of record?.artifacts ?? []) {
     if (artifact.status === 'Superseded' || !artifact.path) continue;
     const absolute = isAbsolute(artifact.path) ? artifact.path : resolve(projectRoot, artifact.path);
@@ -96,8 +97,7 @@ function taskRepository(recordPath, record, task) {
     return { finding: `Task baseline ${task.baseline} does not reference a Git repository.` };
   }
   try {
-    const projectRoot = resolve(dirname(recordPath), '..');
-    return { repository: resolveRepositoryWorkspace(projectRoot, baseline) };
+    return { repository: resolveRepositoryWorkspace(projectRootForRecord(recordPath), baseline) };
   } catch {
     return { finding: `Task baseline ${task.baseline} does not reference an accessible Git repository.` };
   }

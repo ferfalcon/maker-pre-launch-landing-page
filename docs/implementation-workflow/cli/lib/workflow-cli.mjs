@@ -1,24 +1,17 @@
 import { existsSync } from 'node:fs';
 import { runWorkflowCli } from './commands-v2.mjs';
-import { taskCompletionGitFindings, taskStartGitFindings } from './git-worktree-policy.mjs';
 import { mutateRecord, readStoredRecord } from './record-store.mjs';
 import { bindRepositoryWorkspace } from './repository-binding.mjs';
 import { buildOrchestrationContext } from './orchestration-context.mjs';
 import { checkStage } from './stage-check.mjs';
-import { startTaskAtCurrentHead } from './task-lineage.mjs';
 import {
   bindToolkit, migrateLegacyToolkitBinding, runtimeToolkitPin,
   toolkitBindingFromRecord, withInitializationToolkitPin,
 } from './toolkit-binding.mjs';
-import { deriveNextAction, stageAdvanceFindings } from './workflow-actions.mjs';
-import { STAGES } from './workflow-model.mjs';
-import { workflowDiagnostics } from './workflow-diagnostics.mjs';
 import {
-  rewindStageForReplanning, startProfileUpgradeForReplanning,
-} from './workflow-transitions.mjs';
-import {
-  fail, normalizeTaskCreateArgs, parseArgs, printFindings, relativeDisplay, resolveRecordPath, write,
+  fail, normalizeTaskCreateArgs, parseArgs, relativeDisplay, write,
 } from './utils.mjs';
+import { normalizeRecordArgs, resolveWorkflowWorkspace } from './workspace.mjs';
 
 function json(stdout, value) { write(stdout, JSON.stringify(value, null, 2)); }
 
@@ -45,11 +38,6 @@ function contextWhenMissing(cwd, recordPath) {
   };
 }
 
-function load(cwd, options) {
-  const recordPath = resolveRecordPath(cwd, options.record);
-  return { recordPath, ...readStoredRecord(recordPath) };
-}
-
 function stringOption(options, name) {
   const value = options[name];
   return typeof value === 'string' && value.trim() ? value.trim() : null;
@@ -72,10 +60,13 @@ export async function runCli(args, environment) {
   const parsed = parseArgs(args);
   const { positionals, options } = parsed;
   const command = positionals[0];
-  const recordPath = resolveRecordPath(cwd, options.record);
+  const workspace = resolveWorkflowWorkspace(cwd, options.record);
+  const { recordPath, projectRoot } = workspace;
+  const workflowArgsBase = normalizeRecordArgs(args, recordPath);
+  const workflowEnvironment = { ...environment, cwd: projectRoot };
 
   if (!command || command === 'help' || options.help) {
-    const result = await runWorkflowCli(args, environment);
+    const result = await runWorkflowCli(workflowArgsBase, workflowEnvironment);
     write(stdout, '\nTask phases:');
     write(stdout, '  design-workflow task create [--phase <0-99|P00-P99> | --id <Pxx-Txx>] ...');
     write(stdout, '  --phase and --id are mutually exclusive. Without either, numbering continues in the highest existing phase and defaults to Phase 01.');
@@ -102,9 +93,9 @@ export async function runCli(args, environment) {
       const { record } = readStoredRecord(recordPath);
       const snapshot = record.snapshots.find((item) => item.id === snapshotId && item.id.startsWith('SRC-REPO-'));
       if (!snapshot) return fail(stderr, `Repository snapshot ${snapshotId} does not exist.`);
-      const binding = bindRepositoryWorkspace(cwd, snapshot, repositoryPath);
-      write(stdout, `Bound ${snapshotId} (${snapshot.reference}) to ${relativeDisplay(cwd, binding.repository)}.`);
-      write(stdout, `Local binding: ${relativeDisplay(cwd, binding.path)}`);
+      const binding = bindRepositoryWorkspace(projectRoot, snapshot, repositoryPath);
+      write(stdout, `Bound ${snapshotId} (${snapshot.reference}) to ${relativeDisplay(projectRoot, binding.repository)}.`);
+      write(stdout, `Local binding: ${relativeDisplay(projectRoot, binding.path)}`);
       return 0;
     } catch (error) {
       return fail(stderr, error instanceof Error ? error.message : String(error));
@@ -165,13 +156,13 @@ export async function runCli(args, environment) {
 
   if (command === 'context') {
     if (!existsSync(recordPath)) {
-      const value = contextWhenMissing(cwd, recordPath);
+      const value = contextWhenMissing(projectRoot, recordPath);
       if (options.json) json(stdout, value); else write(stdout, value.nextAction);
       return 0;
     }
     try {
       const { record } = readStoredRecord(recordPath);
-      const value = buildOrchestrationContext(recordPath, record, { cwd });
+      const value = buildOrchestrationContext(recordPath, record, { cwd: projectRoot });
       if (options.json) json(stdout, value);
       else {
         write(stdout, `${value.project.name}: Stage ${value.stage.number} — ${value.stage.name}`);
@@ -213,120 +204,6 @@ export async function runCli(args, environment) {
     }
   }
 
-  if (command === 'status') {
-    try {
-      const { recordPath: path, record } = load(cwd, options);
-      const diagnostics = workflowDiagnostics(path, record);
-      const value = {
-        record: relativeDisplay(cwd, path),
-        project: record.project,
-        state: record.state,
-        schemaVersion: record.schemaVersion,
-        readOnly: record.schemaVersion === 1,
-        counts: {
-          snapshots: record.snapshots.length,
-          verifications: record.verifications?.length ?? 0,
-          artifacts: record.artifacts.length,
-          traceItems: record.traceItems?.length ?? 0,
-          gates: record.gates?.length ?? 0,
-          tasks: record.tasks.length,
-          completeTasks: record.tasks.filter((task) => task.status === 'Complete').length,
-        },
-        generatedViewsCurrent: diagnostics.generatedViewsCurrent,
-        subjectIntegrityCurrent: diagnostics.subjectIntegrityCurrent,
-        valid: diagnostics.valid,
-        findings: diagnostics.findings,
-      };
-      if (options.json) json(stdout, value);
-      else {
-        write(stdout, record.project.name);
-        write(stdout, `Schema: v${record.schemaVersion}${record.schemaVersion === 1 ? ' (read-only)' : ''}`);
-        write(stdout, `Profile: ${record.project.profile}`);
-        write(stdout, `Mode: ${record.project.executionMode}`);
-        write(stdout, `Stage: ${record.state.stage} — ${STAGES[record.state.stage]}`);
-        write(stdout, `Status: ${record.state.status}`);
-        write(stdout, `Next action: ${deriveNextAction(record)}`);
-        printFindings(stdout, diagnostics.findings);
-      }
-      return diagnostics.valid ? 0 : 1;
-    } catch (error) {
-      return fail(stderr, error instanceof Error ? error.message : String(error));
-    }
-  }
-
-  if (command === 'validate') {
-    try {
-      const { recordPath: path, record } = load(cwd, options);
-      const diagnostics = workflowDiagnostics(path, record);
-      printFindings(stdout, diagnostics.findings);
-      return diagnostics.valid ? 0 : 1;
-    } catch (error) {
-      return fail(stderr, error instanceof Error ? error.message : String(error));
-    }
-  }
-
-  if (command === 'next') {
-    try {
-      const { recordPath: path, record } = load(cwd, options);
-      const diagnostics = workflowDiagnostics(path, record);
-      if (diagnostics.findings.length > 0) {
-        return fail(stderr, `Resolve workflow findings before continuing:\n${diagnostics.findings.map((item) => `- ${item}`).join('\n')}`);
-      }
-      write(stdout, `Next action: ${deriveNextAction(record)}`);
-      return 0;
-    } catch (error) {
-      return fail(stderr, error instanceof Error ? error.message : String(error));
-    }
-  }
-
-  if (command === 'stage' && positionals[1] === 'rewind') {
-    return rewindStageForReplanning(cwd, stdout, stderr, positionals, options);
-  }
-
-  if (command === 'profile' && positionals[1] === 'upgrade' && positionals[2] === 'start') {
-    return startProfileUpgradeForReplanning(cwd, stdout, stderr, positionals, options);
-  }
-
-  if (command === 'stage' && positionals[1] === 'advance') {
-    try {
-      const { recordPath: path, record } = load(cwd, options);
-      const diagnostics = workflowDiagnostics(path, record);
-      const findings = [...diagnostics.findings, ...stageAdvanceFindings(record)];
-      if (findings.length > 0) return fail(stderr, findings.join('\n'));
-    } catch (error) {
-      return fail(stderr, error instanceof Error ? error.message : String(error));
-    }
-  }
-
-  if (command === 'task' && positionals[1] === 'start' && positionals[2]) {
-    try {
-      const { recordPath: path, record } = load(cwd, options);
-      const task = record.tasks.find((item) => item.id === positionals[2]);
-      const findings = task ? taskStartGitFindings(path, record, task) : [];
-      if (findings.length > 0) return fail(stderr, findings.join('\n'));
-      const start = startTaskAtCurrentHead(path, positionals[2]);
-      write(stdout, `Started ${positionals[2]} from ${start.baseline} at HEAD ${start.commit}`);
-      return 0;
-    } catch (error) {
-      return fail(stderr, error instanceof Error ? error.message : String(error));
-    }
-  }
-
-  if (command === 'task' && positionals[1] === 'complete' && positionals[2]) {
-    try {
-      const { recordPath: path, record } = load(cwd, options);
-      const diagnostics = workflowDiagnostics(path, record);
-      const task = record.tasks.find((item) => item.id === positionals[2]);
-      const findings = [
-        ...diagnostics.findings,
-        ...(task ? taskCompletionGitFindings(path, record, task, options.commit) : []),
-      ];
-      if (findings.length > 0) return fail(stderr, findings.join('\n'));
-    } catch (error) {
-      return fail(stderr, error instanceof Error ? error.message : String(error));
-    }
-  }
-
   if (command === 'init') {
     let pin;
     try {
@@ -334,7 +211,10 @@ export async function runCli(args, environment) {
     } catch (error) {
       return fail(stderr, error instanceof Error ? error.message : String(error));
     }
-    const result = await withInitializationToolkitPin(pin, () => runWorkflowCli(args, environment));
+    const result = await withInitializationToolkitPin(
+      pin,
+      () => runWorkflowCli(workflowArgsBase, workflowEnvironment),
+    );
     if (result !== 0 || options.control === 'markdown-only') return result;
     if (!pin) {
       write(stdout, 'Toolkit dependency is unpinned. Run "design-workflow toolkit pin --revision <40-character-sha>" before relying on remote workflow resources.');
@@ -344,15 +224,15 @@ export async function runCli(args, environment) {
     return result;
   }
 
-  let workflowArgs = args;
+  let workflowArgs = workflowArgsBase;
   if (command === 'task' && positionals[1] === 'create' && options.phase !== undefined) {
     try {
-      const { record } = load(cwd, options);
-      workflowArgs = normalizeTaskCreateArgs(args, record.tasks, parsed);
+      const { record } = readStoredRecord(recordPath);
+      workflowArgs = normalizeTaskCreateArgs(workflowArgsBase, record.tasks, parseArgs(workflowArgsBase));
     } catch (error) {
       return fail(stderr, error instanceof Error ? error.message : String(error));
     }
   }
 
-  return runWorkflowCli(workflowArgs, environment);
+  return runWorkflowCli(workflowArgs, workflowEnvironment);
 }

@@ -61,12 +61,13 @@ export function taskStartFindings(record, task) {
 
 export function deriveNextAction(record) {
   if (record.schemaVersion === 1) return 'Migrate the schema-v1 workflow record before mutation.';
-  if (record.state?.status === 'Blocked') return 'Resolve the recorded blocker before advancing.';
 
   const transition = (record.profileTransitions ?? []).find((item) => item.status === 'In progress');
   if (transition) {
     return `Reconcile ${transition.to} artifacts through Stage ${transition.resumeStage}, then finish profile upgrade ${transition.id}.`;
   }
+
+  if (record.state?.status === 'Blocked') return 'Resolve the recorded blocker before advancing.';
 
   if (record.state?.currentTask) {
     return `Continue ${record.state.currentTask} and record its required validation before completion.`;

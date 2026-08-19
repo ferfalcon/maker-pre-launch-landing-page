@@ -254,4 +254,4 @@ Read [`CONTRIBUTING.md`](CONTRIBUTING.md). Structural changes must pass the repo
 
 ## License
 
-No reuse license has been selected yet. See [`LICENSE`](LICENSE) for the current all-rights-reserved notice. Replace it only after the repository owner explicitly chooses a license.
+Licensed under the MIT License. See [`LICENSE`](LICENSE).

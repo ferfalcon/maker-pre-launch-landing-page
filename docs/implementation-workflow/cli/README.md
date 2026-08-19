@@ -204,6 +204,10 @@ design-workflow task validation set P01-T01 \
 
 A Passed result requires `--actual`, `--executed-at`, and at least one `--evidence`. Required checks cannot be `Not applicable`.
 
+Before `task start`, approved planning/task narratives must be committed. Only canonical workflow-control files—the record and generated projections—may remain dirty. Dirty narrative or implementation-scope paths block task start.
+
+`task start` resolves the effective repository anchor against the actual local `HEAD`, including the latest approved Implementation output when appropriate. If committed history since the planned baseline touches only workflow-managed paths, the CLI records a new immutable Task-start checkpoint at the actual `HEAD`. Any intervening implementation-scope path blocks execution for impact assessment, even if a later commit reverts it.
+
 Completion accepts the existing `--check name=evidence` shorthand only for checks already declared on the task:
 
 ```bash
@@ -212,7 +216,7 @@ design-workflow task complete P01-T01 \
   --check "Build=Production build completed successfully"
 ```
 
-Task start resolves the effective baseline against the actual local `HEAD`, including the latest approved Implementation output when appropriate. Completion resolves the task baseline's local checkout from its portable identity, project-relative location, or local binding, then verifies that the commit exists in that repository, equals `HEAD`, and descends from the recorded baseline commit. Only then does it create the Implementation-output snapshot, again using a portable repository identity. Task-by-task execution cannot begin before Stage 9, and Continuous-documentation mode cannot enter Stage 10.
+Completion rejects dirty implementation-scope leftovers and rejects an Implementation-output commit that contains workflow-managed files. It resolves the task baseline's local checkout from its portable identity, project-relative location, or local binding, verifies that the supplied commit exists in that repository, equals `HEAD`, and descends from the exact task-start baseline, then creates the portable Implementation-output snapshot. Passed validation is bound to that exact output commit. Task-by-task execution cannot begin before Stage 9, and Continuous-documentation mode cannot enter Stage 10.
 
 ## Profile upgrades
 
@@ -230,7 +234,7 @@ design-workflow profile upgrade finish \
   --approved-by "Reviewer"
 ```
 
-`start` selects the higher profile, rewinds, blocks advancement, and scaffolds missing target artifacts—including compatible owner artifacts for active trace items. Before `finish`, reconcile those artifacts and move active trace items off any obsolete Workpack or Implementation Brief with `trace update --owner`. `finish` then supersedes obsolete consolidated artifacts. Downgrades are rejected.
+`start` selects the higher profile, rewinds, blocks advancement, and scaffolds missing target artifacts—including compatible owner artifacts for active trace items. If implementation was already in progress, it resets the current task to `Ready` and invalidates execution-time validation so the affected task must be rerun after reconciliation. While a profile transition is active, the canonical next action points to artifact reconciliation and transition completion rather than the generic Blocked-state instruction. Before `finish`, reconcile target artifacts and move active trace items off obsolete Workpack or Implementation Brief owners with `trace update --owner`. `finish` then supersedes obsolete consolidated artifacts. Downgrades are rejected.
 
 ## Final review
 
@@ -257,12 +261,28 @@ design-workflow review set-result accepted \
 
 Results are `accepted`, `accepted-with-deviations`, and `requires-corrections`. Accepted-with-deviations uses the supplied evidence as explicit deviation evidence. Requires-corrections leaves Stage 11 Blocked.
 
+## Explicit record paths and project workspace
+
+`--record` may point to an explicit workflow record. The CLI derives one project workspace from that record and uses it consistently for narrative artifacts, repository bindings, Git policy, subject-integrity checks, and agent context.
+
+- If the record is inside a `.workflow/` directory, that directory's parent is the project root.
+- Otherwise, the record's own directory is the project root.
+- Generated views remain beside the record under its `generated/` sibling directory.
+
+This means commands can be invoked from another directory without relocating project-owned files:
+
+```bash
+design-workflow status --record /path/to/project/.workflow/workflow-record.json
+design-workflow agent-context --record /path/to/project/.workflow/workflow-record.json --json
+```
+
 ## Safety contract
 
 - The current record must be clean before advancement, task execution, or acceptance.
 - A candidate record, all generated views, and new artifact files are rendered and validated before any target is replaced.
 - Repository snapshot identities are canonicalized before record serialization; local checkout bindings remain outside the committed workflow state.
-- Writes use sibling temporary files and rollback on an I/O failure.
+- Writes use sibling temporary files and same-filesystem renames; handled I/O failures roll back committed targets, but the multi-file set is not a filesystem-wide crash-atomic transaction.
+- A same-host mutation lock is recovered automatically only when its recorded PID is demonstrably no longer running. Active, malformed, foreign-host, or process-state-ambiguous locks fail closed for inspection.
 - Rejected mutations leave the record, generated views, and narrative files byte-identical.
 - Existing unregistered narrative files are never overwritten.
-- Use `--record path/to/workflow-record.json` to override the default record location.
+- Use `--record path/to/workflow-record.json` to override the default record location; the resolved record determines the canonical project workspace.

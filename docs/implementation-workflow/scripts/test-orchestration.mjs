@@ -4,11 +4,11 @@ import { createHash } from 'node:crypto';
 import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { deriveNextAction } from '../cli/lib/workflow-actions.mjs';
+import { syncGeneratedState } from '../cli/lib/generated-state.mjs';
 import { buildOrchestrationContext, canEditImplementation, stageResources, stageTargets } from '../cli/lib/orchestration-context.mjs';
 import { checkStage } from '../cli/lib/stage-check.mjs';
-import { syncGeneratedState } from '../cli/lib/generated-state.mjs';
 import { observedRuntimeToolkitPin } from '../cli/lib/toolkit-binding.mjs';
+import { deriveNextAction } from '../cli/lib/workflow-actions.mjs';
 
 function assert(condition, message) {
   if (!condition) throw new Error(message);
@@ -40,6 +40,19 @@ continuousNine.project.executionMode = 'Continuous documentation';
 assert(
   deriveNextAction(continuousNine).includes('Switch execution mode'),
   'Continuous documentation must stop before Stage 10.',
+);
+
+const profileUpgrade = baseRecord({ stage: 8, status: 'Blocked' });
+profileUpgrade.project.profile = 'Standard';
+profileUpgrade.profileTransitions.push({
+  id: 'PROFILE-001', from: 'Express', to: 'Standard', resumeStage: 8,
+  reason: 'Broader planning scope', status: 'In progress',
+  sourceArtifacts: ['ART-WORKPACK'], targetArtifacts: ['ART-PLAN'],
+  startedAt: '2026-08-18T12:00:00.000Z',
+});
+assert(
+  deriveNextAction(profileUpgrade) === 'Reconcile Standard artifacts through Stage 8, then finish profile upgrade PROFILE-001.',
+  'Active profile reconciliation must take precedence over the generic Blocked next action.',
 );
 
 const stageTen = baseRecord({ stage: 10, status: 'In progress' });
@@ -188,4 +201,4 @@ try {
   rmSync(directory, { recursive: true, force: true });
 }
 
-console.log('Agent orchestration context, minimal-read resources, toolkit resolution, action eligibility, and stage preflight tests passed.');
+console.log('Agent orchestration context, profile-upgrade routing, minimal-read resources, toolkit resolution, action eligibility, and stage preflight tests passed.');

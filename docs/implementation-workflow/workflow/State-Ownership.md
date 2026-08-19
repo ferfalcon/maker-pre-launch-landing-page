@@ -53,18 +53,22 @@ Every executable record mutation uses the same transaction boundary:
 2. clone it and apply the proposal in memory;
 3. render the candidate record, all generated views, and new narrative files in memory;
 4. validate the complete candidate;
-5. write sibling temporary files and atomically rename the file set;
-6. restore original bytes and remove temporary files after any write failure.
+5. write sibling temporary files, then replace each target with a same-filesystem rename;
+6. restore original bytes and remove temporary files after any handled write failure.
 
 Validation failure happens before target replacement. A rejected operation must leave the record, generated views, and narrative files byte-identical.
+
+The multi-file write set is rollback-capable for handled I/O failures, but it is not a filesystem-wide atomic commit. An abrupt process or machine failure can interrupt the rename sequence. After abnormal termination, run `design-workflow validate` and `design-workflow sync --check` before continuing; repair stale projections if required.
+
+Record mutations use an exclusive sibling lock. A parseable same-host lock whose recorded PID is demonstrably no longer running is recovered automatically. Active locks, malformed locks, locks from another host, and locks whose process state cannot be established safely remain blockers and require inspection rather than automatic deletion.
 
 The current record must be clean before advancement, task execution, or acceptance. A command specifically intended to repair state may commit only when the resulting finding set is strictly smaller and contains no new finding.
 
 ## Git working-tree and commit roles
 
-CLI-managed task execution distinguishes **workflow-managed files** from **implementation scope**.
+CLI-managed task execution distinguishes **workflow-control files**, **workflow-managed files**, and **implementation scope**.
 
-Workflow-managed files are determined from the canonical record and consist of:
+Workflow-control files are the canonical record and its generated projections:
 
 ```text
 .workflow/workflow-record.json
@@ -75,15 +79,16 @@ Workflow-managed files are determined from the canonical record and consist of:
 .workflow/generated/TRACEABILITY.md
 ```
 
-plus every active narrative artifact path registered in `workflow-record.json`, such as `WORKPACK.md`, `REQUIREMENTS.md`, `DESIGN.md`, `SPEC.md`, `PLAN.md`, `TASKS-INDEX.md`, and task files. Superseded artifacts are not exempt. No unrelated file or directory is implicitly exempt, including other files under `.workflow/`.
+Workflow-managed files are the workflow-control set plus every **active** narrative artifact path registered in `workflow-record.json`, such as `WORKPACK.md`, `REQUIREMENTS.md`, `DESIGN.md`, `SPEC.md`, `PLAN.md`, `TASKS-INDEX.md`, and task files. Superseded artifact paths are no longer automatically exempt. No unrelated file or directory is implicitly exempt, including other files under `.workflow/`.
 
 Task Git boundaries are enforced as follows:
 
-- before `task start`, every dirty path outside the workflow-managed set blocks execution;
-- workflow-managed files may already be dirty because planning and lifecycle commands update them without changing implementation scope;
-- before `task complete`, every dirty path outside the workflow-managed set blocks completion, including staged, unstaged, and untracked implementation-scope files;
+- before `task start`, every dirty path outside the **workflow-control** set blocks execution; approved planning and task narratives must already be committed;
+- canonical record/generated control files may remain dirty before task start because stage and lifecycle commands update them without changing the approved narrative subject;
+- committed history between the planned baseline and task start is accepted only when every touched path is workflow-managed; when needed, the CLI records a new immutable Task-start checkpoint at the actual `HEAD`;
+- before `task complete`, every dirty path outside the broader **workflow-managed** set blocks completion, including staged, unstaged, and untracked implementation-scope files;
 - the commit recorded as the task's Implementation output must not itself modify workflow-managed files;
-- `task complete` verifies the output first, then updates workflow-managed state, so those files are expected to remain or become dirty after successful completion.
+- `task complete` verifies the output first, then updates workflow-control state, so those files are expected to remain or become dirty after successful completion.
 
 This creates two distinct commit roles:
 
@@ -92,15 +97,16 @@ This creates two distinct commit roles:
 
 Recommended sequence:
 
-1. ensure the task's planned repository baseline still equals `HEAD`; workflow-managed planning files may remain dirty;
-2. run `design-workflow task start <task-id>`;
+1. commit approved planning/task narratives before task start; only canonical workflow-control files may remain dirty;
+2. run `design-workflow task start <task-id>` so the CLI verifies or checkpoints the exact repository `HEAD`;
 3. implement the task and stage only implementation-scope paths;
 4. commit the implementation work without workflow-managed files;
 5. run `design-workflow task complete <task-id> --commit <implementation-head> ...`;
-6. when another task follows immediately, leave workflow-managed changes dirty so `HEAD` remains the recorded Implementation output used by the next task;
-7. commit workflow-managed state separately after the sequential task chain, or before a later implementation commit when the resulting task-start/output lineage remains exact.
+6. before a following task, commit any narrative changes that must persist; workflow-control files may remain dirty;
+7. run the next `task start`; if intervening committed history contains only workflow-managed paths, the CLI records the exact Task-start checkpoint automatically;
+8. commit accumulated workflow-control state at a suitable documentation boundary without mixing it into an Implementation-output commit.
 
-Do not use a broad `git add .` for an implementation-output commit when workflow-managed files are dirty. Stage task deliverables explicitly or otherwise exclude those paths. Do not insert a workflow-only commit between one task's Implementation output and the next task start unless the next task baseline is explicitly repinned to that commit.
+Do not use a broad `git add .` for an implementation-output commit when workflow-managed files are dirty. Stage task deliverables explicitly or otherwise exclude those paths. Any intervening commit that touches implementation-scope paths is not treated as workflow bookkeeping and requires impact assessment before the next task can start.
 
 ## Narrative-file rules
 
@@ -166,8 +172,9 @@ Commit the record and generated views together. A stale or missing view is a val
 - [ ] Markdown-only artifacts retain complete fallback registries.
 - [ ] Snapshot, artifact, gate, task, profile, and final-review history is preserved rather than rewritten.
 - [ ] Trace definitions have active compatible owners and required coverage.
-- [ ] Task start and completion have no dirty implementation-scope paths.
+- [ ] Task start has no dirty narrative or implementation-scope paths; only workflow-control files may remain dirty.
+- [ ] Task completion has no dirty implementation-scope paths.
 - [ ] The recorded Implementation output commit excludes workflow-managed files.
 - [ ] Workflow/documentation changes are kept distinct from implementation-output commits.
-- [ ] Sequential tasks preserve `HEAD` at the prior Implementation output until the next task starts.
-- [ ] CI detects schema drift, stale generated views, broken packaged links, and invalid records.
+- [ ] Sequential tasks checkpoint workflow-only intervening history and reject unexplained implementation history.
+- [ ] CI detects schema drift, stale generated views, broken packaged links, invalid records, and package/runtime provenance regressions.

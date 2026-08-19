@@ -1,11 +1,11 @@
 import { execFileSync } from 'node:child_process';
-import { dirname, resolve } from 'node:path';
-import { commitRecordCandidate, prepareRecordMutation } from './record-store.mjs';
 import { taskStartCheckpointFindings, taskStartGitFindings } from './git-worktree-policy.mjs';
+import { commitRecordCandidate, prepareRecordMutation } from './record-store.mjs';
 import { resolveRepositoryWorkspace } from './repository-binding.mjs';
+import { nextId } from './utils.mjs';
 import { taskStartFindings } from './workflow-actions.mjs';
 import { workflowDiagnostics } from './workflow-diagnostics.mjs';
-import { nextId } from './utils.mjs';
+import { projectRootForRecord } from './workspace.mjs';
 
 function git(repository, args) {
   try {
@@ -72,7 +72,7 @@ export function resolveTaskStartBaseline(recordPath, record, task) {
     throw new Error(`Task baseline ${task.baseline} does not record a Git commit.`);
   }
 
-  const projectRoot = resolve(dirname(recordPath), '..');
+  const projectRoot = projectRootForRecord(recordPath);
   let repository;
   try {
     repository = resolveRepositoryWorkspace(projectRoot, plannedBaseline);
