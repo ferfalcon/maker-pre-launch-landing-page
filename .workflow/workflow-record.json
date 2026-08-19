@@ -22,7 +22,7 @@
       "id": "SRC-DS-001",
       "role": "Input baseline",
       "pinStrength": "Time-bound",
-      "status": "Unverified",
+      "status": "Active",
       "reference": "https://www.figma.com/design/ooEONYJXXgjZkQNmTh6dfV/maker-pre-launch-landing-page?node-id=29-4756"
     },
     {
@@ -34,7 +34,16 @@
       "commit": "e49ba2886a9a982c4d8d0aa31d2a7adf7460778d"
     }
   ],
-  "verifications": [],
+  "verifications": [
+    {
+      "id": "VER-001",
+      "snapshot": "SRC-DS-001",
+      "result": "Unchanged",
+      "method": "Figma structural inspection",
+      "evidence": "Connected Figma inspection confirmed page 29:4756 named 🤖 Workflow and its Stage 0 scoped sections.",
+      "checkedAt": "2026-08-19T19:54:34.184Z"
+    }
+  ],
   "artifacts": [
     {
       "id": "ART-SOURCE-BASELINE",
