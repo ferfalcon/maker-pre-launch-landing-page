@@ -6,8 +6,8 @@
     "executionMode": "Gated"
   },
   "state": {
-    "stage": 1,
-    "status": "Ready",
+    "stage": 2,
+    "status": "In progress",
     "activeInputs": [
       "SRC-DS-001",
       "SRC-REPO-001"
@@ -155,6 +155,16 @@
         "algorithm": "sha256",
         "digest": "bcfa7165601324a22f86cc5b12b9c236cb09b4e827b5e34af571ddd031c2a154"
       }
+    },
+    {
+      "id": "ART-IMPLEMENTATION-BRIEF",
+      "type": "IMPLEMENTATION-BRIEF",
+      "path": "IMPLEMENTATION-BRIEF.md",
+      "status": "Draft",
+      "baseline": [
+        "SRC-DS-001",
+        "SRC-REPO-001"
+      ]
     }
   ],
   "traceItems": [],
