@@ -90,13 +90,18 @@
       "id": "ART-PROJECT-CONTEXT",
       "type": "PROJECT-CONTEXT",
       "path": "PROJECT-CONTEXT.md",
-      "status": "Reviewed",
+      "status": "Approved",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
       ],
-      "statusChangedAt": "2026-08-19T20:00:08.731Z",
-      "statusEvidence": "Stage 0 project context reviewed for scope, profile fit, source authority, quality expectations, constraints, blockers, and consistency with verified inputs."
+      "statusChangedAt": "2026-08-19T20:05:50.916Z",
+      "statusEvidence": "Stage 0 Project Context approved by the project owner after review of scope, profile, quality expectations, and source authority.",
+      "statusBy": "Fernando Falcon",
+      "approvedRevision": {
+        "algorithm": "sha256",
+        "digest": "cd7bd60180806b9a0dab37446e81cdd2b52e6cecbfe533f106c20eb73ef1364d"
+      }
     },
     {
       "id": "ART-WORKFLOW-STATE",
