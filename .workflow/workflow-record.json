@@ -7,7 +7,7 @@
   },
   "state": {
     "stage": 3,
-    "status": "In progress",
+    "status": "Ready",
     "activeInputs": [
       "SRC-DS-001",
       "SRC-REPO-001"
@@ -314,6 +314,60 @@
       ],
       "evidence": "Stage 2 preflight passed after completion and review of the requirements in IMPLEMENTATION-BRIEF.md. The project owner explicitly approved Stage 2 and instructed not to start the next stage.",
       "recordedAt": "2026-08-19T20:41:20.345Z",
+      "approvedBy": "Fernando Falcon",
+      "artifactRevisions": [
+        {
+          "artifact": "ART-SOURCE-BASELINE",
+          "revision": {
+            "algorithm": "sha256",
+            "digest": "78eb3f50ffe3a0127d03af369e74d0bda99df932bdbbc6149a1aaa39d867d46f"
+          }
+        },
+        {
+          "artifact": "ART-PROJECT-CONTEXT",
+          "revision": {
+            "algorithm": "sha256",
+            "digest": "cd7bd60180806b9a0dab37446e81cdd2b52e6cecbfe533f106c20eb73ef1364d"
+          }
+        },
+        {
+          "artifact": "ART-DESIGN-AUDIT",
+          "revision": {
+            "algorithm": "sha256",
+            "digest": "bcfa7165601324a22f86cc5b12b9c236cb09b4e827b5e34af571ddd031c2a154"
+          }
+        },
+        {
+          "artifact": "ART-IMPLEMENTATION-BRIEF",
+          "revision": {
+            "algorithm": "sha256",
+            "digest": "02ac95b24f577f2c328dc0a76918c3f540077bebee5637835646edd7fa6064b4"
+          }
+        }
+      ]
+    },
+    {
+      "id": "GATE-004",
+      "stage": 3,
+      "status": "Active",
+      "result": "Passed",
+      "baseline": [
+        "SRC-DS-001",
+        "SRC-REPO-001"
+      ],
+      "verifications": [
+        "VER-010",
+        "VER-011"
+      ],
+      "artifacts": [
+        "ART-SOURCE-BASELINE",
+        "ART-PROJECT-CONTEXT",
+        "ART-WORKFLOW-STATE",
+        "ART-DESIGN-AUDIT",
+        "ART-IMPLEMENTATION-BRIEF"
+      ],
+      "evidence": "Stage 3 Design Intent completed, reviewed in two passes, source re-verification is current, and canonical stage preflight passed with zero findings. Human approval was explicitly provided with instruction not to start the next stage.",
+      "recordedAt": "2026-08-19T22:48:18.286Z",
       "approvedBy": "Fernando Falcon",
       "artifactRevisions": [
         {
