@@ -179,7 +179,7 @@ try {
   }
   syncGeneratedState(recordPath, record);
   const context = buildOrchestrationContext(recordPath, record, { cwd: directory });
-  assert(context.protocolVersion === 2, 'Initialized context must advertise protocol version 2.');
+  assert(context.protocolVersion === 3, 'Initialized context must advertise protocol version 3.');
   assert(context.project.root === '.', 'Initialized context must resolve the implementation project root separately.');
   assert(
     context.execution.resources.required.some((resource) => resource.path === 'prompts/06-architecture.md'),
@@ -193,6 +193,22 @@ try {
     context.policy.workflowReads === 'context-resource-manifest-only',
     'Context payload must declare the minimal-read workflow policy.',
   );
+  assert(!('stageDecision' in context.policy), 'CLI context must not expose the ambiguous legacy stageDecision field.');
+  assert(
+    context.policy.stageTransition.decisionAuthority === 'human-required',
+    'Gated CLI context must report human decision authority.',
+  );
+  assert(
+    context.policy.stageTransition.preflight.required
+      && context.policy.stageTransition.preflight.availableHere
+      && context.policy.stageTransition.preflight.blocker === null,
+    'CLI context must distinguish required-and-available preflight capability from decision authority.',
+  );
+  assert(
+    context.policy.stageTransition.execution.availableHere
+      && context.policy.stageTransition.execution.blocker === null,
+    'CLI context must report transition execution capability without implying legal advancement.',
+  );
   const result = checkStage(recordPath, record);
   assert(result.decision.recommendedResult === 'Must upgrade', 'Express architecture-required Stage 6 must recommend Must upgrade.');
   assert(result.decision.recordable, 'Must-upgrade decision should be structurally recordable.');
@@ -201,4 +217,4 @@ try {
   rmSync(directory, { recursive: true, force: true });
 }
 
-console.log('Agent orchestration context, profile-upgrade routing, minimal-read resources, toolkit resolution, action eligibility, and stage preflight tests passed.');
+console.log('Agent orchestration context, profile-upgrade routing, minimal-read resources, toolkit resolution, transition-policy separation, action eligibility, and stage preflight tests passed.');

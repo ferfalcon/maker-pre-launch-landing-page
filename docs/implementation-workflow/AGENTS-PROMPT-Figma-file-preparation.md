@@ -4,13 +4,9 @@ You are a senior design engineer specializing in UX/UI, accessibility, design sy
 
 ## Authority
 
-This file is a thin execution launcher. It does not define the Figma preparation procedure.
+This file is a thin execution launcher, not the preparation procedure.
 
-Follow [`source-adapters/FIGMA-PREPARATION.md`](source-adapters/FIGMA-PREPARATION.md) in full. That document is the single normative procedure for Figma file preparation and normalization.
-
-Use [`source-adapters/FIGMA.md`](source-adapters/FIGMA.md) for Figma source-capture, evidence, and audit-boundary rules when they are relevant to the preparation work.
-
-If this launcher and `source-adapters/FIGMA-PREPARATION.md` disagree about preparation procedure, follow `source-adapters/FIGMA-PREPARATION.md`. The invoking request remains authoritative for project-specific source, scope, and explicit constraints.
+Follow [`source-adapters/FIGMA-PREPARATION.md`](source-adapters/FIGMA-PREPARATION.md) in full. It is the single normative procedure for Figma file preparation and normalization. If this launcher and the canonical procedure disagree about preparation behavior, follow the canonical procedure. The invoking request remains authoritative for project-specific source, scope, and explicit constraints.
 
 ## Required task inputs
 
@@ -22,7 +18,7 @@ The invoking request should identify the applicable project inputs:
 - Repository or implementation context, when useful: `<REPOSITORY_OR_CONTEXT>`
 - Additional constraints or boundaries: `<CONSTRAINTS>`
 
-Use the supplied scope as the editing boundary. Inspect dependencies outside that scope only when needed to verify component, style, variable, library, documentation, or prototype integrity. Do not broaden the editing scope without evidence that the preparation procedure requires it.
+Use the supplied scope as the editing boundary. Do not broaden it unless the canonical procedure requires dependency inspection outside that scope.
 
 ## Preparation-only boundary
 
@@ -36,20 +32,8 @@ Unless the invoking request explicitly asks for separate workflow work, do not:
 - create implementation planning artifacts or implementation code;
 - treat preparation cleanup as proof that the design is ready for implementation.
 
-The readiness assessment required by the canonical preparation procedure is still part of preparation. It must identify remaining gaps without turning the task into the formal audit.
+The readiness assessment required by the canonical preparation procedure is still part of preparation. It identifies remaining gaps without turning this task into the formal audit.
 
-## Execution contract
+## Execute and report
 
-Read the canonical preparation procedure before editing the Figma source, then execute every applicable section in order.
-
-Inspect the actual Figma source rather than relying on summaries when the source is available. Preserve unresolved product, responsive, accessibility, content, interaction, component, library, and implementation questions instead of inventing answers to make the file appear cleaner.
-
-Apply only changes supported by the source and the canonical procedure. Preserve fragile relationships unless the procedure and evidence support changing them.
-
-Complete both verification reviews and the developer-handoff readiness assessment defined by the canonical procedure before reporting completion.
-
-## Reporting
-
-Use the report contract in `source-adapters/FIGMA-PREPARATION.md` rather than defining an alternate reporting structure here.
-
-Clearly identify the Figma source and editing scope used, distinguish changes made from issues intentionally left for the formal audit, and report any area that could not be verified.
+Read the canonical preparation procedure before editing the Figma source, execute every applicable section in order, and use its report contract. Do not redefine or improvise a parallel preparation process in this launcher.

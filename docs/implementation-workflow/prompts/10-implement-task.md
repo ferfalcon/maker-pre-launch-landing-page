@@ -1,6 +1,9 @@
 # Stage 10 — Implement One Task
 
-Implementation edits are permitted only when orchestration context reports `policy.codeEdits: allowed-with-current-task-scope`.
+Implementation edits require task authorization plus current source/repository integrity.
+
+- In an executable CLI context, `policy.codeEdits: allowed-with-current-task-scope` means the current Stage 10 task is authorized after local workflow diagnostics have passed.
+- In the portable GitHub projection, `policy.implementationAuthorization: current-task-authorized` and `policy.codeEdits: allowed-after-source-integrity-check` authorize only the persisted task scope. The projection does not evaluate runtime integrity, so verify the relevant active inputs and repository state before editing. If that verification cannot be completed, do not edit implementation code.
 
 ## Profile targets
 

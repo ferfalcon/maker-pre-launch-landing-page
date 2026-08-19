@@ -1,6 +1,6 @@
 import {
   inspectWorkflowRecord as inspectCoreWorkflowRecord,
-} from '../../scripts/lib/validate-workflow-record.mjs';
+} from './workflow-record-validation.mjs';
 import { ID_PATTERNS } from './workflow-model.mjs';
 
 const TOOLKIT_REPOSITORY = /^[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/;

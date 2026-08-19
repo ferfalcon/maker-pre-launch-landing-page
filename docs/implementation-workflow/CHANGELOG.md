@@ -8,6 +8,13 @@ The format follows Keep a Changelog principles. Version numbers describe toolkit
 
 ### Added
 
+- GitHub Issue command transport plus a pinned reusable Actions executor for connector-first preflight and canonical CLI-owned workflow mutations against exact expected heads and pinned toolkit revisions.
+- Remote-execution regression coverage for requester permissions, command allowlisting, stale heads, rollback, runtime resolution, read-only preflight, shell/path injection boundaries, filesystem containment, and non-force mutation.
+- Repository validation that rejects mutable external-action refs inside write-capable GitHub Actions workflows, protecting the privileged remote executor with immutable dependency pins.
+- Workflow-validation architecture regression coverage that keeps the public validator facade small, domain boundaries explicit, and validation-module dependencies acyclic.
+- Portable `.workflow/generated/AGENT-CONTEXT.json` routing projection for agents that can read implementation repositories through GitHub but cannot execute the workflow CLI.
+- Focused portable-agent projection regression coverage for record integrity, stage/task routing, exact pinned toolkit resources, read-only mutation boundaries, and invalid-record repair routing.
+- Entrypoint-authority regression coverage that keeps root human, agent, ChatGPT-host, contributor, and Figma launchers role-specific and prevents the README from becoming a second workflow handbook.
 - Canonical workspace resolution for explicit `--record` paths, including project-root inference, outside-project invocation coverage, and local repository bindings that remain attached to the resolved workflow project.
 - Packed-install provenance regression coverage that installs the toolkit tarball inside an unrelated Git repository and verifies the executing toolkit never inherits consumer repository identity.
 - Release-metadata validation that keeps `LICENSE`, `package.json`, `package-lock.json`, and README licensing consistent.
@@ -26,6 +33,18 @@ The format follows Keep a Changelog principles. Version numbers describe toolkit
 
 ### Changed
 
+- GitHub remote read-only execution now accepts exit code `1` only for `stage check --json`; `validate` and `sync --check` require exit code `0` so failed checks cannot be reported as successful commands.
+- The write-capable remote executor now pins external GitHub Actions dependencies to full commit SHAs while retaining human-readable release versions in comments.
+- Workflow-record validation is decomposed into reusable primitives, domain validators, shared rules, and final cross-record invariants while preserving the public validation API and validation order.
+- CLI lifecycle implementation is split into domain command modules while `commands-v2.mjs` remains the compatibility export surface and high-level router.
+- Quickstart onboarding now requires selecting Express, Lite, Standard, or Full before initialization and treats Express as a worked example rather than the default general entry path.
+- Stage-transition policy now separates substantive decision authority from preflight availability and transition execution capability through `policy.stageTransition`; the CLI context, agent packet, and portable projection contracts advance to protocol v3, protocol v4, and projection v2 respectively.
+- Portable GitHub projections now expose a Git-verifiable workflow-record blob identity for freshness checks, advancing the projection contract to v3.
+- Portable implementation policy now separates persisted current-task authorization from runtime/source integrity and makes GitHub-only code edits conditional on authoritative source verification, advancing the projection contract to v4.
+- CLI agent context and GitHub-only agent projection now share extracted stage-target, execution-kind, implementation-permission, and workflow-resource routing helpers instead of maintaining parallel routing maps.
+- README now routes people by role and task instead of duplicating profile, source, ownership, execution-mode, integrated-quality, and review contracts already owned by `workflow/` documents.
+- The optional `AI-project-settings.md` ChatGPT Project host template is now discoverable from README and included in the published package without making it a workflow-state authority.
+- The root Figma preparation launcher now delegates execution and reporting details directly to the canonical preparation procedure while preserving the preparation-only safety boundary.
 - Active profile-upgrade reconciliation now takes precedence over the generic Blocked-state message when deriving the canonical next action.
 - Core lifecycle commands now own canonical workflow diagnostics, task Git lineage, stage rewind, and profile-upgrade replanning directly; `workflow-cli.mjs` is limited to extension routing for toolkit, repository binding, orchestration context, stage preflight, initialization provenance, and task-ID convenience.
 - Explicit `--record` execution now resolves one canonical project workspace across artifact paths, subject integrity, repository lookup, task lineage, local bindings, and agent context instead of mixing record-relative and invocation-relative roots.
@@ -42,7 +61,7 @@ The format follows Keep a Changelog principles. Version numbers describe toolkit
 - Schema-v1 migration derives `currentTask` from actual `In progress` task status and normalizes legacy unlineaged Task-start snapshots to Input baselines instead of fabricating missing parent/task lineage.
 - Task completion continues to reject dirty implementation-scope paths while permitting workflow-managed narrative/control state to remain dirty outside the implementation commit.
 - Recorded Implementation output commits reject workflow-managed files and parent the exact repository snapshot from which the task actually started.
-- Promoted `workflow/Agent-Orchestration.md` to the README `Start here` sequence and required repository-contract validation.
+- `workflow/Agent-Orchestration.md` remains discoverable through the README role-based entry points and reference map and is required by repository-contract validation.
 - Repository snapshots persist repository identity instead of machine-specific checkout paths. CLI-managed mutations and Git working-tree checks resolve local workspaces at runtime and canonicalize repository references before serialization.
 
 ## [0.3.0] — 2026-08-18

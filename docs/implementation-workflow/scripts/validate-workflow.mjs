@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
-import { dirname, extname, join, normalize, relative, resolve } from 'node:path';
+import { dirname, extname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { generatedStateFindings } from '../cli/lib/generated-state.mjs';
+import { isPathWithin } from './lib/path-safety.mjs';
 import { validateWorkflowRecord } from './lib/validate-workflow-record.mjs';
 
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
@@ -15,7 +16,10 @@ const requiredPaths = [
   'LICENSE',
   'CONTRIBUTING.md',
   'CHANGELOG.md',
+  'AGENTS.md',
   'AGENTS-instructions.md',
+  'AGENTS-PROMPT-Figma-file-preparation.md',
+  'AI-project-settings.md',
   'package.json',
   'workflow/Design-Implementation-Workflow.md',
   'workflow/Workflow-Profiles.md',
@@ -71,6 +75,11 @@ const requiredPaths = [
   'cli/lib/migrate-record.mjs',
   'cli/lib/commands-v2.mjs',
   'scripts/generate-workflow-schema.mjs',
+  'scripts/run-validation-suite.mjs',
+  'scripts/lib/path-safety.mjs',
+  'scripts/test-validation-runner.mjs',
+  'scripts/test-path-safety.mjs',
+  'scripts/test-entrypoint-authority.mjs',
   'scripts/test-package-manifest.mjs',
   'scripts/test-artifact-renderer.mjs',
   'scripts/test-repository-portability.mjs',
@@ -231,11 +240,14 @@ if (existsSync(packagePath) && existsSync(changelogPath)) {
 const readmePath = join(root, 'README.md');
 if (existsSync(readmePath)) {
   const readme = readFileSync(readmePath, 'utf8');
-  const startHere = levelTwoSection(readme, 'Start here');
-  if (startHere === null) {
-    errors.push('README.md: missing Start here section');
-  } else if (!startHere.includes('](workflow/Agent-Orchestration.md)')) {
-    errors.push('README.md: Start here must link workflow/Agent-Orchestration.md');
+  const entryPoints = levelTwoSection(readme, 'Choose your entry point');
+  if (entryPoints === null) {
+    errors.push('README.md: missing Choose your entry point section');
+  } else if (!entryPoints.includes('](AGENTS-instructions.md)')) {
+    errors.push('README.md: Choose your entry point must link AGENTS-instructions.md');
+  }
+  if (!readme.includes('](workflow/Agent-Orchestration.md)')) {
+    errors.push('README.md: must keep workflow/Agent-Orchestration.md discoverable');
   }
 }
 
@@ -254,9 +266,9 @@ for (const markdownPath of markdownFiles) {
 
     if (isExternalOrVirtual(target)) continue;
 
-    const resolvedTarget = normalize(resolve(dirname(markdownPath), target));
+    const resolvedTarget = resolve(dirname(markdownPath), target);
 
-    if (!resolvedTarget.startsWith(root)) {
+    if (!isPathWithin(root, resolvedTarget)) {
       errors.push(`${repositoryPath}: link escapes repository: ${rawTarget}`);
       continue;
     }

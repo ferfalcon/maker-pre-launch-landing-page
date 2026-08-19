@@ -35,6 +35,7 @@ try {
   writeFileSync(recordPath, '{}\n', 'utf8');
   for (const name of [
     'WORKFLOW-STATUS.md', 'SOURCE-INDEX.md', 'ARTIFACT-INDEX.md', 'TASK-INDEX.md', 'TRACEABILITY.md',
+    'AGENT-CONTEXT.json',
   ]) {
     writeFileSync(join(cwd, '.workflow', 'generated', name), `${name}\n`, 'utf8');
   }

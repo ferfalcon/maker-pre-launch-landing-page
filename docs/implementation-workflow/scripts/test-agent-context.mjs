@@ -14,7 +14,7 @@ function assert(condition, message) {
 
 function fixtureContext() {
   return {
-    protocolVersion: 2,
+    protocolVersion: 3,
     control: {
       mode: 'cli-managed', schemaVersion: 2, readOnly: false,
       record: '.workflow/workflow-record.json',
@@ -65,14 +65,28 @@ function fixtureContext() {
     stageCheck: { stage: { number: 4 }, decision: { recordable: false } },
     policy: {
       workflowMutation: 'allowed', implementation: 'forbidden', codeEdits: 'forbidden',
-      stageDecision: 'human-approval-required', generatedViews: 'read-only-projections',
+      stageTransition: {
+        decisionAuthority: 'human-required',
+        preflight: {
+          required: true,
+          executor: 'design-workflow stage check',
+          availableHere: true,
+          blocker: null,
+        },
+        execution: {
+          executor: 'design-workflow stage review/advance',
+          availableHere: true,
+          blocker: null,
+        },
+      },
+      generatedViews: 'read-only-projections',
       workflowReads: 'context-resource-manifest-only',
     },
     nextAction: 'Complete SPEC.md and run stage check.',
   };
 }
 
-assert(AGENT_PROTOCOL_VERSION === 3, 'Materialized agent packet must use protocol v3.');
+assert(AGENT_PROTOCOL_VERSION === 4, 'Materialized agent packet must use protocol v4.');
 
 const context = fixtureContext();
 const resources = agentResourcesForContext(context);
@@ -157,8 +171,8 @@ const record = {
   }],
 };
 const packet = composeAgentContext(context, record);
-assert(packet.protocolVersion === AGENT_PROTOCOL_VERSION, 'Agent packet must use protocol v3.');
-assert(packet.contextProtocolVersion === 2, 'Agent packet must expose the underlying context protocol v2.');
+assert(packet.protocolVersion === AGENT_PROTOCOL_VERSION, 'Agent packet must use protocol v4.');
+assert(packet.contextProtocolVersion === 3, 'Agent packet must expose the underlying context protocol v3.');
 assert(packet.toolkit.pinned === false, 'Agent packet must preserve toolkit state.');
 assert(packet.project.root === '.', 'Agent packet must preserve the resolved implementation project root.');
 assert(
@@ -169,6 +183,12 @@ assert(
   packet.policy.workflowReads === 'context-resource-manifest-only',
   'Agent packet must preserve minimal-read policy.',
 );
+assert(
+  packet.policy.stageTransition.decisionAuthority === 'human-required'
+    && packet.policy.stageTransition.preflight.availableHere
+    && packet.policy.stageTransition.execution.availableHere,
+  'Agent packet must preserve separated decision authority, preflight capability, and transition execution capability.',
+);
 assert(packet.task.current?.customField === 'preserved', 'Agent packet must preserve the full current task record.');
 assert(packet.nextAction === context.nextAction, 'Agent packet must preserve the canonical next action.');
 
@@ -178,10 +198,16 @@ const missing = buildAgentContextWhenMissing(
 );
 assert(
   missing.protocolVersion === AGENT_PROTOCOL_VERSION && !missing.initialized,
-  'Missing-record packet must use protocol v3 and report uninitialized state.',
+  'Missing-record packet must use protocol v4 and report uninitialized state.',
 );
 assert(missing.resources.stagePrompt?.path === 'prompts/00-intake.md', 'Initialization packet must embed the intake prompt.');
 assert(missing.policy.codeEdits === 'forbidden', 'Initialization packet must forbid implementation edits.');
+assert(
+  missing.policy.stageTransition.decisionAuthority === 'not-applicable'
+    && missing.policy.stageTransition.preflight.blocker === 'initialization-required'
+    && missing.policy.stageTransition.execution.blocker === 'initialization-required',
+  'Initialization packet must keep stage-transition authority and capability blocked until initialization.',
+);
 assert(missing.toolkit.revision === null, 'Initialization packet must use the dedicated toolkit revision shape.');
 
 function captureStream() {
@@ -203,8 +229,8 @@ for (const args of [['agent-context', '--json'], ['context', '--agent', '--json'
   const cliPacket = JSON.parse(stdout.value());
   assert(
     cliPacket.protocolVersion === AGENT_PROTOCOL_VERSION && !cliPacket.initialized,
-    `${args.join(' ')} must emit the protocol-v3 initialization packet.`,
+    `${args.join(' ')} must emit the protocol-v4 initialization packet.`,
   );
 }
 
-console.log('Agent packet materialization, toolkit-binding integrity, protocol, and CLI routing tests passed.');
+console.log('Agent packet materialization, toolkit-binding integrity, versioned transition policy, protocol, and CLI routing tests passed.');

@@ -38,4 +38,6 @@ Use short, imperative, sentence-case subjects, for example `Handle malformed rec
 
 ## Canonical State Rules
 
-In CLI-managed projects, `.workflow/workflow-record.json` owns mutable state. Never hand-edit `.workflow/generated/`. After direct record changes, run `design-workflow sync` and `design-workflow sync --check`; commit the record and generated views together.
+In CLI-managed projects, `.workflow/workflow-record.json` owns mutable state. Mutate executable workflow state only through `design-workflow`; never hand-edit `.workflow/workflow-record.json` or `.workflow/generated/*`.
+
+`design-workflow sync` is a projection-recovery command, not a record-mutation path. Use it to reconcile stale or missing generated views after interrupted writes or other recovery conditions, then run `design-workflow sync --check` and `design-workflow validate`. Commit the canonical record and generated views together whenever a supported CLI mutation changes them.

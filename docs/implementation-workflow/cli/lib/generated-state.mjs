@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, relative } from 'node:path';
+import { AGENT_PROJECTION_FILE, renderAgentProjection } from './agent-projection.mjs';
 import { domainKind, STAGES } from './workflow-model.mjs';
 import { deriveNextAction } from './workflow-actions.mjs';
 
@@ -13,6 +14,7 @@ export const GENERATED_STATE_FILES = [
   'ARTIFACT-INDEX.md',
   'TASK-INDEX.md',
   'TRACEABILITY.md',
+  AGENT_PROJECTION_FILE,
 ];
 
 function canonicalize(value) {
@@ -237,6 +239,7 @@ export function renderGeneratedState(recordPath, record) {
     [join(directory, 'ARTIFACT-INDEX.md'), renderArtifacts(record, recordPath, digest)],
     [join(directory, 'TASK-INDEX.md'), renderTasks(record, recordPath, digest)],
     [join(directory, 'TRACEABILITY.md'), renderTraceability(record, recordPath, digest)],
+    [join(directory, AGENT_PROJECTION_FILE), renderAgentProjection(recordPath, record, digest)],
   ]);
 }
 

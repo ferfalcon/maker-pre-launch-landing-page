@@ -4,24 +4,28 @@ A structured, evidence-driven toolkit for turning a Figma file or another design
 
 The workflow supports AI-assisted and human-led work with explicit source baselines, proportional documentation, accessibility, responsive behavior, repository-aware planning, small implementation tasks, evidence-backed validation, and machine-checkable workflow control.
 
-## Start here
+## Choose your entry point
 
-1. [`QUICKSTART.md`](QUICKSTART.md)
-2. [`workflow/Design-Implementation-Workflow.md`](workflow/Design-Implementation-Workflow.md)
-3. [`workflow/Workflow-Profiles.md`](workflow/Workflow-Profiles.md)
-4. [`workflow/Source-Snapshots.md`](workflow/Source-Snapshots.md)
-5. [`workflow/Source-Authority.md`](workflow/Source-Authority.md)
-6. [`workflow/State-Ownership.md`](workflow/State-Ownership.md)
-7. [`workflow/Agent-Orchestration.md`](workflow/Agent-Orchestration.md)
-8. [`workflow/Identifier-Conventions.md`](workflow/Identifier-Conventions.md)
-9. [`workflow/Validation-Rules.md`](workflow/Validation-Rules.md)
-10. [`cli/README.md`](cli/README.md)
-11. [`schemas/README.md`](schemas/README.md)
-12. [`AGENTS-instructions.md`](AGENTS-instructions.md)
+Use the smallest entry point that matches what you are doing:
+
+- **Use the workflow in an implementation project:** start with [`QUICKSTART.md`](QUICKSTART.md) to choose a profile before initialization, then use [`workflow/Design-Implementation-Workflow.md`](workflow/Design-Implementation-Workflow.md) as the normative process overview.
+- **Run the workflow with an AI agent:** use [`AGENTS-instructions.md`](AGENTS-instructions.md) as the permanent consumer-agent bootstrap. It delegates executable behavior to the canonical orchestration contract and the current agent packet.
+- **Set up a ChatGPT Project around an implementation repository:** copy and adapt [`AI-project-settings.md`](AI-project-settings.md). It defines the ChatGPT host/tool posture and points the project back to the implementation repository and vendored workflow; it is not a workflow-state authority.
+- **Prepare a Figma file before the formal developer-handoff audit:** invoke [`AGENTS-PROMPT-Figma-file-preparation.md`](AGENTS-PROMPT-Figma-file-preparation.md), which delegates to the single canonical preparation procedure.
+- **Develop or change this toolkit:** follow [`AGENTS.md`](AGENTS.md) and [`CONTRIBUTING.md`](CONTRIBUTING.md).
+- **Use the CLI or schemas directly:** see [`cli/README.md`](cli/README.md) and [`schemas/README.md`](schemas/README.md).
+
+Do not read every reference document up front. The workflow and agent packet are designed to resolve the current profile, stage, task, and required resources without broad toolkit browsing.
 
 ## Workflow overview
 
+### Choose a profile before initialization
+
+Profile selection is a complexity and risk decision, not a shortcut choice. Start with [`QUICKSTART.md`](QUICKSTART.md) for a compact routing decision and use [`workflow/Workflow-Profiles.md`](workflow/Workflow-Profiles.md) as the canonical owner of eligibility, artifact, and upgrade rules.
+
 ### Express path
+
+After Express eligibility is confirmed:
 
 ```text
 WORKPACK.md
@@ -30,17 +34,16 @@ WORKPACK.md
   ├── design evidence + findings
   ├── requirements + design intent + specification
   ├── repository-aware approach + one task
-  ├── two review passes
   ├── implementation + output lineage
   └── validation + final review
 ```
 
-Express is for one narrow, coherent implementation result with at most one task and no meaningful architecture, integration, persistence, authentication, migration, security, privacy, deployment, or unresolved product-decision risk.
+Express keeps one narrow implementation result in one workpack and at most one task. Use [`workflow/Workflow-Profiles.md`](workflow/Workflow-Profiles.md) for the canonical profile rules and upgrade conditions.
 
 ### Lite, Standard, and Full path
 
 ```text
-Stage 0 controls + optional workflow-record.json
+Stage 0 controls
     ↓
 Pinned design-source audit
     ↓
@@ -59,198 +62,55 @@ Pinned implementation output + validation runtime
 Final implementation review
 ```
 
-Lite consolidates requirements, design intent, specification, and planning into separate sections of `IMPLEMENTATION-BRIEF.md`. Standard and Full use separate artifacts.
+The exact artifact set and architecture requirements depend on the selected profile. See [`workflow/Design-Implementation-Workflow.md`](workflow/Design-Implementation-Workflow.md) and [`workflow/Workflow-Profiles.md`](workflow/Workflow-Profiles.md).
 
-## Canonical workflow state
+## State and agent execution
 
-Projects may operate in either:
+Projects can be CLI-managed or Markdown-only. In CLI-managed projects, `.workflow/workflow-record.json` owns mutable executable workflow state and `.workflow/generated/` contains read-only projections. One of those projections, `.workflow/generated/AGENT-CONTEXT.json`, provides portable current-stage/task/policy/resource routing for agents that can read the repository through GitHub but cannot execute the CLI; it does not own state or authorize CLI mutations. See [`workflow/State-Ownership.md`](workflow/State-Ownership.md) for the canonical ownership model.
 
-- **CLI-managed mode:** `.workflow/workflow-record.json` is canonical for mutable control state. The CLI generates status and index views under `.workflow/generated/`.
-- **Markdown-only mode:** the normal Markdown artifacts remain the manually maintained control records.
+AI-agent execution is defined by [`workflow/Agent-Orchestration.md`](workflow/Agent-Orchestration.md) and bootstrapped through [`AGENTS-instructions.md`](AGENTS-instructions.md). Use the executable agent packet when available; otherwise use the generated GitHub routing projection rather than reconstructing workflow state from record/generated Markdown or broad toolkit inspection. The consumer bootstrap owns the exact execution protocol.
 
-Do not maintain the same mutable field in both modes. In CLI-managed mode, these generated files replace manually synchronized status tables:
+## Repository map
 
-```text
-.workflow/generated/WORKFLOW-STATUS.md
-.workflow/generated/SOURCE-INDEX.md
-.workflow/generated/ARTIFACT-INDEX.md
-.workflow/generated/TASK-INDEX.md
-.workflow/generated/TRACEABILITY.md
-```
+| Area | Responsibility |
+|---|---|
+| `workflow/` | Normative process contracts: stages, profiles, execution, source authority, state ownership, identifiers, validation, and orchestration |
+| `source-adapters/` | Source-specific inspection and preparation guidance |
+| `guidelines/` | Artifact-writing and review guidance |
+| `templates/` | Reusable project artifact structures |
+| `prompts/` | Stage-specific and profile-specific executable instructions |
+| `cli/` | Dependency-free `design-workflow` CLI and runtime behavior |
+| `schemas/` | Machine-readable workflow control definitions |
+| `examples/` | Explicitly non-normative examples |
+| `scripts/` and `tests/` | Repository integrity, semantic validation, and regression coverage |
+| Root `AGENTS*` files | Narrow launchers/contracts for toolkit development, consumer-agent execution, and Figma preparation |
+| `AI-project-settings.md` | Optional ChatGPT Project host template; not part of canonical workflow state |
 
-Every CLI mutation refreshes the generated views. Direct record edits require:
+## Reference contracts
 
-```bash
-design-workflow sync
-```
+Read these when the current task needs the corresponding domain:
 
-Freshness can be checked without modifying files:
+- [`workflow/Workflow-Profiles.md`](workflow/Workflow-Profiles.md) — profile eligibility, artifact sets, and upgrade rules.
+- [`workflow/Source-Snapshots.md`](workflow/Source-Snapshots.md) — source identity, pinning, reverification, and supersession.
+- [`workflow/Source-Authority.md`](workflow/Source-Authority.md) — evidence classifications and decision authority.
+- [`workflow/State-Ownership.md`](workflow/State-Ownership.md) — record, generated-view, and narrative ownership.
+- [`workflow/Identifier-Conventions.md`](workflow/Identifier-Conventions.md) — stable identifiers and traceability namespaces.
+- [`workflow/Validation-Rules.md`](workflow/Validation-Rules.md) — validation evidence, review passes, retesting, and final acceptance.
+- [`workflow/Agent-Orchestration.md`](workflow/Agent-Orchestration.md) — canonical AI-agent runtime behavior.
 
-```bash
-design-workflow sync --check
-```
+## Toolkit validation
 
-See [`workflow/State-Ownership.md`](workflow/State-Ownership.md).
-
-CLI-managed initialization creates only Stage 0 artifacts. Passing and advancing each gate scaffolds the next stage atomically. Existing schema-v1 records remain readable but require `design-workflow migrate` before mutation.
-
-## Repository areas
-
-### `workflow/`
-
-Normative process rules for stages, profiles, execution modes, source snapshots, source authority, state ownership, identifiers, validation, acceptance, and the canonical AI-agent orchestration contract.
-
-### `source-adapters/`
-
-Inspection guidance for Figma, screenshots, PDFs, existing websites, and mixed-source projects. `source-adapters/FIGMA-PREPARATION.md` is the single normative Figma preparation procedure; `AGENTS-PROMPT-Figma-file-preparation.md` is only a thin launcher that delegates to it.
-
-### `guidelines/`
-
-Artifact-writing and review guidance for requirements, design, specification, architecture, and planning.
-
-### `templates/`
-
-Reusable structures for Express workpacks, Stage 0 controls, audits, Lite briefs, requirements, design, specifications, reviews, architecture, plans, tasks, and final implementation validation.
-
-Templates distinguish CLI-managed state from Markdown-only fallback fields so mutable status is not maintained twice.
-
-### `prompts/`
-
-A consolidated Express prompt and one executable prompt per normal workflow stage.
-
-### `cli/`
-
-The dependency-free `design-workflow` CLI initializes Stage 0, records source verification and stage gates, manages artifact and task lifecycle, verifies Git lineage, enforces trace coverage, migrates schema-v1 records, and synchronizes generated views.
-
-### `schemas/`
-
-Machine-readable workflow control definitions. In CLI-managed mode the workflow record is the canonical mutable control source, while Markdown retains product, design, technical, evidence, and decision rationale.
-
-### `examples/`
-
-Non-normative examples organized by Express, Lite, Standard, and Full profiles.
-
-### `scripts/`
-
-Repository integrity, semantic validation, generated-state checks, and CLI integration tests.
-
-Run:
+When changing this toolkit, run:
 
 ```bash
 npm run validate
-npm run test:figma-preparation
-npm run test:records
-npm run test:state
-npm run test:render
-npm run test:repository
-npm run test:package
-npm run test:cli
 ```
 
-## Source snapshots
-
-A URL alone is not a reliable baseline. Figma files, websites, branches, shared documents, and preview environments can change without changing address.
-
-All profiles use stable IDs:
-
-```text
-SRC-DS-001      Design source
-SRC-REPO-001    Repository state
-SRC-RUN-001     Runtime or deployment
-SRC-DOC-001     Documentation
-SRC-ASSET-001   Asset bundle or file
-```
-
-Pin strength:
-
-- `Immutable` — commit SHA, checksum-backed file, immutable deployment ID;
-- `Versioned` — named or numbered revision;
-- `Time-bound` — inspected at a known time but still mutable;
-- `Unverified` — identity or revision could not be confirmed.
-
-Repository snapshots keep portable repository identity and commit pins in canonical state; machine-specific checkout paths belong only to local runtime bindings.
-
-Approved task commits are expected Implementation outputs. Unexpected upstream design, documentation, asset, runtime, or concurrent repository changes require new snapshot IDs and impact assessment.
-
-## Workflow profiles
-
-### Express
-
-For one narrow implementation result with one workpack and at most one task. Use [`templates/WORKPACK.template.md`](templates/WORKPACK.template.md) and [`prompts/00-express-workpack.md`](prompts/00-express-workpack.md).
-
-### Lite
-
-For isolated components, small static pages, and narrow changes that exceed Express limits but do not carry meaningful architecture or integration risk.
-
-### Standard
-
-For multi-page sites, substantial UI features, or meaningful repository integration. Architecture remains conditional.
-
-### Full
-
-For full-stack applications, authentication, persistence, complex integrations, multiple services, migrations, or high security, privacy, deployment, or operational risk.
-
-## Execution modes
-
-- `Gated` — stop after each stage or consolidated checkpoint until explicitly advanced.
-- `Continuous documentation` — continue through documentation and task decomposition while unblocked, then stop before implementation.
-- `Task-by-task` — implement one unblocked task at a time after planning approval. Express has exactly one task.
-
-## Ownership summary
-
-| Owner | Responsibility |
-|---|---|
-| Workflow record | Mutable profile, mode, stage, architecture decision, snapshots and verifications, artifact lifecycle, gates, trace definitions, tasks and structured validation, profile upgrades, final reviews, and output lineage |
-| Generated views | Deterministic human-readable projections of record-owned state and trace coverage; never edited manually |
-| `WORKPACK.md` | Express scope, evidence, rationale, expected behavior, plan, task detail, decisions, and final review |
-| `SOURCE-BASELINE.md` | Detailed source scope, evidence, reproduction, authority, limitations, and rebaseline impact |
-| `WORKFLOW-STATE.md` | Blockers, assumptions, decisions, exceptions, and narrative history not represented by the record |
-| `TASKS-INDEX.md` | Phase rationale, coverage, coordination, blockers, and cross-cutting concerns |
-| Requirements, design, specification, architecture, and plan artifacts | Their normal product, design, behavioral, structural, and implementation responsibilities |
-
-## Repository structure
-
-```text
-.
-├── README.md
-├── QUICKSTART.md
-├── package.json
-├── LICENSE
-├── CONTRIBUTING.md
-├── CHANGELOG.md
-├── AGENTS-instructions.md
-├── AGENTS-PROMPT-Figma-file-preparation.md
-├── workflow/
-├── source-adapters/
-├── guidelines/
-├── templates/
-├── prompts/
-├── schemas/
-├── cli/
-├── examples/
-├── scripts/
-├── tests/
-└── .github/workflows/
-```
-
-## Integrated quality
-
-Accessibility, responsiveness, states, errors, and tests must be implemented with the behavior they affect. A final phase may verify them but must not introduce them for the first time.
-
-Select breakpoints from pinned design evidence, actual layout failure, and repository conventions—not a familiar device number by default.
-
-Identify interaction patterns before prescribing focus behavior. Disclosures, menus, drawers, and modal dialogs do not share identical keyboard rules.
-
-## Two-pass reviews
-
-1. Completeness and correctness.
-2. Consistency, traceability, source and output-lineage integrity, risks, and uncertainty after first-pass corrections.
-
-Both reviews are required in every profile. Express records them inside `WORKPACK.md`.
+Focused commands and contribution expectations live in [`CONTRIBUTING.md`](CONTRIBUTING.md) and `package.json`.
 
 ## Contributing
 
-Read [`CONTRIBUTING.md`](CONTRIBUTING.md). Structural changes must pass the repository validator.
+Read [`CONTRIBUTING.md`](CONTRIBUTING.md). Structural changes must preserve one clear owner for each rule and pass the repository validator.
 
 ## License
 

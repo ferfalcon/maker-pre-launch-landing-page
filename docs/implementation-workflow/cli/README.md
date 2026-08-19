@@ -51,7 +51,10 @@ SOURCE-INDEX.md
 ARTIFACT-INDEX.md
 TASK-INDEX.md
 TRACEABILITY.md
+AGENT-CONTEXT.json
 ```
+
+`AGENT-CONTEXT.json` is a portable read-only routing projection for agents that can inspect a project through GitHub but cannot execute the CLI. It contains the canonical record digest, current stage/task/policy/next action, toolkit binding, active persisted sources, and stage-local resource descriptors. It intentionally omits embedded toolkit resource content, local workspace/Git integrity checks, runtime checks, and stage preflight. It never authorizes manual edits to the workflow record or generated state.
 
 Every successful record mutation refreshes all views. Check or repair projections with:
 
@@ -279,7 +282,7 @@ design-workflow agent-context --record /path/to/project/.workflow/workflow-recor
 ## Safety contract
 
 - The current record must be clean before advancement, task execution, or acceptance.
-- A candidate record, all generated views, and new artifact files are rendered and validated before any target is replaced.
+- A candidate record, all generated views—including `AGENT-CONTEXT.json`—and new artifact files are rendered and validated before any target is replaced.
 - Repository snapshot identities are canonicalized before record serialization; local checkout bindings remain outside the committed workflow state.
 - Writes use sibling temporary files and same-filesystem renames; handled I/O failures roll back committed targets, but the multi-file set is not a filesystem-wide crash-atomic transaction.
 - A same-host mutation lock is recovered automatically only when its recorded PID is demonstrably no longer running. Active, malformed, foreign-host, or process-state-ambiguous locks fail closed for inspection.

@@ -1,6 +1,8 @@
-# Quickstart: Complete an Express Workflow
+# Quickstart: Choose a Workflow Profile and Start
 
-This walkthrough takes one narrow design-to-implementation result through the executable schema-v2 workflow. Express uses one `WORKPACK.md` and exactly one implementation task. Upgrade when the scope needs separate artifacts, multiple tasks, architecture, integration, persistence, authentication, migration, deployment planning, or a material unresolved product decision.
+Start by selecting the workflow profile from the actual complexity and risk of the work. The profile is not a tutorial choice: it controls artifact granularity and must be selected before substantive documentation or implementation begins. [`workflow/Workflow-Profiles.md`](workflow/Workflow-Profiles.md) owns the canonical eligibility, artifact, and upgrade rules.
+
+This quickstart initializes any profile, then uses Express as a concrete worked example. Do not choose Express only because the worked example is shorter.
 
 ## Prerequisites
 
@@ -11,18 +13,54 @@ This walkthrough takes one narrow design-to-implementation result through the ex
 
 Run commands from the implementation repository root.
 
-## 1. Initialize Stage 0
+## 1. Choose a profile before initialization
+
+Use these as routing cues; [`workflow/Workflow-Profiles.md`](workflow/Workflow-Profiles.md) remains authoritative when a boundary is unclear.
+
+| Profile | Use when |
+|---|---|
+| **Express** | One narrow, coherent implementation result fits in one workpack and exactly one task, with no meaningful routing, shared state, persistence, authentication, authorization, external API, architecture, migration, deployment, security, privacy, rollback, or multi-contributor coordination concern. |
+| **Lite** | An isolated component, small static page, or narrow change needs separate control, audit, task, or final-review artifacts, or more than one tightly related task, but still has no meaningful architecture, persistence, authentication, or complex integration decision. |
+| **Standard** | A multi-page site, substantial UI feature, existing-application feature, or meaningful repository integration needs separate core artifacts while system-wide architectural risk remains limited. Architecture is conditional. |
+| **Full** | Full-stack work, authentication, persistence, multiple services or packages, complex integrations, significant migrations, or high deployment, security, privacy, reliability, or operational risk is in scope. |
+
+Express is an all-conditions profile: if any Express eligibility condition is false, do not initialize as Express. When choosing between adjacent profiles, use the lower profile only when its consolidation rules can preserve every material concern clearly; otherwise choose the higher profile. Upgrade as soon as new evidence crosses the selected profile's limits.
+
+## 2. Initialize the selected profile
+
+Replace `<selected-profile>` with `Express`, `Lite`, `Standard`, or `Full` based on Step 1:
 
 ```bash
 design-workflow init \
   --name "Article preview card" \
-  --profile Express \
+  --profile "<selected-profile>" \
   --mode Gated \
   --design "https://www.figma.com/design/..." \
   --repository .
 ```
 
-This creates only the Express Stage 0 artifact and canonical controls:
+Initialization creates only the selected profile's Stage 0 artifacts plus the canonical CLI-managed workflow record and generated views. The CLI does not select a profile for you.
+
+Check the initialized state before substantive work:
+
+```bash
+design-workflow status
+```
+
+If an AI agent is running the workflow, use the consumer bootstrap in [`AGENTS-instructions.md`](AGENTS-instructions.md); it resolves the current stage, profile, next action, and exact required resources without broad toolkit browsing.
+
+## 3. Continue with the selected profile
+
+- **Express:** continue with the worked example below.
+- **Lite, Standard, or Full:** follow [`workflow/Design-Implementation-Workflow.md`](workflow/Design-Implementation-Workflow.md) for the normative stage sequence and [`workflow/Workflow-Profiles.md`](workflow/Workflow-Profiles.md) for the selected profile's artifact requirements. Use [`cli/README.md`](cli/README.md) for command reference.
+
+Do not use Express artifact or task commands merely because they appear in the worked example. The selected profile owns the required artifact shape and upgrade conditions.
+
+## Express worked example
+
+From this point onward, the walkthrough assumes Step 1 selected **Express**. Express uses one `WORKPACK.md` and exactly one implementation task. Upgrade when the scope needs separate artifacts, multiple tasks, architecture, integration, persistence, authentication, migration, deployment planning, or a material unresolved product decision.
+
+Express initialization creates the Stage 0 workpack and canonical controls:
 
 ```text
 WORKPACK.md
@@ -32,11 +70,12 @@ WORKPACK.md
 .workflow/generated/ARTIFACT-INDEX.md
 .workflow/generated/TASK-INDEX.md
 .workflow/generated/TRACEABILITY.md
+.workflow/generated/AGENT-CONTEXT.json
 ```
 
-`WORKPACK.md` contains evidence, rationale, expected behavior, planning, task detail, and review narrative. The record owns mutable status, snapshots, gates, task state, validation results, and trace definitions. Generated views must not be edited.
+`WORKPACK.md` contains evidence, rationale, expected behavior, planning, task detail, and review narrative. The record owns mutable status, snapshots, gates, task state, validation results, and trace definitions. Generated views must not be edited. `AGENT-CONTEXT.json` is the portable read-only routing projection used when an agent can inspect the project through GitHub but cannot execute `design-workflow`; it never replaces CLI-owned state transitions.
 
-## 2. Verify inputs and approve the workpack
+### 1. Verify inputs and approve the workpack
 
 Complete the Stage 0 source and scope narrative, then record actual verification:
 
@@ -66,7 +105,7 @@ design-workflow stage review --result Passed --evidence "Stage 0 exit requiremen
 design-workflow stage advance
 ```
 
-## 3. Complete consolidated documentation gates
+### 2. Complete consolidated documentation gates
 
 For Express, Stages 1–5 and 7–8 are reviewed against the appropriate workpack sections. Each transition is a decision followed by an advance:
 
@@ -93,7 +132,7 @@ design-workflow profile upgrade start Standard \
   --reason "The discovered architecture concern requires separate documentation"
 ```
 
-## 4. Define traceability and the task
+### 3. Define traceability and the task
 
 After entering Stage 9, define the canonical chain before marking its upstream requirement required:
 
@@ -126,7 +165,7 @@ design-workflow stage review --result Passed --evidence "Task is Ready and requi
 design-workflow stage advance
 ```
 
-## 5. Implement against verified Git lineage
+### 4. Implement against verified Git lineage
 
 Before task start, commit the approved planning/task narrative. `task start` permits canonical record/generated control files to remain dirty, but it rejects dirty narrative or implementation-scope paths. For Express, for example:
 
@@ -164,7 +203,7 @@ design-workflow stage review \
 design-workflow stage advance
 ```
 
-## 6. Reverify and accept
+### 5. Reverify and accept
 
 Reverify the exact output before final acceptance:
 
@@ -204,7 +243,7 @@ design-workflow status
 
 Commit remaining narrative, workflow-record, and generated-state changes as a separate workflow/documentation commit. Do not amend or replace the recorded Implementation-output commit merely to add workflow bookkeeping.
 
-## Recovery and source change
+### Recovery and source change
 
 An active-input verification of `Unexpected upstream or concurrent change` or `Unavailable` blocks progression. Create or register the replacement snapshot, record impact, and use explicit supersession. Snapshot supersession does not silently rewrite artifact baselines.
 

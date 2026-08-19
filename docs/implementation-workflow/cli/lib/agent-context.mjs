@@ -2,10 +2,11 @@ import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { buildOrchestrationContext } from './orchestration-context.mjs';
+import { blockedStageTransitionPolicy } from './stage-transition-policy.mjs';
 import { runtimeToolkitPin } from './toolkit-binding.mjs';
 import { relativeDisplay } from './utils.mjs';
 
-export const AGENT_PROTOCOL_VERSION = 3;
+export const AGENT_PROTOCOL_VERSION = 4;
 
 const TOOLKIT_ROOT = fileURLToPath(new URL('../../', import.meta.url));
 const NON_STAGE_EXECUTION_KINDS = new Set(['migration', 'repair']);
@@ -164,7 +165,7 @@ export function buildAgentContextWhenMissing(recordPath, { cwd }) {
       workflowMutation: 'initialize-first',
       implementation: 'forbidden',
       codeEdits: 'forbidden',
-      stageDecision: 'not-applicable',
+      stageTransition: blockedStageTransitionPolicy('initialization-required'),
       generatedViews: 'not-initialized',
       workflowReads: 'initialization-only',
     },

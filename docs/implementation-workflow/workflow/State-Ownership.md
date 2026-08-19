@@ -4,18 +4,19 @@ This document prevents executable state from being maintained independently in s
 
 The workflow has two control modes:
 
-- **CLI-managed:** `.workflow/workflow-record.json` is canonical. Generated Markdown under `.workflow/generated/` is read-only projection state.
+- **CLI-managed:** `.workflow/workflow-record.json` is canonical. Files under `.workflow/generated/` are read-only projections of canonical state and routing.
 - **Markdown-only:** no workflow record exists. Rendered fallback registries in the narrative artifacts are maintained manually. This mode is scaffolded but not executable.
 
 Never mix ownership modes for the same field.
 
 ## Canonical ownership in CLI-managed mode
 
-| Information | Canonical owner | Human-readable projection |
+| Information | Canonical owner | Human/agent-readable projection |
 |---|---|---|
 | Profile and execution mode | `workflow-record.json` | `generated/WORKFLOW-STATUS.md` |
 | Stage, workflow status, current task, latest output, and latest validation runtime | `workflow-record.json` | `generated/WORKFLOW-STATUS.md` |
 | Current architecture decision | `workflow-record.json` | `generated/WORKFLOW-STATUS.md` |
+| Portable agent routing, current target/task, next action, and workflow resource descriptors | Derived from `workflow-record.json` through canonical orchestration routing | `generated/AGENT-CONTEXT.json` |
 | Snapshot registry and output lineage | `workflow-record.json` | `generated/SOURCE-INDEX.md` |
 | Append-only source verification history | `workflow-record.json` | `generated/SOURCE-INDEX.md` |
 | Artifact ID, type, narrative path, lifecycle state, baseline, and replacement | `workflow-record.json` | `generated/ARTIFACT-INDEX.md` |
@@ -29,7 +30,7 @@ Never mix ownership modes for the same field.
 | Human-readable blockers, assumptions, exceptions, and decision rationale beyond structured fields | `WORKFLOW-STATE.md` or `WORKPACK.md` | Not generated |
 | Task objective, implementation steps, discoveries, risks, and completion narrative | Task file or `WORKPACK.md` | Not generated |
 
-Generated files are never decision owners.
+Generated files are never decision owners. `AGENT-CONTEXT.json` is a routing projection, not a second workflow record or a substitute for CLI-owned mutation, preflight, local Git checks, subject-integrity checks, or runtime validation.
 
 ## Generated views
 
@@ -41,9 +42,12 @@ The CLI renders:
 .workflow/generated/ARTIFACT-INDEX.md
 .workflow/generated/TASK-INDEX.md
 .workflow/generated/TRACEABILITY.md
+.workflow/generated/AGENT-CONTEXT.json
 ```
 
-Each view includes a generated-file warning, source record name, and canonical SHA-256 digest. Object-key ordering does not affect the digest; meaningful array ordering does.
+Every projection identifies the canonical workflow-record SHA-256 used to generate it. The Markdown views also include generated-file warnings and source-record metadata in comments; `AGENT-CONTEXT.json` carries equivalent metadata in its `generated` object. Object-key ordering does not affect the digest; meaningful array ordering does.
+
+`AGENT-CONTEXT.json` exists so agents with repository read access but no executable CLI can resolve current routing without parsing the record or generated Markdown. It contains only portable persisted-state routing and resource descriptors. It intentionally excludes embedded toolkit resource bodies and local/runtime integrity results.
 
 ## Mutation contract
 
@@ -77,6 +81,7 @@ Workflow-control files are the canonical record and its generated projections:
 .workflow/generated/ARTIFACT-INDEX.md
 .workflow/generated/TASK-INDEX.md
 .workflow/generated/TRACEABILITY.md
+.workflow/generated/AGENT-CONTEXT.json
 ```
 
 Workflow-managed files are the workflow-control set plus every **active** narrative artifact path registered in `workflow-record.json`, such as `WORKPACK.md`, `REQUIREMENTS.md`, `DESIGN.md`, `SPEC.md`, `PLAN.md`, `TASKS-INDEX.md`, and task files. Superseded artifact paths are no longer automatically exempt. No unrelated file or directory is implicitly exempt, including other files under `.workflow/`.
@@ -146,28 +151,38 @@ design-workflow migrate
 
 ## Synchronization commands
 
-Normal mutations synchronize views automatically. If a record was intentionally edited outside the CLI, treat it as untrusted until both commands pass:
+Normal mutations synchronize every projection automatically, including `AGENT-CONTEXT.json`.
+
+Direct edits to `.workflow/workflow-record.json` are unsupported in CLI-managed projects. `design-workflow sync` is not a record-mutation path and does not authorize, validate, or normalize manual canonical-state changes. It only reconciles generated projections with the current canonical record.
+
+Use synchronization as a recovery path when generated views are stale or missing after an interrupted write or another abnormal condition. Run the non-writing checks first:
+
+```bash
+design-workflow validate
+design-workflow sync --check
+```
+
+If the findings are limited to missing or stale projections, repair them and revalidate:
 
 ```bash
 design-workflow sync
 design-workflow validate
-```
-
-Check without writing:
-
-```bash
 design-workflow sync --check
 ```
 
-Commit the record and generated views together. A stale or missing view is a validation failure, never an alternative source of truth.
+If the canonical record itself has findings, use the supported CLI repair or migration path before synchronization; do not hand-edit the record. A stale or missing view is a validation failure, never an alternative source of truth. A GitHub-only agent must not regenerate a stale projection by hand.
+
+Commit the canonical record and generated views together whenever a supported CLI mutation changes them. Projection-only recovery may update generated views without changing the canonical record.
 
 ## Review checklist
 
 - [ ] The workflow uses exactly one control mode.
 - [ ] Every executable field has one canonical owner.
+- [ ] CLI-managed canonical state is mutated only through supported `design-workflow` commands.
 - [ ] The record is schema v2 before mutation.
-- [ ] Generated views match the current record digest.
+- [ ] Generated views, including `AGENT-CONTEXT.json`, match the current record digest.
 - [ ] No generated file contains manual decisions or rationale.
+- [ ] The agent projection is used only for portable read-side routing, not CLI mutation or runtime-integrity claims.
 - [ ] CLI-managed artifacts omit record-owned status, registries, validation results, and output lineage.
 - [ ] Markdown-only artifacts retain complete fallback registries.
 - [ ] Snapshot, artifact, gate, task, profile, and final-review history is preserved rather than rewritten.

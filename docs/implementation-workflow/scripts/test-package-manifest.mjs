@@ -4,6 +4,7 @@ import { spawnSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { dirname, extname, join, normalize, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { isPathWithin } from './lib/path-safety.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const provenancePath = join(root, 'cli', 'toolkit-provenance.json');
@@ -17,7 +18,8 @@ if (result.status !== 0) {
 const report = JSON.parse(result.stdout)[0];
 const files = new Set(report.files.map((item) => item.path.split('\\').join('/')));
 const requiredAreas = [
-  'AGENTS-instructions.md', 'CONTRIBUTING.md', 'CHANGELOG.md',
+  'AGENTS.md', 'AGENTS-instructions.md', 'AGENTS-PROMPT-Figma-file-preparation.md',
+  'AI-project-settings.md', 'CONTRIBUTING.md', 'CHANGELOG.md',
   'cli/', 'cli/toolkit-provenance.json', 'workflow/', 'guidelines/', 'prompts/', 'source-adapters/',
   'templates/', 'examples/', 'schemas/', 'scripts/', 'tests/',
 ];
@@ -51,9 +53,16 @@ for (const file of [...files].filter((path) => extname(path).toLowerCase() === '
   while ((match = linkPattern.exec(content)) !== null) {
     const target = normalizeTarget(match[1]);
     if (!target || /^(?:https?:|mailto:|tel:|data:)/.test(target) || target.includes('<') || target.includes('>')) continue;
-    const resolved = normalize(relative(root, resolve(root, dirname(file), target))).split('\\').join('/');
+
+    const absoluteTarget = resolve(root, dirname(file), target);
+    if (!isPathWithin(root, absoluteTarget)) {
+      broken.push(`${file} → ${match[1]}`);
+      continue;
+    }
+
+    const resolved = normalize(relative(root, absoluteTarget)).split('\\').join('/');
     const packaged = files.has(resolved) || [...files].some((path) => path.startsWith(`${resolved}/`));
-    if (resolved.startsWith('../') || !packaged) broken.push(`${file} → ${match[1]}`);
+    if (!packaged) broken.push(`${file} → ${match[1]}`);
   }
 }
 if (broken.length > 0) throw new Error(`Packaged relative Markdown links do not resolve:\n${broken.map((item) => `- ${item}`).join('\n')}`);
