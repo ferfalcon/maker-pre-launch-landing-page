@@ -29,7 +29,7 @@
       "id": "SRC-REPO-001",
       "role": "Input baseline",
       "pinStrength": "Immutable",
-      "status": "Unverified",
+      "status": "Active",
       "reference": "https://github.com/ferfalcon/maker-pre-launch-landing-page",
       "commit": "e49ba2886a9a982c4d8d0aa31d2a7adf7460778d"
     }
@@ -42,6 +42,14 @@
       "method": "Figma structural inspection",
       "evidence": "Connected Figma inspection confirmed page 29:4756 named 🤖 Workflow and its Stage 0 scoped sections.",
       "checkedAt": "2026-08-19T19:54:34.184Z"
+    },
+    {
+      "id": "VER-002",
+      "snapshot": "SRC-REPO-001",
+      "result": "Expected workflow output",
+      "method": "Git ancestry and commit-purpose comparison",
+      "evidence": "Baseline e49ba2886a9a982c4d8d0aa31d2a7adf7460778d remains the implementation input; newer commits are canonical design-workflow initialization and verification bookkeeping only.",
+      "checkedAt": "2026-08-19T19:55:07.794Z"
     }
   ],
   "artifacts": [
