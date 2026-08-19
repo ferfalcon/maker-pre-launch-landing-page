@@ -166,6 +166,14 @@
       "method": "Pre-gate Stage 6 live Figma structure re-verification",
       "evidence": "Live read-only Stage 6 inspection of authorized Figma page 29:4756 confirms Style Guide 32:17743, Components 32:18709, and Main page 34:19665 remain present. Desktop/Tablet/Mobile references 32:10924/32:11410/32:11529 remain present with the same Hero, Benefits, Pricing, and Signup section instances; component families for Email Input 32:17773, Button 32:17765, Signup 72:2835, Hero 79:3868, Benefits 79:13338, and Pricing 79:14668 remain in scope. No material scoped design change affecting the Stage 6 architecture decision was detected.",
       "checkedAt": "2026-08-19T23:47:20.990Z"
+    },
+    {
+      "id": "VER-017",
+      "snapshot": "SRC-REPO-001",
+      "result": "Expected workflow output",
+      "method": "Pre-gate Stage 6 Git ancestry and changed-file comparison",
+      "evidence": "Pinned repository input e49ba2886a9a982c4d8d0aa31d2a7adf7460778d remains the merge-base ancestor through 9cbf17967f0c78e2803c5cff127a9746ac4fddb4. Comparison shows only workflow-control/generated files and workflow narrative artifacts, including the Stage 6 IMPLEMENTATION-BRIEF architecture decision and source-verification bookkeeping; no frontend implementation files changed. Current repository evidence still shows the minimal Astro single-page baseline used for the not-required architecture decision.",
+      "checkedAt": "2026-08-19T23:47:54.084Z"
     }
   ],
   "artifacts": [
