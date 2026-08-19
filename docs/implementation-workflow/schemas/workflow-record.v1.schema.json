@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/ferfalcon/figma-to-implementation-workflow/schemas/workflow-record.v1.schema.json",
+  "title": "Design-to-Implementation Workflow Record v1",
+  "description": "Legacy read-only workflow-record schema retained for explicit migration to schema version 2.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "project", "state", "snapshots", "artifacts", "tasks"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "profile", "executionMode"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "profile": { "enum": ["Express", "Lite", "Standard", "Full"] },
+        "executionMode": { "enum": ["Gated", "Continuous documentation", "Task-by-task"] }
+      }
+    },
+    "state": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["stage", "status", "activeInputs"],
+      "properties": {
+        "stage": { "type": "integer", "minimum": 0, "maximum": 11 },
+        "status": { "enum": ["Not started", "In progress", "Ready", "Blocked", "Complete"] },
+        "activeInputs": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/snapshotId" },
+          "uniqueItems": true
+        },
+        "currentTask": {
+          "anyOf": [
+            { "$ref": "#/$defs/taskId" },
+            { "type": "null" }
+          ]
+        },
+        "latestOutput": {
+          "anyOf": [
+            { "$ref": "#/$defs/repositorySnapshotId" },
+            { "type": "null" }
+          ]
+        }
+      }
+    },
+    "snapshots": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "role", "pinStrength", "status", "reference"],
+        "properties": {
+          "id": { "$ref": "#/$defs/snapshotId" },
+          "role": { "enum": ["Input baseline", "Supporting source", "Task start", "Implementation output", "Validation runtime", "Historical reference"] },
+          "pinStrength": { "enum": ["Immutable", "Versioned", "Time-bound", "Unverified"] },
+          "status": { "enum": ["Active", "Superseded", "Invalid", "Unverified"] },
+          "reference": { "type": "string", "minLength": 1 },
+          "commit": { "type": "string", "pattern": "^[0-9a-f]{40}$" },
+          "parent": { "$ref": "#/$defs/repositorySnapshotId" },
+          "task": { "$ref": "#/$defs/taskId" }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "type", "status", "baseline"],
+        "properties": {
+          "id": { "$ref": "#/$defs/artifactId" },
+          "type": { "enum": ["WORKPACK", "SOURCE-BASELINE", "PROJECT-CONTEXT", "WORKFLOW-STATE", "DESIGN-AUDIT", "IMPLEMENTATION-BRIEF", "REQUIREMENTS", "DESIGN", "SPEC", "DOCUMENT-REVIEW", "ARCHITECTURE", "PLAN", "PLAN-REVIEW", "TASKS-INDEX", "TASK", "IMPLEMENTATION-REVIEW"] },
+          "status": { "enum": ["Draft", "Reviewed", "Approved", "Superseded"] },
+          "baseline": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/snapshotId" },
+            "uniqueItems": true
+          },
+          "references": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/domainId" },
+            "uniqueItems": true
+          }
+        }
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "status", "baseline", "prerequisites", "references", "validation"],
+        "properties": {
+          "id": { "$ref": "#/$defs/taskId" },
+          "status": { "enum": ["Not started", "Ready", "In progress", "Blocked", "Complete"] },
+          "baseline": { "$ref": "#/$defs/repositorySnapshotId" },
+          "prerequisites": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/taskId" },
+            "uniqueItems": true
+          },
+          "references": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/domainId" },
+            "uniqueItems": true
+          },
+          "output": {
+            "anyOf": [
+              { "$ref": "#/$defs/repositorySnapshotId" },
+              { "type": "null" }
+            ]
+          },
+          "validation": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["name", "status"],
+              "properties": {
+                "name": { "type": "string", "minLength": 1 },
+                "status": { "enum": ["Passed", "Failed", "Blocked", "Not executed", "Not applicable"] },
+                "evidence": { "type": "string" },
+                "reason": { "type": "string" }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "snapshotId": { "type": "string", "pattern": "^SRC-(DS|REPO|RUN|DOC|ASSET)-[0-9]{3,}$" },
+    "repositorySnapshotId": { "type": "string", "pattern": "^SRC-REPO-[0-9]{3,}$" },
+    "taskId": { "type": "string", "pattern": "^P[0-9]{2}-T[0-9]{2}$" },
+    "artifactId": { "type": "string", "pattern": "^ART-[A-Z0-9-]+$" },
+    "domainId": { "type": "string", "pattern": "^(EVD|AUD|AC|ADR|PLAN|DOC|PLANREV|IMPL)-[0-9]{3,}$|^REQ-(FR|BR|DR|NFR|AR|SEC|CON)-[0-9]{3,}$|^DES(-RWD|-INT)?-[0-9]{3,}$|^SPEC-(BEH|INT|VAL|ACC|DATA)-[0-9]{3,}$" }
+  }
+}

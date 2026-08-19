@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "name": "Broken example",
+    "profile": "Full",
+    "executionMode": "Task-by-task"
+  },
+  "state": {
+    "stage": 8,
+    "status": "Complete",
+    "activeInputs": ["SRC-DS-999"],
+    "currentTask": "P01-T01",
+    "latestOutput": "SRC-REPO-002"
+  },
+  "snapshots": [
+    {
+      "id": "SRC-REPO-001",
+      "role": "Input baseline",
+      "pinStrength": "Immutable",
+      "status": "Active",
+      "reference": "Repository baseline"
+    },
+    {
+      "id": "SRC-REPO-002",
+      "role": "Implementation output",
+      "pinStrength": "Immutable",
+      "status": "Active",
+      "reference": "Broken implementation output",
+      "commit": "2222222222222222222222222222222222222222",
+      "parent": "SRC-REPO-999",
+      "task": "P01-T02"
+    }
+  ],
+  "artifacts": [
+    { "id": "ART-SOURCE-BASELINE", "type": "SOURCE-BASELINE", "status": "Approved", "baseline": ["SRC-REPO-001"] }
+  ],
+  "tasks": [
+    {
+      "id": "P01-T01",
+      "status": "Complete",
+      "baseline": "SRC-REPO-001",
+      "prerequisites": ["P01-T02"],
+      "references": ["REQ-FR-001"],
+      "output": "SRC-REPO-002",
+      "validation": [
+        { "name": "Build", "status": "Passed" },
+        { "name": "Responsive review", "status": "Not executed", "reason": "Fixture intentionally leaves a required check unresolved" }
+      ]
+    },
+    {
+      "id": "P01-T02",
+      "status": "In progress",
+      "baseline": "SRC-REPO-001",
+      "prerequisites": ["P01-T01"],
+      "references": ["SPEC-BEH-001"],
+      "output": null,
+      "validation": [
+        { "name": "Accessibility", "status": "Blocked" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 2,
+  "project": {
+    "name": "Migration golden fixture",
+    "profile": "Express",
+    "executionMode": "Gated"
+  },
+  "state": {
+    "stage": 9,
+    "status": "In progress",
+    "activeInputs": ["SRC-REPO-001"],
+    "currentTask": null,
+    "latestOutput": null,
+    "latestValidationRuntime": null,
+    "architectureDecision": null
+  },
+  "snapshots": [
+    {
+      "id": "SRC-REPO-001",
+      "role": "Input baseline",
+      "pinStrength": "Immutable",
+      "status": "Active",
+      "reference": ".",
+      "commit": "1111111111111111111111111111111111111111"
+    }
+  ],
+  "verifications": [],
+  "artifacts": [
+    {
+      "id": "ART-WORKPACK",
+      "type": "WORKPACK",
+      "path": "WORKPACK.md",
+      "status": "Reviewed",
+      "baseline": ["SRC-REPO-001"]
+    }
+  ],
+  "traceItems": [
+    { "id": "REQ-FR-001", "owner": "ART-WORKPACK", "status": "Active", "required": false, "references": [] },
+    { "id": "SPEC-BEH-001", "owner": "ART-WORKPACK", "status": "Active", "required": false, "references": [] },
+    { "id": "AC-001", "owner": "ART-WORKPACK", "status": "Active", "required": false, "references": [] },
+    { "id": "PLAN-001", "owner": "ART-WORKPACK", "status": "Active", "required": false, "references": [] }
+  ],
+  "gates": [],
+  "tasks": [
+    {
+      "id": "P01-T01",
+      "status": "Ready",
+      "baseline": "SRC-REPO-001",
+      "prerequisites": [],
+      "references": ["PLAN-001"],
+      "output": null,
+      "blocker": null,
+      "validation": [
+        {
+          "name": "Legacy manual review",
+          "kind": "Other",
+          "required": true,
+          "status": "Not executed",
+          "expected": "Legacy validation requirement: Legacy manual review",
+          "actual": "Legacy reviewer recorded a pass",
+          "evidence": ["Legacy reviewer recorded a pass"],
+          "reason": "Legacy Passed result lacked a v2 execution timestamp; rerun before completion.",
+          "references": []
+        }
+      ]
+    }
+  ],
+  "profileTransitions": [],
+  "implementationReviews": [],
+  "legacyBoundary": {
+    "migratedFrom": 1,
+    "gatesRequiredFromStage": 9,
+    "traceRequiredFromStage": 9
+  }
+}

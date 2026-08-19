@@ -1,0 +1,57 @@
+{
+  "name": "@ferfalcon/design-workflow",
+  "version": "0.3.0",
+  "description": "Dependency-free CLI and workflow toolkit for evidence-driven design-to-implementation projects.",
+  "type": "module",
+  "license": "UNLICENSED",
+  "bin": {
+    "design-workflow": "./cli/design-workflow.mjs"
+  },
+  "files": [
+    "AGENTS.md",
+    "AGENTS-instructions.md",
+    "AGENTS-PROMPT-Figma-file-preparation.md",
+    "CHANGELOG.md",
+    "CONTRIBUTING.md",
+    "LICENSE",
+    "QUICKSTART.md",
+    "README.md",
+    "cli",
+    "examples",
+    "guidelines",
+    "prompts",
+    "schemas",
+    "scripts",
+    "source-adapters",
+    "templates",
+    "tests",
+    "workflow"
+  ],
+  "scripts": {
+    "prepack": "node scripts/package-toolkit-provenance.mjs write",
+    "postpack": "node scripts/package-toolkit-provenance.mjs clean",
+    "validate": "node scripts/generate-workflow-schema.mjs --check && node scripts/validate-workflow.mjs && node scripts/test-figma-preparation-authority.mjs && node scripts/test-workflow-record.mjs && node scripts/test-canonical-invariants.mjs && node scripts/test-stage-gates.mjs && node scripts/test-generated-state.mjs && node scripts/test-record-concurrency.mjs && node scripts/test-artifact-renderer.mjs && node scripts/test-task-phases.mjs && node scripts/test-orchestration.mjs && node scripts/test-toolkit-source.mjs && node scripts/test-subject-integrity.mjs && node scripts/test-agent-context.mjs && node scripts/test-git-worktree-policy.mjs && node scripts/test-repository-portability.mjs && node scripts/test-task-start-checkpoints.mjs && node scripts/test-replanning-transitions.mjs && node scripts/test-cli.mjs && node scripts/test-sequential-task-lineage.mjs && node scripts/test-package-manifest.mjs",
+    "test:figma-preparation": "node scripts/test-figma-preparation-authority.mjs",
+    "test:records": "node scripts/test-workflow-record.mjs",
+    "test:invariants": "node scripts/test-canonical-invariants.mjs",
+    "test:gates": "node scripts/test-stage-gates.mjs",
+    "test:state": "node scripts/test-generated-state.mjs",
+    "test:concurrency": "node scripts/test-record-concurrency.mjs",
+    "test:render": "node scripts/test-artifact-renderer.mjs",
+    "test:task-phases": "node scripts/test-task-phases.mjs",
+    "test:orchestration": "node scripts/test-orchestration.mjs",
+    "test:toolkit": "node scripts/test-toolkit-source.mjs",
+    "test:integrity": "node scripts/test-subject-integrity.mjs",
+    "test:agent-context": "node scripts/test-agent-context.mjs",
+    "test:git-policy": "node scripts/test-git-worktree-policy.mjs",
+    "test:repository": "node scripts/test-repository-portability.mjs",
+    "test:checkpoints": "node scripts/test-task-start-checkpoints.mjs",
+    "test:replanning": "node scripts/test-replanning-transitions.mjs",
+    "test:cli": "node scripts/test-cli.mjs",
+    "test:lineage": "node scripts/test-sequential-task-lineage.mjs",
+    "test:package": "node scripts/test-package-manifest.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

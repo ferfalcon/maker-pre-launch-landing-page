@@ -1,0 +1,32 @@
+name: Validate workflow repository
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+concurrency:
+  group: validate-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref_name }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Run the repository validation contract
+        run: npm run validate
+
+      - name: Verify package contents
+        run: npm pack --dry-run

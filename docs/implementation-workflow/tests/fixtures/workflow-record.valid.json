@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "name": "Example landing page",
+    "profile": "Lite",
+    "executionMode": "Task-by-task"
+  },
+  "state": {
+    "stage": 10,
+    "status": "In progress",
+    "activeInputs": ["SRC-DS-001", "SRC-REPO-001"],
+    "currentTask": "P01-T01",
+    "latestOutput": null
+  },
+  "snapshots": [
+    {
+      "id": "SRC-DS-001",
+      "role": "Input baseline",
+      "pinStrength": "Time-bound",
+      "status": "Active",
+      "reference": "Figma node 41:22 inspected 2026-08-06T13:00:00-03:00"
+    },
+    {
+      "id": "SRC-REPO-001",
+      "role": "Input baseline",
+      "pinStrength": "Immutable",
+      "status": "Active",
+      "reference": "Repository baseline",
+      "commit": "1111111111111111111111111111111111111111"
+    }
+  ],
+  "artifacts": [
+    { "id": "ART-SOURCE-BASELINE", "type": "SOURCE-BASELINE", "status": "Approved", "baseline": ["SRC-DS-001", "SRC-REPO-001"] },
+    { "id": "ART-PROJECT-CONTEXT", "type": "PROJECT-CONTEXT", "status": "Approved", "baseline": ["SRC-DS-001", "SRC-REPO-001"] },
+    { "id": "ART-WORKFLOW-STATE", "type": "WORKFLOW-STATE", "status": "Approved", "baseline": ["SRC-DS-001", "SRC-REPO-001"] },
+    { "id": "ART-DESIGN-AUDIT", "type": "DESIGN-AUDIT", "status": "Approved", "baseline": ["SRC-DS-001"], "references": ["EVD-001", "AUD-001"] },
+    { "id": "ART-IMPLEMENTATION-BRIEF", "type": "IMPLEMENTATION-BRIEF", "status": "Approved", "baseline": ["SRC-DS-001", "SRC-REPO-001"], "references": ["REQ-FR-001", "DES-001", "SPEC-BEH-001", "AC-001", "PLAN-001"] },
+    { "id": "ART-IMPLEMENTATION-REVIEW", "type": "IMPLEMENTATION-REVIEW", "status": "Draft", "baseline": ["SRC-DS-001", "SRC-REPO-001"] }
+  ],
+  "tasks": [
+    {
+      "id": "P01-T01",
+      "status": "In progress",
+      "baseline": "SRC-REPO-001",
+      "prerequisites": [],
+      "references": ["REQ-FR-001", "SPEC-BEH-001", "AC-001", "PLAN-001"],
+      "output": null,
+      "validation": [
+        { "name": "Build", "status": "Not executed", "reason": "Implementation is still in progress" }
+      ]
+    }
+  ]
+}

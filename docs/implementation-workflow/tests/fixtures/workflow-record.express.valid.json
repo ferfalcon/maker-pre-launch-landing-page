@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "project": {
+    "name": "Article preview card",
+    "profile": "Express",
+    "executionMode": "Task-by-task"
+  },
+  "state": {
+    "stage": 9,
+    "status": "Ready",
+    "activeInputs": ["SRC-DS-001", "SRC-REPO-001"],
+    "currentTask": "P01-T01",
+    "latestOutput": null
+  },
+  "snapshots": [
+    {
+      "id": "SRC-DS-001",
+      "role": "Input baseline",
+      "pinStrength": "Versioned",
+      "status": "Active",
+      "reference": "Article preview component design revision"
+    },
+    {
+      "id": "SRC-REPO-001",
+      "role": "Task start",
+      "pinStrength": "Immutable",
+      "status": "Active",
+      "reference": "Repository task-start commit",
+      "commit": "1111111111111111111111111111111111111111"
+    }
+  ],
+  "artifacts": [
+    {
+      "id": "ART-WORKPACK",
+      "type": "WORKPACK",
+      "status": "Approved",
+      "baseline": ["SRC-DS-001", "SRC-REPO-001"],
+      "references": ["REQ-FR-001", "DES-RWD-001", "SPEC-BEH-001", "AC-001"]
+    }
+  ],
+  "tasks": [
+    {
+      "id": "P01-T01",
+      "status": "Ready",
+      "baseline": "SRC-REPO-001",
+      "prerequisites": [],
+      "references": ["REQ-FR-001", "SPEC-BEH-001", "AC-001"],
+      "output": null,
+      "validation": [
+        {
+          "name": "Implementation validation",
+          "status": "Not executed",
+          "reason": "Implementation has not started"
+        }
+      ]
+    }
+  ]
+}
