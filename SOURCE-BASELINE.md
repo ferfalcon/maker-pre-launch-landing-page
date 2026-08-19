@@ -11,121 +11,77 @@ updated: 2026-08-19
 
 ## 2. Document Information
 
-- Project:
+- Project: Maker pre-launch landing page
 - Created: 2026-08-19
 - Last updated: 2026-08-19
-- Owner:
+- Owner: Project owner / workflow operator
 - Related context: `PROJECT-CONTEXT.md`
 - Operational state: `WORKFLOW-STATE.md`
 
 ## 3. Design Source Evidence
 
-### SRC-DS-001 — Snapshot title
+### SRC-DS-001 — Figma `🤖 Workflow` page
 
-The ID and current registry fields belong in the workflow record in CLI-managed mode.
-
-- **Source type:** Figma / Screenshot / Image / PDF / Existing website / Other
-- **Purpose:**
-- **Included scope:**
-- **Excluded scope:**
-- **Captured or inspected at:** 2026-08-19THH:MM:SS±HH:MM
-- **Version, revision, or checksum evidence:**
-- **Captured evidence:**
-- **Access and reproduction instructions:**
-- **Dependencies:**
-- **Authority for this project:**
-- **Known limitations:**
-
-For Figma, record file key, page and node IDs, named version when available, library dependencies, and inspection mode.
+- **Source type:** Figma design file
+- **File key:** `ooEONYJXXgjZkQNmTh6dfV`
+- **Purpose:** Authoritative visual/design source for the landing-page implementation workflow.
+- **Included scope:** Page `🤖 Workflow` (`29:4756`), including sections `Style Guide` (`32:17743`), `Components` (`32:18709`), and `Main page` (`34:19665`). `Main page` contains Desktop (`32:10924`, 1440 px), Tablet (`32:11410`, 768 px), and Mobile (`32:11529`, 375 px) compositions.
+- **Excluded scope:** Figma pages `👋 Overview` (`3:2`), `🎨 Design System` (`3:69`), `🖱️ Prototype` (`3:70`), and `✨ Designs` (`3:134`) unless a later stage explicitly rebaselines them.
+- **Captured or inspected at:** 2026-08-19T16:54-03:00
+- **Version, revision, or checksum evidence:** No named Figma version or checksum-backed export is registered. The normal Figma URL is mutable, so this snapshot is intentionally Time-bound.
+- **Captured evidence:** Connected Figma metadata and Plugin API structural inspection. The scoped page contains 58 local components, 9 component sets, 202 instances, and 37 local variables in the `Foundations` collection (single `Default` mode).
+- **Access and reproduction instructions:** Open the project Figma file and inspect page/node `29:4756`; connected Figma tooling can read the page directly.
+- **Dependencies:** All 202 inspected instances resolve to local main components; no remote-library component dependency was detected in the authorized page. Local `Foundations` variables are part of the source.
+- **Authority for this project:** Primary design authority inside the explicitly authorized `🤖 Workflow` scope.
+- **Known limitations:** The source is mutable and not pinned to a named Figma version. Stage 0 establishes structure and scope, not a full design audit. Figma does not by itself prove semantic HTML, keyboard/screen-reader behavior, in-between responsive behavior, browser rendering, or runtime behavior.
 
 ## 4. Repository Source Evidence
 
-### SRC-REPO-001 — Repository snapshot title
+### SRC-REPO-001 — Implementation repository baseline
 
-- **Repository:**
-- **Relevant application, package, or directory:**
-- **Branch at capture:**
-- **Captured at:** 2026-08-19THH:MM:SS±HH:MM
-- **Lockfile, submodule, or workspace state:**
-- **Uncommitted changes or patch:** None / reference
-- **Access and reproduction instructions:**
-- **Build or inspection context:**
-- **Known limitations:**
+- **Repository:** `https://github.com/ferfalcon/maker-pre-launch-landing-page`
+- **Relevant application, package, or directory:** `frontend/`
+- **Branch at capture:** `main`
+- **Pinned implementation-input commit:** `e49ba2886a9a982c4d8d0aa31d2a7adf7460778d` (canonical identity is owned by the workflow record).
+- **Captured at:** 2026-08-19T16:50-03:00
+- **Lockfile, submodule, or workspace state:** `frontend/pnpm-lock.yaml` and `frontend/pnpm-workspace.yaml` are present; no submodule evidence was found in the inspected root.
+- **Uncommitted changes or patch:** Not applicable to the immutable GitHub commit snapshot.
+- **Access and reproduction instructions:** Inspect repository commit `e49ba2886a9a982c4d8d0aa31d2a7adf7460778d`; implementation work is rooted at `frontend/`.
+- **Build or inspection context:** GitHub inspection only at Stage 0. `frontend/package.json` declares Astro `^7.2.3`, Node `>=22.12.0`, and `astro build` as the production build command.
+- **Existing implementation state:** `frontend/src/pages/index.astro` still renders the default Astro `Welcome` starter component; the Maker design has not been implemented in the application baseline.
+- **Known limitations:** No local build/runtime execution was performed during Stage 0. Newer commits after the pinned input are workflow-control/bookkeeping changes and are classified separately from implementation-source changes.
 
-Commit, parent, role, task, and current status belong in the workflow record in CLI-managed mode.
+## 5. Other Source Categories
 
-## 5. Runtime Source Evidence
+No runtime, documentation, or standalone asset snapshot is registered as an active Stage 0 input. The repository README references the production Vercel URL, but runtime state has not been promoted to a canonical `SRC-RUN-*` baseline yet.
 
-### SRC-RUN-001 — Runtime snapshot title
-
-- **Environment:** Production / Preview / Staging / Local / Other
-- **URL or entry point:**
-- **Deployment or release evidence:**
-- **Associated repository evidence:**
-- **Captured at:** 2026-08-19THH:MM:SS±HH:MM
-- **Browser, viewport, and device context:**
-- **Authentication, personalization, or feature-flag state:**
-- **Test data context:**
-- **Captured evidence:**
-- **Known limitations:**
-
-## 6. Documentation Source Evidence
-
-### SRC-DOC-001 — Document title
-
-- **Authority:** Normative / Informative / Historical
-- **Path or URL:**
-- **Included sections:**
-- **Revision, version, date, commit, or checksum evidence:**
-- **Captured at:** 2026-08-19THH:MM:SS±HH:MM
-- **Access and reproduction instructions:**
-- **Known limitations:**
-
-## 7. Asset Source Evidence
-
-### SRC-ASSET-001 — Asset or bundle title
-
-- **Type:** Image / Icon / Font / Archive / Other
-- **Path or reference:**
-- **Included contents:**
-- **Format and size:**
-- **SHA-256 checksum evidence:**
-- **Captured at:** 2026-08-19THH:MM:SS±HH:MM
-- **Licensing or usage constraints:**
-- **Known limitations:**
-
-## 8. Source Verification Log
+## 6. Source Verification Log
 
 | Date and time | Snapshot | Verification method | Result classification | Change detected | Action |
 |---|---|---|---|---|---|
-| ... | ... | Commit comparison / named-version check / visual comparison / checksum / other | Unchanged / Expected output / Unexpected change / Unavailable | Yes / No / Unknown | ... |
+| 2026-08-19T16:54-03:00 | `SRC-DS-001` | Connected Figma structural inspection | Unchanged | No | Canonical verification recorded by remote `design-workflow snapshot verify` (issue #2). |
+| 2026-08-19T16:55-03:00 | `SRC-REPO-001` | Git ancestry and commit-purpose comparison | Expected workflow output | Yes, workflow-only | Canonical verification recorded by remote `design-workflow snapshot verify` (issue #3); retain `e49ba288…` as the implementation-input baseline. |
 
-Record checks before stages, after meaningful pauses, before tasks, and before final acceptance. Current snapshot status remains in the workflow record in CLI-managed mode.
+## 7. Upstream Rebaseline and Impact Assessments
 
-## 9. Upstream Rebaseline and Impact Assessments
+No unexpected upstream or concurrent source change is known at Stage 0. No rebaseline is required.
 
-| New snapshot | Previous snapshot | Change summary | Affected artifacts | Earliest affected stage | Required action | Status |
-|---|---|---|---|---:|---|---|
-| ... | ... | ... | ... | ... | ... | Open / In progress / Complete |
-
-Use this table for changed upstream inputs or unexpected concurrent changes, not for approved task output commits.
-
-## 10. Baseline Review
+## 8. Baseline Review
 
 ### Pass 1 — Completeness and correctness
 
-- [ ] Every material source has a snapshot ID and evidence section.
-- [ ] Exact scope and capture time are recorded.
-- [ ] Repository snapshots use commit SHAs in the canonical registry.
-- [ ] Task outputs have parent snapshots and task IDs in the canonical registry.
-- [ ] Mutable sources are not mislabeled as immutable.
-- [ ] Access and reproduction limitations are explicit.
+- [x] Every material Stage 0 source has a canonical snapshot ID and evidence section.
+- [x] Exact design and repository scope are recorded.
+- [x] Repository evidence is pinned to a commit SHA in canonical workflow state.
+- [x] Mutable Figma evidence is explicitly Time-bound rather than presented as immutable.
+- [x] Access and reproduction limitations are explicit.
+- [x] Unregistered runtime/document/asset references are not presented as canonical inputs.
 
 ### Pass 2 — Consistency, traceability, source integrity, risks, and uncertainty
 
-- [ ] Generated source state is current in CLI-managed mode.
-- [ ] Identifiers follow `Identifier-Conventions.md`.
-- [ ] Expected implementation outputs are distinguished from upstream source changes.
-- [ ] Rebaseline impact assessments cover unexpected upstream changes.
-- [ ] Evidence sections do not redefine record-owned status or lineage.
-- [ ] No artifact silently relies on undefined or newer source content.
+- [x] Generated source state was freshness-checked against `.workflow/workflow-record.json` before use.
+- [x] Design scope matches the project-authorized `🤖 Workflow` page and node ID.
+- [x] Expected workflow commits are distinguished from implementation-input changes.
+- [x] No unexpected source change is being silently absorbed into the baseline.
+- [x] Evidence sections do not redefine record-owned mutable status or lineage.
+- [x] The remaining material uncertainty—the mutable Figma URL—is explicit and will require re-verification at later gates.
