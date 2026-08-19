@@ -97,11 +97,13 @@
       "id": "ART-WORKFLOW-STATE",
       "type": "WORKFLOW-STATE",
       "path": "WORKFLOW-STATE.md",
-      "status": "Draft",
+      "status": "Reviewed",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
-      ]
+      ],
+      "statusChangedAt": "2026-08-19T20:00:44.677Z",
+      "statusEvidence": "Stage 0 workflow state reviewed for blockers, assumptions, source history, profile/mode consistency, deviations, gate rules, and next permitted action."
     }
   ],
   "traceItems": [],
