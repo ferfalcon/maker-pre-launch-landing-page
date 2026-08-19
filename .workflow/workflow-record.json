@@ -98,6 +98,14 @@
       "method": "Pre-gate Stage 2 Figma re-verification",
       "evidence": "Immediately before Stage 2 closure, Figma page 29:4756 remains 🤖 Workflow with the same Style Guide, Components, and Main page sections; Main page still contains 1440/768/375 Desktop/Tablet/Mobile references, and the same Benefit Card, Pricing Card, Signup, Header, Hero, Benefits, Pricing, Email Input, and Button component/state structures used by the approved audit.",
       "checkedAt": "2026-08-19T20:28:27.569Z"
+    },
+    {
+      "id": "VER-009",
+      "snapshot": "SRC-REPO-001",
+      "result": "Expected workflow output",
+      "method": "Pre-gate Stage 2 Git ancestry and workflow-output comparison",
+      "evidence": "Pinned implementation input e49ba2886a9a982c4d8d0aa31d2a7adf7460778d remains unchanged. Since the Stage 1 repository verification, intervening changes are workflow-control commits plus the Stage 2 IMPLEMENTATION-BRIEF requirements edit and source-verification bookkeeping; no frontend implementation files were edited.",
+      "checkedAt": "2026-08-19T20:28:56.478Z"
     }
   ],
   "artifacts": [
