@@ -7,7 +7,7 @@
   },
   "state": {
     "stage": 0,
-    "status": "In progress",
+    "status": "Ready",
     "activeInputs": [
       "SRC-DS-001",
       "SRC-REPO-001"
@@ -117,7 +117,46 @@
     }
   ],
   "traceItems": [],
-  "gates": [],
+  "gates": [
+    {
+      "id": "GATE-001",
+      "stage": 0,
+      "status": "Active",
+      "result": "Passed",
+      "baseline": [
+        "SRC-DS-001",
+        "SRC-REPO-001"
+      ],
+      "verifications": [
+        "VER-003",
+        "VER-004"
+      ],
+      "artifacts": [
+        "ART-SOURCE-BASELINE",
+        "ART-PROJECT-CONTEXT",
+        "ART-WORKFLOW-STATE"
+      ],
+      "evidence": "Stage 0 preflight passed with valid workflow state, current generated views, current subject integrity, verified active inputs, and approved Source Baseline and Project Context.",
+      "recordedAt": "2026-08-19T20:06:47.904Z",
+      "approvedBy": "Fernando Falcon",
+      "artifactRevisions": [
+        {
+          "artifact": "ART-SOURCE-BASELINE",
+          "revision": {
+            "algorithm": "sha256",
+            "digest": "78eb3f50ffe3a0127d03af369e74d0bda99df932bdbbc6149a1aaa39d867d46f"
+          }
+        },
+        {
+          "artifact": "ART-PROJECT-CONTEXT",
+          "revision": {
+            "algorithm": "sha256",
+            "digest": "cd7bd60180806b9a0dab37446e81cdd2b52e6cecbfe533f106c20eb73ef1364d"
+          }
+        }
+      ]
+    }
+  ],
   "tasks": [],
   "profileTransitions": [],
   "implementationReviews": [],
