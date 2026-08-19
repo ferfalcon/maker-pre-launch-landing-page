@@ -146,6 +146,14 @@
       "method": "Pre-gate Stage 5 live Figma consistency re-verification",
       "evidence": "Live read-only Stage 5 inspection of authorized Figma page 29:4756 confirms Style Guide 32:17743, Components 32:18709, Main page 34:19665, and Desktop/Tablet/Mobile references 32:10924/32:11410/32:11529 remain present. Email Input 32:17773 still maps Default to Active on ON_HOVER with a 200 ms Ease In dissolve; Button 32:17765 still maps Default to Hover the same way; Hero 79:3868 and Signup 72:2835 retain Desktop/Tablet/Mobile variants; all inspected Scroll Indicator Icon instances remain reaction-free. No material scoped design change was detected.",
       "checkedAt": "2026-08-19T23:28:10.639Z"
+    },
+    {
+      "id": "VER-015",
+      "snapshot": "SRC-REPO-001",
+      "result": "Expected workflow output",
+      "method": "Pre-gate Stage 5 Git ancestry and changed-file comparison",
+      "evidence": "Pinned repository input e49ba2886a9a982c4d8d0aa31d2a7adf7460778d remains the merge-base ancestor through 147d4f93f2ea28d834b2576e9975d2a3443c98c3. Comparison shows only workflow-control/generated files and workflow narrative artifacts, including the Stage 5 IMPLEMENTATION-BRIEF consistency corrections; no frontend implementation files changed.",
+      "checkedAt": "2026-08-19T23:28:38.203Z"
     }
   ],
   "artifacts": [
