@@ -1,0 +1,16 @@
+name: Design workflow remote commands
+
+on:
+  issues:
+    types:
+      - opened
+
+permissions: {}
+
+jobs:
+  execute:
+    if: github.event.issue.title == '[design-workflow] command'
+    permissions:
+      contents: write
+      issues: write
+    uses: ferfalcon/figma-to-implementation-workflow/.github/workflows/design-workflow-command.yml@0743a03f2c697d47f841ba467ec13457fb035435
