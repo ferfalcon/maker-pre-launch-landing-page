@@ -82,6 +82,14 @@
       "method": "Pre-gate Stage 1 Figma re-verification",
       "evidence": "Immediately before Stage 1 closure, page 29:4756 remained 🤖 Workflow with the same Style Guide, Components, and Main page sections, 1440/768/375 reference frames, and nine component sets.",
       "checkedAt": "2026-08-19T20:12:36.323Z"
+    },
+    {
+      "id": "VER-007",
+      "snapshot": "SRC-REPO-001",
+      "result": "Expected workflow output",
+      "method": "Pre-gate Stage 1 Git ancestry and workflow-output comparison",
+      "evidence": "Pinned implementation input e49ba2886a9a982c4d8d0aa31d2a7adf7460778d remains unchanged; intervening commits contain only workflow control and Stage 0/1 narrative audit output, with no frontend implementation edits.",
+      "checkedAt": "2026-08-19T20:13:10.481Z"
     }
   ],
   "artifacts": [
