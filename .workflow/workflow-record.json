@@ -313,11 +313,13 @@
       "id": "ART-TASK-P02-T03",
       "type": "TASK",
       "path": "Phase-02--Task-03.md",
-      "status": "Draft",
+      "status": "Reviewed",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
-      ]
+      ],
+      "statusChangedAt": "2026-08-20T01:59:35.957Z",
+      "statusEvidence": "Stage 9 decomposition review: Signup has a verifiable validation-only objective, prerequisite lineage, bounded component scope, exact state/error contracts, integrated responsive/accessibility/keyboard requirements, repository-supported validation, acceptance criteria, risks, and implementation-free ordered steps."
     },
     {
       "id": "ART-TASK-P03-T01",
