@@ -328,13 +328,18 @@
       "id": "ART-TASK-P02-T03",
       "type": "TASK",
       "path": "Phase-02--Task-03.md",
-      "status": "Reviewed",
+      "status": "Approved",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
       ],
-      "statusChangedAt": "2026-08-20T01:59:35.957Z",
-      "statusEvidence": "Stage 9 decomposition review: Signup has a verifiable validation-only objective, prerequisite lineage, bounded component scope, exact state/error contracts, integrated responsive/accessibility/keyboard requirements, repository-supported validation, acceptance criteria, risks, and implementation-free ordered steps."
+      "statusChangedAt": "2026-08-20T02:17:37.717Z",
+      "statusEvidence": "Human approval received in ChatGPT on 2026-08-19: approved Stage 9 task set; do not start the next stage.",
+      "statusBy": "Fernando Falcon",
+      "approvedRevision": {
+        "algorithm": "sha256",
+        "digest": "4005605565b9f1478f05dda644f0f2cf41e9669559ae10c56bfc7b2e2721cc5d"
+      }
     },
     {
       "id": "ART-TASK-P03-T01",
