@@ -277,13 +277,18 @@
       "id": "ART-TASK-P01-T01",
       "type": "TASK",
       "path": "Phase-01--Task-01.md",
-      "status": "Reviewed",
+      "status": "Approved",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
       ],
-      "statusChangedAt": "2026-08-20T01:58:26.523Z",
-      "statusEvidence": "Stage 9 decomposition review: the foundation task has an independently verifiable objective, source/repository references, prerequisites, bounded file scope, non-code ordered steps, integrated responsive/accessibility/state/error requirements, repository-supported validation, acceptance criteria, risks, discovery/deviation handling, and definition of done."
+      "statusChangedAt": "2026-08-20T02:16:02.601Z",
+      "statusEvidence": "Human approval received in ChatGPT on 2026-08-19: approved Stage 9 task set; do not start the next stage.",
+      "statusBy": "Fernando Falcon",
+      "approvedRevision": {
+        "algorithm": "sha256",
+        "digest": "a91052aad4723f2369df22b9937a1a9ce0b33419b00c96807c44777eb3ab71ee"
+      }
     },
     {
       "id": "ART-TASK-P02-T01",
