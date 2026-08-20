@@ -1,0 +1,262 @@
+---
+import signupBackground from '../assets/maker/bg-footer-squiggle.svg';
+---
+
+<section class="signup" aria-labelledby="signup-heading">
+	<img
+		class="signup__background"
+		src={signupBackground.src}
+		alt=""
+		aria-hidden="true"
+		width="1665"
+		height="228"
+	/>
+
+	<h2 id="signup-heading" class="signup__title">Get notified when we launch</h2>
+
+	<form class="signup__form" novalidate data-signup-form>
+		<div class="signup__field">
+			<label class="signup__label" for="signup-email">Email address</label>
+			<input
+				class="signup__input"
+				id="signup-email"
+				name="email"
+				type="email"
+				autocomplete="email"
+				inputmode="email"
+				placeholder="Email address"
+				required
+				aria-describedby="signup-email-error"
+			/>
+			<p
+				class="signup__error"
+				id="signup-email-error"
+				aria-live="polite"
+				aria-atomic="true"
+				data-signup-error
+			></p>
+		</div>
+
+		<button class="signup__submit" type="submit">Get notified</button>
+	</form>
+</section>
+
+<script>
+	const form = document.querySelector<HTMLFormElement>('[data-signup-form]');
+
+	if (form) {
+		const input = form.querySelector<HTMLInputElement>('#signup-email');
+		const error = form.querySelector<HTMLElement>('[data-signup-error]');
+
+		if (input && error) {
+			const clearError = () => {
+				error.textContent = '';
+				input.removeAttribute('aria-invalid');
+			};
+
+			const showError = (message: string) => {
+				input.setAttribute('aria-invalid', 'true');
+				error.textContent = message;
+			};
+
+			form.addEventListener('submit', (event) => {
+				event.preventDefault();
+
+				if (input.value.trim() === '') {
+					showError('Oops! Please add your email');
+					return;
+				}
+
+				if (!input.validity.valid) {
+					showError('Oops! That doesn’t look like an email address');
+					return;
+				}
+
+				clearError();
+			});
+
+			input.addEventListener('input', clearError);
+		}
+	}
+</script>
+
+<style>
+	.signup {
+		position: relative;
+		display: flex;
+		min-height: 230px;
+		width: 100%;
+		margin-block-start: var(--space-80);
+		padding-inline: var(--space-16);
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: var(--space-40);
+	}
+
+	.signup__background {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		width: 772px;
+		max-width: none;
+		height: auto;
+		opacity: 0.25;
+		transform: translate(-50%, -50%);
+		pointer-events: none;
+		user-select: none;
+	}
+
+	.signup__title,
+	.signup__form {
+		position: relative;
+		z-index: 1;
+	}
+
+	.signup__title {
+		width: min(100%, 343px);
+		margin: 0;
+		color: var(--color-neutral-0);
+		font-size: var(--font-heading-large);
+		font-weight: var(--font-weight-extra-bold);
+		line-height: var(--line-heading);
+		text-align: center;
+	}
+
+	.signup__form {
+		display: flex;
+		min-width: 0;
+		width: min(100%, 320px);
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--space-20);
+	}
+
+	.signup__field {
+		display: flex;
+		min-width: 0;
+		width: 100%;
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--space-6);
+	}
+
+	.signup__label {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip: rect(0, 0, 0, 0);
+		white-space: nowrap;
+		border: 0;
+	}
+
+	.signup__input,
+	.signup__submit {
+		height: 45px;
+		border-radius: var(--radius-full);
+		font-size: var(--font-label-medium);
+		font-weight: var(--font-weight-extra-bold);
+		line-height: var(--line-label);
+		transition:
+			background-color 200ms ease-in,
+			border-color 200ms ease-in,
+			color 200ms ease-in;
+	}
+
+	.signup__input {
+		width: 100%;
+		min-width: 0;
+		border: 1px solid transparent;
+		padding: var(--space-12) var(--space-20);
+		background: var(--color-blue-800);
+		color: var(--color-neutral-0);
+		caret-color: var(--color-cyan-400);
+	}
+
+	.signup__input::placeholder {
+		color: var(--color-blue-500);
+		opacity: 1;
+	}
+
+	.signup__error {
+		width: 100%;
+		margin: 0;
+		color: var(--color-red-400);
+		font-size: var(--font-caption);
+		font-weight: var(--font-weight-medium);
+		line-height: var(--line-caption);
+		overflow-wrap: anywhere;
+	}
+
+	.signup__error:empty {
+		display: none;
+	}
+
+	.signup__submit {
+		width: 100%;
+		border: 2px solid transparent;
+		padding: var(--space-12) var(--space-24);
+		background: var(--color-cyan-400);
+		color: var(--color-blue-800);
+		white-space: nowrap;
+		cursor: pointer;
+	}
+
+	@media (hover: hover) {
+		.signup__input:hover {
+			border-color: var(--color-cyan-400);
+		}
+
+		.signup__submit:hover {
+			border-color: var(--color-cyan-400);
+			background: transparent;
+			color: var(--color-neutral-0);
+		}
+	}
+
+	/* 320px input + 20px gap + 137px button + 32px page gutters need about 509px. */
+	@media (min-width: 31.875rem) {
+		.signup__title {
+			width: 100%;
+		}
+
+		.signup__form {
+			width: auto;
+			flex-direction: row;
+		}
+
+		.signup__field {
+			width: 320px;
+			flex: 0 0 320px;
+		}
+
+		.signup__submit {
+			width: 137px;
+			flex: 0 0 137px;
+		}
+	}
+
+	@media (min-width: 40rem) {
+		.signup {
+			margin-block-start: var(--space-96);
+			padding-inline: var(--space-32);
+		}
+
+		.signup__background {
+			width: 1120px;
+		}
+	}
+
+	@media (min-width: 75rem) {
+		.signup {
+			margin-block-start: var(--space-160);
+		}
+
+		.signup__background {
+			width: 1665px;
+		}
+	}
+</style>
