@@ -6,8 +6,8 @@
     "executionMode": "Gated"
   },
   "state": {
-    "stage": 7,
-    "status": "Ready",
+    "stage": 8,
+    "status": "In progress",
     "activeInputs": [
       "SRC-DS-001",
       "SRC-REPO-001"
