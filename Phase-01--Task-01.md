@@ -169,11 +169,17 @@ Do not implement downstream section behavior in this task.
 
 ## 15. Implementation Discoveries
 
-None recorded during decomposition. Any material source, repository, typography, or asset discrepancy discovered during implementation must be recorded against the owning upstream artifact/task before workaround.
+- Live Figma re-verification of Header `78:3069`, Hero `79:3868`, and Main-page references `32:10924`, `32:11410`, and `32:11529` remained materially unchanged. Repository comparison from `SRC-REPO-001` to the task-start state contained workflow/documentation output only and no `frontend/` implementation change.
+- The Figma component documentation explicitly identifies `docs/starter-code/assets/` as the canonical implementation source for the Maker logo, Hero artwork, accent, and scroll indicator. The implementation therefore copied the repository blobs rather than exporting design-only Figma fragments. The complete canonical starter asset set was copied to `frontend/src/assets/maker/` so Phase 02 tasks have stable shared paths.
+- Manrope was absent from the implementation baseline. A licensed Google Fonts delivery was selected for weights 500 and 800 through the document stylesheet; this adds no npm package, build plugin, client framework, or new application runtime boundary, but it is an external runtime font dependency.
+- `frontend/public/favicon.svg` and `frontend/public/favicon.ico` were Astro starter-only assets once the starter metadata was replaced. They were removed rather than replaced with an invented Maker favicon not present in the authorized source.
+- Fit-driven responsive transitions were selected at 40rem and 75rem based on Hero content/artwork fit rather than copying the 375/768/1440 reference widths. Static fit review at the 40rem threshold found the tablet-style decorative rails could meet the 540px copy measure; the rails were shifted outward before final validation so decorative artwork remains outside the primary copy region.
 
 ## 16. Deviations
 
-None during decomposition. Record any approved departure from paths, source semantics, dependency assumptions, or validation here during implementation.
+- No product, architecture, route, behavior, or component-scope deviation was introduced.
+- The task wording says to export Maker assets from the authorized design, while the current Figma component descriptions explicitly designate the existing repository assets as canonical implementation files. Using those exact repository blobs is treated as authoritative source resolution, not a visual deviation.
+- Manrope uses Google Fonts runtime delivery rather than a local font binary or package. This is a documented implementation dependency choice within the approved static boundary and preserves the required font family/weights without changing `package.json`.
 
 ## 18. Definition of Done
 
@@ -182,22 +188,20 @@ None during decomposition. Record any approved departure from paths, source sema
 - [ ] No required validation remains failing or unverified.
 - [ ] Input snapshots remain valid or an approved rebaseline is recorded.
 - [ ] Implementation-output repository snapshot and parent lineage are recorded.
-- [ ] Relevant task documentation/deviations/risks are updated.
+- [x] Relevant task documentation/deviations/risks are updated.
 - [ ] Canonical task/workflow projections reflect completion; no manual edit is made to `.workflow/generated/` or the workflow record.
-- [ ] Phase 02 tasks have stable shared foundations/assets and enough context to start.
+- [x] Phase 02 tasks have stable shared foundations/assets and enough context to start once this task is canonically completed.
 
 ## 19. Completion Report
 
-Complete during Stage 10 implementation:
-
-- Files created, modified, or deleted:
-- Input snapshot IDs used:
-- Task-start repository snapshot:
-- Implementation-output repository snapshot:
-- Source verification performed:
-- Behavior implemented:
-- Validation executed and results:
-- Deviations/discoveries:
-- Remaining risks:
-- Documentation updated:
-- Next unblocked task(s):
+- Files created, modified, or deleted: replaced the Astro starter page/layout presentation; created `global.css`, `Header.astro`, `Hero.astro`, and `frontend/src/assets/maker/`; removed the unreferenced starter `Welcome.astro`, Astro starter art, and starter favicons.
+- Input snapshot IDs used: `SRC-DS-001` plus the workflow-created task-start repository snapshot.
+- Task-start repository snapshot: workflow-owned and recorded by `design-workflow`.
+- Implementation-output repository snapshot: workflow-owned; recorded only when the canonical task-completion mutation succeeds.
+- Source verification performed: live Figma Header/Hero/Main-page verification plus GitHub ancestry/changed-file comparison against the immutable repository input baseline; no unexpected material change was found.
+- Behavior implemented: static Maker document shell, source-derived global foundations, accessible Maker brand header, responsive Hero structure/content/artwork, decorative scroll treatment, and downstream page-composition integration point only.
+- Validation executed and results: exact-commit Vercel preview runs the repository `build` script (`pnpm run build` → `astro build`) successfully; compiled DOM and source/CSS checks cover the task's semantic, asset, starter-removal, bounded-layout, responsive-fit, and scope constraints. Structured validation status/evidence remains workflow-owned until recorded through the CLI.
+- Deviations/discoveries: canonical repository artwork source, external Google Fonts Manrope delivery, starter favicon cleanup, and the responsive decorative-rail fit repair are documented above.
+- Remaining risks: external font availability can fall back to the declared system sans stack; full cross-section fidelity and final integrated responsive regression remain intentionally deferred to `P03-T01`.
+- Documentation updated: this task artifact's implementation discoveries, deviations, Definition of Done narrative, and completion report.
+- Next unblocked task(s): `P02-T01`, `P02-T02`, and `P02-T03` after P01-T01 is canonically validated/completed; none is started by this task.
