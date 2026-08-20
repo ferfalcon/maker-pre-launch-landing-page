@@ -289,11 +289,13 @@
       "id": "ART-TASK-P02-T01",
       "type": "TASK",
       "path": "Phase-02--Task-01.md",
-      "status": "Draft",
+      "status": "Reviewed",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
-      ]
+      ],
+      "statusChangedAt": "2026-08-20T01:58:48.631Z",
+      "statusEvidence": "Stage 9 decomposition review: Hero/Benefits has a verifiable objective, prerequisite lineage, bounded component scope, fit-driven responsive rules, integrated accessibility requirements, repository-supported validation, acceptance criteria, risks, and implementation-free ordered steps."
     },
     {
       "id": "ART-TASK-P02-T02",
