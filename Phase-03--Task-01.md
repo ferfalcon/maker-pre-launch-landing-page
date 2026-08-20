@@ -152,15 +152,15 @@ This task starts from the combined implementation outputs of all earlier tasks. 
 
 ## 13. Acceptance Criteria
 
-- [ ] `REQ-FR-001` / `SPEC-BEH-001`: final page presents Header/Hero → four Benefits → Free/Premium Pricing → Signup in approved logical order.
-- [ ] `REQ-NFR-001`: final visual system and hierarchy are source-faithful at supplied references, allowing documented implementation tolerances.
-- [ ] `REQ-NFR-002` / `SPEC-BEH-002` / `REQ-AR-006`: responsive/intermediate/zoom layouts reflow without overlap, clipping, semantic reorder, or primary horizontal scrolling.
-- [ ] `REQ-FR-006` / `REQ-BR-001`: Pricing remains exact informational Free → Premium content with no transactional affordances.
-- [ ] `SPEC-VAL-001`–`SPEC-VAL-003` / `SPEC-ACC-002`: Signup exact errors, stale-error clearing, accessible relationship/announcement, and valid no-op all pass.
-- [ ] `REQ-CON-004` and approved scope constraints: no unapproved product capability/runtime/integration/dependency is present.
-- [ ] Starter-only UI/assets are absent/unreferenced.
-- [ ] Final `pnpm build` and every required manual regression pass.
-- [ ] Task-start verification and implementation-output lineage are recorded for final review.
+- [x] `REQ-FR-001` / `SPEC-BEH-001`: final page presents Header/Hero → four Benefits → Free/Premium Pricing → Signup in approved logical order.
+- [x] `REQ-NFR-001`: final visual system and hierarchy are source-faithful at supplied references, allowing documented implementation tolerances.
+- [x] `REQ-NFR-002` / `SPEC-BEH-002` / `REQ-AR-006`: responsive/intermediate/zoom layouts reflow without overlap, clipping, semantic reorder, or primary horizontal scrolling.
+- [x] `REQ-FR-006` / `REQ-BR-001`: Pricing remains exact informational Free → Premium content with no transactional affordances.
+- [x] `SPEC-VAL-001`–`SPEC-VAL-003` / `SPEC-ACC-002`: Signup exact errors, stale-error clearing, accessible relationship/announcement, and valid no-op all pass.
+- [x] `REQ-CON-004` and approved scope constraints: no unapproved product capability/runtime/integration/dependency is present.
+- [x] Starter-only UI/assets are absent/unreferenced.
+- [x] Final `pnpm build` and every required manual regression pass with the implementation-environment note recorded in Section 16.
+- [ ] Task-start verification and implementation-output lineage are recorded for final review. The task-start lineage is verified; the exact implementation-output commit is bound by the workflow-owned completion command after this narrative commit.
 
 ## 14. Risks and Considerations
 
@@ -174,35 +174,36 @@ This task starts from the combined implementation outputs of all earlier tasks. 
 
 ## 15. Implementation Discoveries
 
-None recorded during decomposition. During integration, route material source/documentation/architecture discoveries to the owning upstream artifact instead of hiding them in final cleanup.
+- The current implementation already integrates all prerequisite outputs without a residual code defect. No frontend edit was justified by the final regression.
+- The Figma Email Input component set (`32:17773`) still exposes `Default`, `Active`, `Focus`, and `Error` variants. Direct node inspection confirms the active cyan treatment and error-copy treatment remain consistent with the approved Signup implementation; no hidden error-border requirement was introduced.
+- Starting `P03-T01` from the merge topology on `main` correctly failed repository-integrity preflight because the merged prerequisite implementation paths appeared after `SRC-REPO-009`. Re-starting from the canonical `P02-T03` completion-bookkeeping lineage resolved the topology mismatch without bypassing workflow checks.
 
 ## 16. Deviations
 
-None during decomposition. Record any final accepted fidelity tolerance, path/interface change, or validation limitation with evidence during implementation.
+- No product, design, architecture, dependency, or frontend-code deviation was required.
+- Validation environment note: sandboxed Chromium blocks direct navigation to external and local URLs with `ERR_BLOCKED_BY_ADMINISTRATOR`. Runtime authority was therefore split across Vercel and a local browser mirror: Vercel verified the exact task-start deployment as `READY`, returned the rendered page HTML with HTTP 200, and recorded a successful `pnpm run build` → `astro build`; Chromium then exercised a mirror of the current DOM/CSS/Signup JS for responsive, keyboard, validation, long-error, and reduced-motion behavior. The authoritative Figma 375/768/1440 frames and component variants were rendered and inspected directly. This limitation did not require or justify an implementation change.
 
 ## 18. Definition of Done
 
-- [ ] All prerequisite tasks are Complete and their outputs verified.
-- [ ] Final page objective and acceptance criteria pass across supplied and fit-driven widths.
-- [ ] Final build plus required visual/responsive/keyboard/accessibility/content/state/scope regressions pass.
-- [ ] No required validation remains failing or unverified.
-- [ ] Input/task-start snapshots remain valid or an approved rebaseline is recorded.
-- [ ] Final implementation-output snapshot and parent lineage are recorded.
-- [ ] Discoveries, deviations, and remaining non-blocking risks are documented.
-- [ ] Canonical task/workflow projections reflect completion without manual generated-state edits.
-- [ ] Repository is ready for Stage 11 final implementation review; no new scope remains hidden in integration work.
+- [x] All prerequisite tasks are Complete and their outputs verified.
+- [x] Final page objective and acceptance criteria pass across supplied and fit-driven widths.
+- [x] Final build plus required visual/responsive/keyboard/accessibility/content/state/scope regressions pass.
+- [x] No required validation remains failing or materially unverified; the browser-host restriction is mitigated and documented in Section 16.
+- [x] Input/task-start snapshots remain valid; no rebaseline was required.
+- [ ] Final implementation-output snapshot and parent lineage are recorded. The workflow-owned completion command will bind this narrative commit as the output snapshot.
+- [x] Discoveries, deviations, and remaining non-blocking risks are documented.
+- [ ] Canonical task/workflow projections reflect completion without manual generated-state edits. This is finalized by the workflow-owned completion command.
+- [x] Repository is ready for Stage 11 final implementation review; no new scope remains hidden in integration work.
 
 ## 19. Completion Report
 
-Complete during Stage 10 implementation:
-
-- Files created/modified/deleted:
-- Prerequisite outputs/task-start/final implementation-output snapshots:
-- Source verification performed:
-- Residual defects corrected:
-- Responsive/fidelity results:
-- Accessibility/keyboard/state/content/scope results:
-- Build/manual validation results:
-- Deviations/discoveries/remaining risks:
-- Documentation updated:
-- Readiness for final implementation review:
+- Files created/modified/deleted: no `frontend/` files changed; only this task narrative was updated with final integration evidence.
+- Prerequisite outputs/task-start/final implementation-output snapshots: `P01-T01`, `P02-T01`, `P02-T02`, and `P02-T03` were already Complete with recorded outputs. Canonical parent `0d4ae2c3ac1812c72b86a686967ce1c34da1eb4c` was used for task start; workflow start produced `98e47c699dca92a585ef80349d5c97d38fc42ab5` and `SRC-REPO-010`. This narrative commit is the implementation-output candidate to be bound by `task complete`.
+- Source verification performed: re-verified authorized Figma page `29:4756` (`🤖 Workflow`), sections `32:17743`, `32:18709`, `34:19665`; Main-page frames Desktop `32:10924` (1440×2562), Tablet `32:11410` (768×2903), Mobile `32:11529` (375×3466); Header/Hero/Benefit Card/Benefits/Pricing Card/Pricing/Signup/Email Input/Button component families; and current prerequisite repository output lineage.
+- Residual defects corrected: none. Integration/source review found no evidence-backed defect, so no unrelated refactor or CSS/JS tuning was introduced.
+- Responsive/fidelity results: authoritative Figma frame renders were inspected at 375/768/1440. Current layout rules preserve the approved compositions. Chromium reflow checks at 320, 375, 500, 509, 510, 520, 639, 640, 768, 991, 992, 1199, 1200, and 1440 showed no page-level horizontal overflow. Fit-driven transitions remain at 510 px (Signup row), 640 px (Hero/tablet composition), 992 px (Pricing two-column grid), and 1200 px (Benefits desktop grid).
+- Accessibility/keyboard/state/content/scope results: exactly one H1 and one main; headings/source order remain logical; the only focusable controls are Email then Get notified; Pricing has zero focus targets; both controls expose a visible 3 px cyan focus outline with 4 px offset; invalid+focus remains visible; decorative art stays silent and Maker is named. Empty and whitespace-only input return `Oops! Please add your email`; malformed returns `Oops! That doesn’t look like an email address`; edit clears stale error/`aria-invalid`; valid submit preserves the email, clears error state, remains enabled, and does not navigate/reset/add a success/loading state. Enter and Space exercise the same validation behavior. Long error copy wraps at 320 px without overflow. Reduced-motion forces transition durations to `0.01ms`.
+- Build/manual validation results: exact task-start Vercel preview `dpl_25p6r8K5JZwedTCcmDZ14DBrSzFY` for commit `98e47c699dca92a585ef80349d5c97d38fc42ab5` is `READY`; build logs show `pnpm run build`, `astro build`, one static `/index.html`, and successful deployment. Vercel rendered HTML returned HTTP 200 and matches the approved section/content/Signup script. Manual visual, responsive, semantic, keyboard, state, side-effect, starter/scope, and source checks passed with the environment note in Section 16.
+- Deviations/discoveries/remaining risks: no implementation deviation and no blocking risk. The only tooling limitation is direct Chromium URL navigation in this sandbox; it was mitigated as described in Section 16.
+- Documentation updated: this `Phase-03--Task-01.md` implementation discovery/deviation/acceptance/DoD/completion evidence.
+- Readiness for final implementation review: ready. No new product scope remains; the next action after workflow-owned task completion is the Stage 10/Stage 11 gate selected by the canonical projection.
