@@ -301,11 +301,13 @@
       "id": "ART-TASK-P02-T02",
       "type": "TASK",
       "path": "Phase-02--Task-02.md",
-      "status": "Draft",
+      "status": "Reviewed",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
-      ]
+      ],
+      "statusChangedAt": "2026-08-20T01:59:12.805Z",
+      "statusEvidence": "Stage 9 decomposition review: Pricing has a verifiable static objective, prerequisite lineage, bounded component scope, explicit non-transactional behavior, fit-driven responsive rules, accessibility requirements, repository-supported validation, acceptance criteria, risks, and implementation-free ordered steps."
     },
     {
       "id": "ART-TASK-P02-T03",
