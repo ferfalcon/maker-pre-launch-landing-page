@@ -1,0 +1,35 @@
+---
+import makerLogo from '../assets/maker/logo.svg';
+---
+
+<header class="site-header">
+	<img class="site-header__logo" src={makerLogo.src} width="120" height="35" alt="Maker" />
+</header>
+
+<style>
+	.site-header {
+		display: flex;
+		width: 100%;
+		justify-content: center;
+		padding-inline: var(--space-16);
+	}
+
+	.site-header__logo {
+		width: 120px;
+		height: 35px;
+		flex: none;
+	}
+
+	@media (min-width: 40rem) {
+		.site-header {
+			justify-content: flex-start;
+			padding-inline: var(--space-32);
+		}
+	}
+
+	@media (min-width: 75rem) {
+		.site-header {
+			padding-inline: max(var(--space-32), calc((100vw - var(--content-max)) / 2));
+		}
+	}
+</style>
