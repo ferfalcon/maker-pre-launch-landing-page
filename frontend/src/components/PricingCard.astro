@@ -1,6 +1,4 @@
 ---
-import checkIcon from '../assets/maker/icon-check.svg';
-
 interface Props {
 	plan: 'free' | 'premium';
 	title: string;
@@ -41,10 +39,10 @@ const {
 		<p class="pricing-card__description">{description}</p>
 	</div>
 
-	<div class="pricing-card__price" aria-label={priceSuffix ? `${price} ${priceSuffix}` : price}>
+	<p class="pricing-card__price">
 		<span class="pricing-card__price-value">{price}</span>
-		{priceSuffix && <span class="pricing-card__price-suffix" aria-hidden="true">{priceSuffix}</span>}
-	</div>
+		{priceSuffix && <span class="pricing-card__price-suffix">{priceSuffix}</span>}
+	</p>
 
 	<ul class="pricing-card__features">
 		{features.map((feature) => (
@@ -97,7 +95,8 @@ const {
 	}
 
 	.pricing-card__title,
-	.pricing-card__description {
+	.pricing-card__description,
+	.pricing-card__price {
 		width: 100%;
 		margin: 0;
 	}
