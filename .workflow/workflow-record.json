@@ -325,11 +325,13 @@
       "id": "ART-TASK-P03-T01",
       "type": "TASK",
       "path": "Phase-03--Task-01.md",
-      "status": "Draft",
+      "status": "Reviewed",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
-      ]
+      ],
+      "statusChangedAt": "2026-08-20T02:00:04.224Z",
+      "statusEvidence": "Stage 9 decomposition review: final integration has a verifiable end-to-end objective, complete prerequisite graph, bounded residual-fix scope, explicit anti-scope-creep constraints, full responsive/visual/accessibility/state regression, repository-supported validation, acceptance criteria, risks, and implementation-free ordered steps."
     }
   ],
   "traceItems": [],
