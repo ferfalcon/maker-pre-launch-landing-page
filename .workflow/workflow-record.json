@@ -294,13 +294,18 @@
       "id": "ART-TASK-P02-T01",
       "type": "TASK",
       "path": "Phase-02--Task-01.md",
-      "status": "Reviewed",
+      "status": "Approved",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
       ],
-      "statusChangedAt": "2026-08-20T01:58:48.631Z",
-      "statusEvidence": "Stage 9 decomposition review: Hero/Benefits has a verifiable objective, prerequisite lineage, bounded component scope, fit-driven responsive rules, integrated accessibility requirements, repository-supported validation, acceptance criteria, risks, and implementation-free ordered steps."
+      "statusChangedAt": "2026-08-20T02:16:34.179Z",
+      "statusEvidence": "Human approval received in ChatGPT on 2026-08-19: approved Stage 9 task set; do not start the next stage.",
+      "statusBy": "Fernando Falcon",
+      "approvedRevision": {
+        "algorithm": "sha256",
+        "digest": "6b4398b54584a01ce11dd2eddaf9b1e92a2579d1f50f96aef1f2ea3f9202c52c"
+      }
     },
     {
       "id": "ART-TASK-P02-T02",
