@@ -873,7 +873,20 @@
       "references": [],
       "output": null,
       "blocker": null,
-      "validation": []
+      "validation": [
+        {
+          "name": "Task acceptance validation",
+          "kind": "Other",
+          "required": true,
+          "status": "Not executed",
+          "expected": "pnpm build exits 0 and every manual check defined in Phase-02--Task-03.md Section 12 passes against the verified task-start snapshots.",
+          "command": "pnpm build",
+          "environment": "frontend/ plus browser/manual review",
+          "evidence": [],
+          "reason": "Defined during Stage 9; execution is deferred to Stage 10 implementation.",
+          "references": []
+        }
+      ]
     },
     {
       "id": "P03-T01",
