@@ -174,6 +174,14 @@
       "method": "Pre-gate Stage 6 Git ancestry and changed-file comparison",
       "evidence": "Pinned repository input e49ba2886a9a982c4d8d0aa31d2a7adf7460778d remains the merge-base ancestor through 9cbf17967f0c78e2803c5cff127a9746ac4fddb4. Comparison shows only workflow-control/generated files and workflow narrative artifacts, including the Stage 6 IMPLEMENTATION-BRIEF architecture decision and source-verification bookkeeping; no frontend implementation files changed. Current repository evidence still shows the minimal Astro single-page baseline used for the not-required architecture decision.",
       "checkedAt": "2026-08-19T23:47:54.084Z"
+    },
+    {
+      "id": "VER-018",
+      "snapshot": "SRC-DS-001",
+      "result": "Unchanged",
+      "method": "Pre-gate Stage 7 live Figma structure re-verification",
+      "evidence": "Live read-only Stage 7 inspection of authorized Figma page 29:4756 confirms Style Guide 32:17743, Components 32:18709, and Main page 34:19665 remain present. Desktop/Tablet/Mobile references 32:10924/32:11410/32:11529 remain at 1440/768/375 widths with Hero, Benefits, Pricing, and Signup section instances. Component families for Email Input 32:17773, Button 32:17765, Benefit Card 70:2298, Pricing Card 71:2973, Signup 72:2835, Header 78:3069, Hero 79:3868, Benefits 79:13338, and Pricing 79:14668 remain in scope, together with the recorded Maker logo, Hero/Benefit illustrations, pricing/check icons, scroll cue, and decorative shapes. No material scoped design change affecting the Stage 7 implementation plan was detected.",
+      "checkedAt": "2026-08-20T00:06:20.255Z"
     }
   ],
   "artifacts": [
