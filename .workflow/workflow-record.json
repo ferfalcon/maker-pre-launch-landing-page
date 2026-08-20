@@ -311,13 +311,18 @@
       "id": "ART-TASK-P02-T02",
       "type": "TASK",
       "path": "Phase-02--Task-02.md",
-      "status": "Reviewed",
+      "status": "Approved",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
       ],
-      "statusChangedAt": "2026-08-20T01:59:12.805Z",
-      "statusEvidence": "Stage 9 decomposition review: Pricing has a verifiable static objective, prerequisite lineage, bounded component scope, explicit non-transactional behavior, fit-driven responsive rules, accessibility requirements, repository-supported validation, acceptance criteria, risks, and implementation-free ordered steps."
+      "statusChangedAt": "2026-08-20T02:17:03.638Z",
+      "statusEvidence": "Human approval received in ChatGPT on 2026-08-19: approved Stage 9 task set; do not start the next stage.",
+      "statusBy": "Fernando Falcon",
+      "approvedRevision": {
+        "algorithm": "sha256",
+        "digest": "70d6e4612e01425443fd11ed472db76f84273beddd8e49c044a80909f175f02b"
+      }
     },
     {
       "id": "ART-TASK-P02-T03",
