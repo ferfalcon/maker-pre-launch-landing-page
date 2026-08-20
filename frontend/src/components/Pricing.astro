@@ -1,0 +1,146 @@
+---
+import PricingCard from './PricingCard.astro';
+import freeIcon from '../assets/maker/icon-free.svg';
+import paidIcon from '../assets/maker/icon-paid.svg';
+
+const plans = [
+	{
+		plan: 'free' as const,
+		title: 'Dip your toe',
+		description: 'Just getting started? No problem at all! Our free plan will take you a long way.',
+		price: 'Free',
+		features: [
+			'Unlimited products',
+			'Basic analytics',
+			'Limited marketplace exposure',
+			'10% fee per transaction',
+		],
+		icon: freeIcon.src,
+		iconWidth: 46,
+		iconHeight: 46,
+	},
+	{
+		plan: 'premium' as const,
+		title: 'Dive right in',
+		description: 'Ready for the big time? Our paid plan will help you take your business to the next level.',
+		price: '$25.00',
+		priceSuffix: '/ month',
+		features: [
+			'Custom domain',
+			'Advanced analytics and reports',
+			'High marketplace visibility',
+			'5% fee per transaction',
+		],
+		icon: paidIcon.src,
+		iconWidth: 51,
+		iconHeight: 65,
+	},
+];
+---
+
+<section class="pricing" aria-labelledby="pricing-heading">
+	<div class="pricing__header">
+		<h2 id="pricing-heading" class="pricing__title">Our pricing plans</h2>
+		<p class="pricing__description">
+			We only make money when our creators make money. Our plans are always affordable, and it’s completely free to get started.
+		</p>
+	</div>
+
+	<div class="pricing__cards">
+		{plans.map((plan) => (
+			<div class:list={['pricing__card-slot', `pricing__card-slot--${plan.plan}`]}>
+				<PricingCard {...plan} />
+			</div>
+		))}
+	</div>
+</section>
+
+<style>
+	.pricing {
+		display: flex;
+		width: 100%;
+		margin-block-start: var(--space-80);
+		padding-inline: var(--space-16);
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-80);
+	}
+
+	.pricing__header {
+		display: flex;
+		min-width: 0;
+		width: min(100%, 540px);
+		flex-direction: column;
+		align-items: center;
+		gap: var(--space-24);
+		text-align: center;
+	}
+
+	.pricing__title,
+	.pricing__description {
+		width: 100%;
+		margin: 0;
+	}
+
+	.pricing__title {
+		color: var(--color-neutral-0);
+		font-size: var(--font-heading-large);
+		font-weight: var(--font-weight-extra-bold);
+		line-height: var(--line-display-small);
+	}
+
+	.pricing__description {
+		color: var(--color-neutral-400);
+		font-size: var(--font-body-medium);
+		font-weight: var(--font-weight-medium);
+		line-height: var(--line-body);
+	}
+
+	.pricing__cards {
+		display: flex;
+		min-width: 0;
+		width: min(100%, 445px);
+		flex-direction: column;
+		gap: var(--space-80);
+	}
+
+	.pricing__card-slot {
+		min-width: 0;
+		width: 100%;
+	}
+
+	/* At 40rem, the 445px source card measure fits comfortably with page gutters. */
+	@media (min-width: 40rem) {
+		.pricing {
+			margin-block-start: var(--space-96);
+			padding-inline: var(--space-32);
+			gap: var(--space-96);
+		}
+
+		.pricing__title {
+			line-height: var(--line-heading);
+		}
+	}
+
+	/* Two 445px cards plus the source-like 30px gap need 920px before they can form a readable row. */
+	@media (min-width: 62rem) {
+		.pricing__cards {
+			display: grid;
+			width: min(100%, 920px);
+			grid-template-columns: repeat(2, minmax(0, 445px));
+			gap: 30px;
+			align-items: start;
+		}
+
+		.pricing__card-slot--free {
+			padding-block-start: var(--space-12);
+		}
+	}
+
+	@media (min-width: 75rem) {
+		.pricing {
+			margin-block-start: var(--space-160);
+			gap: var(--space-112);
+		}
+	}
+</style>
