@@ -272,6 +272,16 @@
         "algorithm": "sha256",
         "digest": "98b49d1ba5e06d9421481dc095b3786e6186075861b36e8ddf32890eed82c34c"
       }
+    },
+    {
+      "id": "ART-TASK-P01-T01",
+      "type": "TASK",
+      "path": "Phase-01--Task-01.md",
+      "status": "Draft",
+      "baseline": [
+        "SRC-DS-001",
+        "SRC-REPO-001"
+      ]
     }
   ],
   "traceItems": [],
@@ -739,7 +749,18 @@
       ]
     }
   ],
-  "tasks": [],
+  "tasks": [
+    {
+      "id": "P01-T01",
+      "status": "Not started",
+      "baseline": "SRC-REPO-001",
+      "prerequisites": [],
+      "references": [],
+      "output": null,
+      "blocker": null,
+      "validation": []
+    }
+  ],
   "profileTransitions": [],
   "implementationReviews": [],
   "toolkit": {
