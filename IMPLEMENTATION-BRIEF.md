@@ -725,28 +725,203 @@ Corrections applied during Pass 1 and later consistency review:
 
 ## 5. Repository Context
 
-- Repository snapshot: `SRC-REPO-*`
-- Existing files and conventions:
-- Reusable components, tokens, utilities, and tests:
-- Confirmed commands:
-- Constraints and technical debt:
+### Observed repository baseline
 
-Distinguish observed paths from proposed paths and do not rely on branch changes outside the pinned commit.
+- Repository snapshot: `SRC-REPO-001` at pinned commit `e49ba2886a9a982c4d8d0aa31d2a7adf7460778d`.
+- Implementation root: existing `frontend/` Astro project; Stage 7 planning remains constrained to this root for application work.
+- Existing runtime/tooling:
+  - `frontend/package.json` is ESM, requires Node `>=22.12.0`, and currently has Astro `^7.2.3` as its only application dependency.
+  - Existing scripts are `dev` (`astro dev`), `build` (`astro build`), `preview` (`astro preview`), and `astro` (`astro`).
+  - `frontend/astro.config.mjs` is the default empty Astro configuration; no adapter, framework integration, middleware, backend runtime, or third-party service is configured.
+  - `frontend/tsconfig.json` extends `astro/tsconfigs/strict`.
+- Existing application files:
+  - `frontend/src/pages/index.astro` is the only page and currently renders the starter `Welcome.astro` inside `Layout.astro`.
+  - `frontend/src/layouts/Layout.astro` is a starter document shell with `Astro Basics` metadata and only minimal page-reset styling.
+  - `frontend/src/components/Welcome.astro` is Astro starter content with starter-only inline CSS.
+  - `frontend/src/assets/astro.svg` and `frontend/src/assets/background.svg` are starter-only assets.
+  - `frontend/public/` currently contains only `favicon.ico` and `favicon.svg`.
+- Existing conventions/instructions:
+  - `frontend/AGENTS.md` requires background mode when the dev server is started: `astro dev --background`, with `astro dev stop`, `astro dev status`, and `astro dev logs` for management.
+  - Root project documentation expects semantic HTML5, CSS custom properties, Flexbox/Grid, a mobile-first workflow, Astro, and TypeScript.
+- Reusable application code: none beyond the starter shell. There are no project-specific components, design tokens, shared utilities, form helpers, data modules, or test helpers to preserve.
+- Automated validation: no repository test, lint, or dedicated type-check script is configured. Stage 7 therefore does not invent `test`, `lint`, or `check` commands as existing validation.
+
+### Proposed repository shape
+
+The following paths are **proposed**, not currently present:
+
+- `frontend/src/styles/global.css` — CSS custom properties derived from approved design-system roles plus the global reset, base typography, page surface, and shared layout primitives that genuinely span sections.
+- `frontend/src/components/Header.astro` — Maker brand/header markup used by the Hero composition.
+- `frontend/src/components/Hero.astro` — Hero content, illustration composition, scroll cue, and responsive layout; may compose `Header.astro` rather than duplicating header markup.
+- `frontend/src/components/BenefitCard.astro` and `frontend/src/components/Benefits.astro` — one typed static card contract plus the four approved benefits in source order.
+- `frontend/src/components/PricingCard.astro` and `frontend/src/components/Pricing.astro` — one typed static plan-card contract plus Free/Premium presentation in source order.
+- `frontend/src/components/SignupForm.astro` — signup heading, native form controls, scoped visual states, and package-free client-side validation behavior.
+- `frontend/src/assets/maker/` — locally stored exports of the authorized Maker logo, Hero/Benefit illustrations, pricing/check icons, scroll cue, and decorative shapes needed by the implementation. Exact filenames are implementation details, but each asset must be traceable to an authorized `SRC-DS-001` node.
+
+Component-specific CSS should remain scoped in the owning `.astro` file when the rule is local to that component; `global.css` should not become a dumping ground for section-specific styling. Static benefit and pricing data may live in the section component frontmatter because there is no approved dynamic data source or reuse boundary requiring a separate data layer.
+
+### Confirmed commands and execution constraints
+
+From `frontend/`, the repository confirms `pnpm install`, `pnpm dev`, `pnpm build`, `pnpm preview`, and `pnpm astro ...`. When a development server is actually started, follow `frontend/AGENTS.md` and use Astro background mode rather than a blocking foreground process. `pnpm build` is the strongest currently configured repository validation command and must pass after material implementation work.
+
+No new framework integration, client UI framework, state library, form library, backend adapter, persistence layer, or test framework is justified by the approved scope. If implementation reveals a need for a new package, that dependency must be justified against an approved `PLAN-*` item before addition rather than being introduced incidentally.
+
+### Repository constraints and technical debt relevant to implementation
+
+- The current application is still the Astro starter, so the starter component, starter assets, starter metadata, and starter styles must be deliberately replaced rather than layered under the Maker page.
+- Source-authorized Maker artwork is not yet present in the repository and must be exported from the authorized Figma scope during implementation instead of redrawn from memory or substituted with unrelated assets.
+- Figma establishes Manrope as the typography family, but the repository contains no Manrope font files or font-delivery dependency. The implementation must choose a licensed, repository-appropriate delivery method before fidelity validation; it must not silently substitute a different family or add an external font service without reviewing that dependency.
+- Exact responsive transition thresholds are not known in advance and must be selected from observed layout failure/fit conditions while preserving the 375/768/1440 reference outcomes.
+- The repository currently has no automated accessibility, interaction, visual-regression, test, or lint harness. Stage 7 relies on the existing build plus explicit runtime/manual checks unless a later approved task justifies additional tooling.
 
 ## 6. Implementation Plan
 
-### PLAN-001 — Plan item title
+### PLAN-001 — Replace the Astro starter with the Maker page foundation
 
-- Objective:
-- Requirement and specification references:
-- Source snapshots:
+- Objective: Establish the semantic page shell, approved visual foundations, local source assets, and top-level component composition without introducing product behavior beyond the approved static landing page.
+- Requirement and specification references: `REQ-FR-001`, `REQ-NFR-001`, `REQ-AR-001`, `REQ-AR-005`, `REQ-CON-001`, `REQ-CON-002`, `SPEC-BEH-001`, `SPEC-ACC-001`, `SPEC-ACC-003`.
+- Design references: `DES-001`–`DES-005`.
+- Source snapshots: `SRC-DS-001`, `SRC-REPO-001`.
 - Files and modules:
-- Dependencies:
-- Implementation steps:
-- Integrated accessibility, responsive, state, error, and test work:
-- Validation:
+  - Modify existing `frontend/src/layouts/Layout.astro` — replace starter metadata/shell styling, import global foundations, and preserve a semantic document container.
+  - Modify existing `frontend/src/pages/index.astro` — replace `Welcome` with the Maker page composition in approved source order.
+  - Create proposed `frontend/src/styles/global.css` — source-derived CSS custom properties, reset/base rules, typography roles, bounded page/layout primitives, and shared focus/motion foundations only where genuinely global.
+  - Create proposed `frontend/src/components/Header.astro` and `frontend/src/components/Hero.astro`.
+  - Create proposed `frontend/src/assets/maker/` contents from authorized Figma assets; keep the Maker brand equivalent accessible and decorative artwork silent per `SPEC-ACC-003`.
+  - Delete existing `frontend/src/components/Welcome.astro`, `frontend/src/assets/astro.svg`, and `frontend/src/assets/background.svg` after references are removed.
+- Dependencies and ordering: First implementation item. Source asset export and typography delivery must be resolved before visual-fidelity sign-off, but no backend or UI-framework dependency is required.
+- Implementation approach:
+  - Re-verify `SRC-DS-001`, then export required Maker vectors/illustrations from the authorized page/components into local assets.
+  - Translate approved color, spacing, radius, and typography roles into CSS custom properties rather than copying unrelated starter CSS.
+  - Keep exactly one primary page heading and preserve logical source order independent of decorative positioning.
+  - Keep Hero artwork and scroll cue non-interactive/decorative as specified; do not make visual positioning dictate DOM reading order.
+  - Select a Manrope delivery strategy that is licensed and local/repository-appropriate; if it requires a new package or external service, record/justify that dependency before adding it.
+- Integrated accessibility, responsive, state, error, and test work: Establish semantic heading/landmark order and image semantics here; establish bounded/mobile-first foundations so later sections can reflow without page-level horizontal overflow. Do not defer these foundations to final cleanup.
+- Validation: `pnpm build`; runtime inspection of document title/metadata, one-H1 hierarchy, DOM reading order, Maker brand text equivalent, decorative-image semantics, and absence of leftover Astro starter content/assets.
+- Risks/assumptions: Font delivery is not present in the baseline; source artwork export is required; exact responsive thresholds remain intentionally unresolved until fit testing.
 
-Do not create a separate late accessibility implementation phase.
+### PLAN-002 — Implement the responsive Hero and Benefits content system
+
+- Objective: Build the source-faithful Hero and four Benefits so their desktop, tablet, mobile, intermediate-width, and reflow behavior follows content fit rather than hard-coded source-frame breakpoints.
+- Requirement and specification references: `REQ-FR-001`, `REQ-FR-002`, `REQ-NFR-001`, `REQ-NFR-002`, `REQ-AR-005`, `REQ-AR-006`, `REQ-CON-007`, `SPEC-BEH-001`, `SPEC-BEH-002`, `SPEC-ACC-003`.
+- Design references: `DES-004`–`DES-006`, `DES-RWD-001`–`DES-RWD-003`, `DES-RWD-006`.
+- Source snapshots: `SRC-DS-001`, `SRC-REPO-001`.
+- Files and modules:
+  - Modify proposed `frontend/src/components/Hero.astro` and `Header.astro`.
+  - Create proposed `frontend/src/components/BenefitCard.astro` and `frontend/src/components/Benefits.astro`.
+  - Use proposed local Maker Hero/Benefit assets under `frontend/src/assets/maker/`.
+  - Modify `frontend/src/pages/index.astro` only as needed for section integration.
+- Dependencies and ordering: Depends on `PLAN-001` foundations/assets. `PLAN-002` and `PLAN-003` may proceed independently after the shared global foundations are stable because they own different component files.
+- Implementation approach:
+  - Model each benefit as static component props/data rather than a dynamic data service.
+  - Use mobile-first Grid/Flexbox and fluid sizing; transition Hero side artwork to the mobile top cluster only when the current arrangement begins to collide/compress, and transition Benefits from centered stacks → rows → four-column comparison only when available width supports the next layout.
+  - Preserve source order in the DOM through all layout modes and keep artwork decorative when adjacent text carries the meaning.
+  - Record the final CSS transition thresholds and the observed fit/failure rationale in the implementation change, rather than claiming 375/768/1440 are mandatory breakpoints.
+- Integrated accessibility, responsive, state, error, and test work: Maintain meaningful heading levels, decorative image treatment, zoom/reflow access, long-text wrapping, and non-focusable scroll cue as the components are built.
+- Validation: `pnpm build`; visual comparison at the supplied 375, 768, and 1440 references; representative intermediate-width and wider/narrower reflow checks selected around actual fit transitions; confirm source order, no overlap/clipping, and no primary-content horizontal page scrolling.
+- Risks/assumptions: Exact thresholds are implementation measurements; source artwork may require careful SVG sizing/cropping to match Figma without absolute-positioning content semantics.
+
+### PLAN-003 — Implement the pricing comparison as static responsive content
+
+- Objective: Reproduce the Free/Premium pricing hierarchy and responsive comparison behavior without introducing selection, checkout, billing, or other transactional behavior.
+- Requirement and specification references: `REQ-FR-002`, `REQ-FR-006`, `REQ-BR-001`, `REQ-NFR-001`, `REQ-NFR-002`, `REQ-AR-005`, `REQ-AR-006`, `SPEC-BEH-001`, `SPEC-BEH-002`, `SPEC-ACC-003`.
+- Design references: `DES-004`, `DES-007`, `DES-RWD-001`, `DES-RWD-004`, `DES-RWD-006`.
+- Source snapshots: `SRC-DS-001`, `SRC-REPO-001`.
+- Files and modules:
+  - Create proposed `frontend/src/components/PricingCard.astro` and `frontend/src/components/Pricing.astro`.
+  - Use proposed pricing/check assets under `frontend/src/assets/maker/`.
+  - Modify `frontend/src/pages/index.astro` only as needed for section integration.
+- Dependencies and ordering: Depends on `PLAN-001`; may proceed in parallel with `PLAN-002` after shared foundations are stable.
+- Implementation approach:
+  - Use typed/static props for plan name, description, displayed price, and feature rows; keep source-authored Free → Premium order.
+  - Keep plan icons/checkmarks decorative where text already conveys the meaning.
+  - Use a side-by-side comparison only while both cards retain source-like comfortable measures; stack Free → Premium when the comparison would become too narrow.
+  - Do not render links, buttons, selection state, hover affordances, or payment behavior that the approved baseline does not contain.
+- Integrated accessibility, responsive, state, error, and test work: Use semantic headings/lists for plan/features, preserve text contrast roles from the source, and test long/reflowed content within card bounds as part of this item.
+- Validation: `pnpm build`; content comparison against approved plan names/price/features; supplied-reference and intermediate-width visual checks; confirm pricing has no focusable/transactional controls and retains Free → Premium order.
+- Risks/assumptions: Card heights may need content-driven rather than fixed sizing at intermediate widths to avoid clipping while retaining source proportions.
+
+### PLAN-004 — Implement the accessible signup form states and validation-only behavior
+
+- Objective: Build the final signup section and its exact submit-time validation behavior using native form semantics and package-free client-side logic, including source-supported hover/focus/error states and the approved valid-submit no-op.
+- Requirement and specification references: `REQ-FR-002`–`REQ-FR-005`, `REQ-DR-001`, `REQ-AR-001`–`REQ-AR-004`, `REQ-AR-006`, `REQ-CON-006`, `SPEC-BEH-002`, `SPEC-INT-001`, `SPEC-INT-002`, `SPEC-VAL-001`–`SPEC-VAL-003`, `SPEC-ACC-001`, `SPEC-ACC-002`, `SPEC-ACC-004`, `SPEC-DATA-001`.
+- Design references: `DES-008`, `DES-RWD-005`, `DES-RWD-006`, `DES-INT-001`–`DES-INT-004`.
+- Source snapshots: `SRC-DS-001`, `SRC-REPO-001`.
+- Files and modules:
+  - Create proposed `frontend/src/components/SignupForm.astro`.
+  - Use proposed signup background asset under `frontend/src/assets/maker/`.
+  - Modify `frontend/src/pages/index.astro` for final section integration.
+- Dependencies and ordering: Depends on `PLAN-001` global foundations and source assets; otherwise independent of Benefits/Pricing implementation until final integration.
+- Implementation approach:
+  - Render a native `<form novalidate>`, one `type="email"` control with accessible name `Email address`, and a native submit button named `Notify`; suppress browser validation bubbles so project-defined messages are authoritative while still using native email validity semantics.
+  - On submit, prevent navigation/reload. Empty sanitized value shows exactly `Oops! Please add your email`; otherwise native single-email invalidity shows exactly `Oops! That doesn’t look like an email address`.
+  - Expose invalid state and message association programmatically (for example `aria-invalid` plus a stable described/error relationship) and use an announcement mechanism that surfaces newly inserted error text without moving focus.
+  - On input after an error, clear stale visible/programmatic error state. On valid submit, clear any error and preserve the current value; perform no request, storage, delivery, navigation, reset, loading, disabled, or success behavior.
+  - Implement Email Input `Active` and Button `Hover` as hover-capable pointer feedback; keep explicit focus-visible styling distinct and keep error + focus recognizable together. The observed 200 ms ease-in transition may be used, but settled states must remain understandable without motion.
+  - Keep controls inline while they fit comfortably and stack them when the group would compress/overflow; do not use 375/768 as automatic breakpoint values.
+- Integrated accessibility, responsive, state, error, and test work: Keyboard order, visible focus, error association/announcement, hover-versus-focus distinction, invalid-state precedence, motion independence, mobile stacking, long error text, and reflow are implemented together in this item.
+- Validation: `pnpm build`; keyboard-only operation; hover/focus/error visual checks; submit empty, whitespace-only, malformed, and valid single-email cases; verify stale error clearing on edit; verify valid submit retains value and causes no navigation/reload/network/storage/success state; check inline/stacked form behavior at supplied and fit-driven intermediate widths.
+- Risks/assumptions: Exact assistive-technology announcement technique is an implementation choice constrained by `SPEC-ACC-002`; no formal browser/AT matrix is source-authorized.
+
+### PLAN-005 — Integrate, fidelity-tune, and run the final regression pass
+
+- Objective: Integrate the completed sections into the single Maker page, resolve only residual fidelity/reflow defects, and verify the approved scope end-to-end without turning final validation into a late accessibility or responsive implementation phase.
+- Requirement and specification references: All approved `REQ-*` and `SPEC-*` items affected by `PLAN-001`–`PLAN-004`, with emphasis on `REQ-NFR-001`, `REQ-NFR-002`, `REQ-AR-006`, `REQ-CON-004`, `SPEC-BEH-001`, and `SPEC-BEH-002`.
+- Design references: `DES-001`–`DES-008`, `DES-RWD-001`–`DES-RWD-006`, `DES-INT-001`–`DES-INT-004`.
+- Source snapshots: `SRC-DS-001`, `SRC-REPO-001`.
+- Files and modules: Modify only the existing/proposed page, layout, global styles, components, and Maker assets already owned by `PLAN-001`–`PLAN-004`; do not create a new abstraction solely for final cleanup.
+- Dependencies and ordering: Runs after `PLAN-001`–`PLAN-004` are individually implemented and locally validated.
+- Implementation approach:
+  - Re-verify the time-bound Figma source before final fidelity comparison.
+  - Confirm top-level page order and section spacing as one continuous composition; tune shared or owning-component CSS where residual differences are demonstrated.
+  - Confirm every chosen responsive threshold corresponds to a documented fit/failure condition and that no source-frame width was copied by habit.
+  - Remove dead starter references/files and prevent accidental scope expansion such as backend submission, plan interaction, analytics, extra routes, or unsupported motion.
+- Integrated accessibility, responsive, state, error, and test work: This item verifies and repairs residual defects only; semantics, keyboard/focus/error behavior, image treatment, responsive layout, and validation have already been implemented in their owning items.
+- Validation:
+  - Run `pnpm build` from `frontend/` and require success.
+  - Start the Astro development server in the repository-required background mode when runtime inspection is needed.
+  - Compare the page against the 375, 768, and 1440 Figma reference compositions, plus intermediate widths around each observed layout transition and a wider/narrower reflow sample.
+  - Verify no material overlap, clipping, or unintended page-level horizontal scrolling; verify long/wrapped content remains readable.
+  - Verify keyboard order/focus, decorative/non-interactive asset semantics, exact error strings and recovery, and the valid-submit no-op.
+  - Inspect runtime behavior sufficiently to confirm the form creates no network request or application storage and that pricing remains display-only.
+- Risks/assumptions: Because no automated test/visual/a11y harness exists in the baseline, final confidence depends on the existing build plus explicit runtime/visual/accessibility checks unless a later approved task adds tooling.
+
+### Plan dependency summary
+
+1. `PLAN-001` establishes the shared shell, foundations, typography strategy, and authorized local assets.
+2. `PLAN-002` and `PLAN-003` can proceed independently after `PLAN-001` because their file ownership is separate.
+3. `PLAN-004` also depends on `PLAN-001` but can proceed independently of Benefits/Pricing until page integration.
+4. `PLAN-005` requires `PLAN-001`–`PLAN-004` complete and is the integration/regression gate before implementation is considered done.
+
+No plan item requires backend architecture, another route, persistence, authentication, a client UI framework, a form library, or shared application state.
+
+### Stage 7 Review Pass 1 — Feasibility and completeness
+
+- [x] Repository structure, nested `frontend/AGENTS.md`, package/runtime configuration, starter application files, public/assets shape, and available commands were inspected before naming implementation paths or validation commands.
+- [x] Existing paths are explicitly distinguished from proposed paths, including proposed Maker components, `global.css`, and the local Maker asset directory.
+- [x] Every material `PLAN-*` item has an objective, upstream requirement/specification/design references, file impact, ordering/dependencies, implementation approach, integrated accessibility/responsive/state/error work, validation, and risks.
+- [x] Accessibility, responsive behavior, form states/errors, image semantics, and validation are implemented in the owning work items rather than deferred to `PLAN-005`.
+- [x] The plan uses the repository's existing Astro/static/client-side architecture and adds no unsupported framework, backend, persistence, or integration layer.
+- [x] Validation names only confirmed repository commands; no nonexistent `test`, `lint`, or `check` script is presented as available.
+
+Corrections from Pass 1:
+
+- Removed any temptation to use 375, 768, or another familiar value as an automatic CSS breakpoint; transition values are explicitly selected from layout fit/failure during implementation and then checked against all three reference outcomes.
+- Kept source-artwork paths proposed and required Figma export during implementation because Maker assets do not yet exist in the repository.
+- Kept Manrope delivery visible as a repository dependency decision instead of silently assuming a CDN, local font file, or package that is not in the baseline.
+- Kept validation within current repository capabilities while making manual runtime, keyboard, state, and visual checks explicit.
+
+### Stage 7 Review Pass 2 — Consistency, traceability, risks, and uncertainty
+
+- [x] `PLAN-001`–`PLAN-005` use the canonical plan namespace and map only to approved requirements/design/specification decisions.
+- [x] The plan is consistent with the Stage 6 `not-required` architecture decision: component/file organization stays inside the existing single-page Astro boundary.
+- [x] No plan item introduces notification delivery, persistence, success/loading UI, plan selection, billing, analytics, extra routes, arbitrary browser/performance targets, or other unapproved scope.
+- [x] Responsive uncertainty is preserved as a fit-driven implementation decision with explicit reference/intermediate validation rather than hidden behind arbitrary values.
+- [x] The two exact validation messages and the approved valid-submit no-op remain unchanged.
+- [x] The plan preserves Figma as authority for visual/assets, the pinned repository as authority for implementation constraints/messages, and approved Stage 4 decisions as behavior authority.
+- [x] Remaining uncertainties—font delivery, exact responsive thresholds, absence of an automated test/a11y harness, and unspecified formal support/conformance targets—are documented as non-blocking implementation risks rather than silently resolved.
+
+Pass 2 result: the repository-aware implementation plan is feasible and decomposable within the Lite profile, with no Stage 7 blocking planning inconsistency identified.
 
 ## 7. Architecture Decision
 
@@ -787,29 +962,58 @@ Pass 2 result: architecture is not required for the current approved Lite scope,
 
 ## 8. Source-change Handling
 
-- Snapshot verification required before task execution:
-- Material changes that invalidate this brief:
-- Earliest workflow section or stage to revisit:
+### Verification before implementation work
 
-Create new `SRC-*` IDs and perform an impact assessment rather than silently updating this brief to newer sources.
+- `SRC-DS-001` is Time-bound. Re-verify the authorized Figma page `29:4756` before executing a material implementation task that depends on current layout, tokens, components, interaction states, or asset export, and again before final fidelity validation if implementation spans multiple source-verification windows.
+- `SRC-REPO-001` is the immutable input baseline. Before implementation task execution, compare the current target ref against pinned commit `e49ba2886a9a982c4d8d0aa31d2a7adf7460778d` and distinguish expected workflow/documentation output from changes to `frontend/` or repository configuration that could invalidate this plan.
+- Use the workflow's canonical snapshot verification/impact process; do not edit source IDs, workflow record, or generated projections by hand.
+
+### Material changes that invalidate or partially invalidate this brief
+
+- Figma changes to Main page structure, approved content, design tokens/typography, responsive compositions, component variants, form/error states, or any Maker asset used by `PLAN-001`–`PLAN-004`.
+- Repository changes to `frontend/package.json`, lockfile/toolchain constraints, `astro.config.mjs`, route/layout/component conventions, implementation root, validation scripts, or existing application files that make the observed Stage 7 repository context stale.
+- New product requirements for email transport/storage, success/loading/retry behavior, analytics, pricing interaction/payment, extra routes, authentication, or other data/integration behavior.
+- A change to deployment/runtime boundaries that invalidates the Stage 6 `not-required` architecture decision.
+
+### Earliest workflow area to revisit
+
+- Source identity/evidence change only: revisit source baseline/audit as required by the canonical impact assessment, then propagate only affected downstream sections.
+- Product outcome or business/data behavior change: revisit Requirements before Design/Specification/Plan.
+- Visual/responsive/interaction-intent change without product-scope change: revisit Design Intent and Specification before affected `PLAN-*` items.
+- New backend/integration/routing/runtime boundary: revisit Requirements/Specification and Stage 6 architecture decision before planning implementation.
+- Repository-only path/command/convention change that leaves approved behavior intact: update Repository Context and affected `PLAN-*` items after source verification rather than rewriting unrelated approved sections.
+
+Create new `SRC-*` IDs and perform a canonical impact assessment when source identity changes; never silently reinterpret this brief against a newer source.
 
 ## 9. Risks, Assumptions, and Questions
 
 ### Blocking
 
-- ...
+- None identified for Stage 7 planning under the currently approved static/client-side scope.
 
 ### Non-blocking
 
-- ...
+- **Typography delivery:** Figma establishes Manrope, but the repository has no Manrope font asset/dependency. Implementation must select a licensed, repository-appropriate delivery method before fidelity sign-off and justify any newly added package or external service.
+- **Responsive thresholds:** Exact CSS transition values remain intentionally undecided until implementation exposes the fit/failure points for Hero, Benefits, Pricing, and Signup. Reference widths are validation targets, not automatic breakpoint values.
+- **Source artwork:** Maker assets must be exported from the authorized Figma nodes into proposed local repository assets; export bounds/format must preserve fidelity without changing semantics.
+- **Automated coverage:** No test, lint, visual-regression, or automated accessibility harness is configured. Existing `pnpm build` plus explicit runtime/visual/keyboard/state checks are the supported baseline validation unless later work justifies additional tooling.
+- **Formal support targets:** No approved browser/device matrix, accessibility conformance level, or quantitative performance budget exists. Validation must not invent one, while still meeting the concrete approved accessibility/responsive behaviors.
+- **Validation-only signup:** A syntactically valid email intentionally produces no visible success or delivery behavior. That may look incomplete compared with a production signup flow, but it is the approved current specification and must not be “fixed” by adding unauthorized network/storage behavior.
 
 ## 10. Traceability
 
 | Snapshot or evidence | Requirement | Design | Specification or criterion | Plan item | Validation |
 |---|---|---|---|---|---|
-| ... | ... | ... | ... | ... | ... |
+| `SRC-DS-001`, `EVD-001`–`EVD-003` | `REQ-FR-001`, `REQ-NFR-001`, `REQ-AR-001` | `DES-001`–`DES-005` | `SPEC-BEH-001`, `SPEC-ACC-001`, `SPEC-ACC-003` | `PLAN-001` | Build; one-H1/DOM-order/asset-semantics and starter-removal inspection |
+| `SRC-DS-001`, `EVD-004`, `AUD-004` | `REQ-FR-002`, `REQ-NFR-002`, `REQ-AR-006`, `REQ-CON-007` | `DES-RWD-001`–`DES-RWD-006` | `SPEC-BEH-002`, `AC-028`–`AC-032` | `PLAN-002`, `PLAN-003`, `PLAN-004`, `PLAN-005` | 375/768/1440 comparisons plus fit-driven intermediate/wider/narrower reflow checks |
+| `SRC-DS-001`, Hero/Benefit component evidence | `REQ-AR-005`, `REQ-NFR-001` | `DES-005`, `DES-006` | `SPEC-ACC-003`, `AC-055`–`AC-056` | `PLAN-001`, `PLAN-002` | Visual asset comparison; decorative/brand semantics; scroll cue absent from tab order |
+| `SRC-DS-001`, Pricing component evidence | `REQ-FR-006`, `REQ-BR-001` | `DES-007` | `SPEC-BEH-001`, `AC-027` | `PLAN-003` | Approved price/features/content; Free → Premium order; no interactive/payment controls |
+| `SRC-REPO-001`, `EVD-008`, `AUD-002` | `REQ-FR-004`, `REQ-FR-005`, `REQ-AR-004` | `DES-INT-003` | `SPEC-VAL-001`–`SPEC-VAL-003`, `SPEC-ACC-002` | `PLAN-004` | Empty/whitespace/malformed/valid cases; exact strings; stale-error clearing; AT relationship/announcement |
+| `SRC-DS-001`, `EVD-009`–`EVD-011` | `REQ-FR-003`, `REQ-AR-002`, `REQ-AR-003` | `DES-INT-001`, `DES-INT-002` | `SPEC-INT-001`, `SPEC-INT-002`, `SPEC-ACC-004` | `PLAN-004` | Pointer hover, keyboard focus/activation, error+focus precedence, motion-independent state recognition |
+| `SRC-REPO-001` implementation baseline | `REQ-CON-001`, `REQ-CON-002` | — | Existing Astro/static boundary | `PLAN-001`–`PLAN-005` | Confirmed repository commands; `pnpm build`; no unsupported dependency/runtime boundary |
+| `SRC-REPO-001`, Stage 6 architecture decision | `REQ-DR-001`, `REQ-CON-006` | `DES-INT-004` | `SPEC-VAL-003`, `SPEC-DATA-001`, `AC-045`–`AC-047`, `AC-059`–`AC-060` | `PLAN-004`, `PLAN-005` | Valid submit preserves value and produces no network/navigation/storage/delivery/success state |
 
-Sections 5–6 and 8–10 remain reserved for later Lite workflow stages. Section 7 now records the Stage 6 architecture decision and must not be treated as a placeholder. The remaining placeholders are not Stage 6 completeness failures and must not be treated as approved repository context, planning, source-change policy, risks, or traceability until those stages own and populate them.
+Sections 5–6 and 8–10 now contain the Stage 7 repository-aware implementation plan and are no longer placeholders. Section 7 remains the approved Stage 6 architecture decision and Sections 11–13 remain the historical Stage 5 documentation-consistency review; their stage-specific wording is preserved rather than rewritten as Stage 7 evidence.
 
 ## 11. Review Pass 1 — Completeness and Correctness
 
@@ -845,8 +1049,9 @@ Pass 2 result: no Stage 5 blocking documentation inconsistency remains after cor
 
 `Ready with documented non-blocking assumptions`
 
-- Stage 6 architecture decision is `not-required`; no separate `ARCHITECTURE.md` or profile upgrade is needed under the current approved scope.
-- Exact CSS breakpoint values remain a later planning/implementation choice constrained by the supplied responsive outcomes and `SPEC-BEH-002` fit/failure conditions.
-- Formal accessibility conformance target, browser/device matrix, and quantitative performance thresholds remain unestablished by the source baseline and must not be invented as source requirements.
-- Any real notification delivery, persistence, success state, request/retry flow, or related privacy/security behavior requires a future approved re-scope and architecture reconsideration.
-- This readiness is for the Stage 6 gate/preflight only; it does not authorize task decomposition, implementation code edits, or a later stage.
+- Stage 7 now has a repository-aware implementation plan with concrete `PLAN-001`–`PLAN-005` ownership, dependencies, proposed/existing file distinctions, integrated accessibility/responsive/state/error work, source-change handling, risks, traceability, and supported validation.
+- Stage 6 architecture remains `not-required`; the Stage 7 plan stays inside the existing static single-page Astro boundary and does not require a profile upgrade.
+- Exact CSS transition thresholds and Manrope delivery remain implementation decisions bounded by explicit source/repository constraints; neither is a Stage 7 blocker.
+- Formal browser/device, accessibility-conformance, performance, and automated-test targets remain unestablished by the approved sources and are not invented by this plan.
+- Any real notification delivery, persistence, success/loading/retry behavior, billing/plan interaction, analytics, extra route, or new runtime boundary requires a future approved re-scope before implementation.
+- This readiness is for the Stage 7 review/preflight and human gate only. It does not authorize Stage 8 task decomposition or implementation code edits.
