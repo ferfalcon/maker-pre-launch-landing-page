@@ -792,7 +792,7 @@
   "tasks": [
     {
       "id": "P01-T01",
-      "status": "Not started",
+      "status": "Ready",
       "baseline": "SRC-REPO-001",
       "prerequisites": [],
       "references": [],
