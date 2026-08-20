@@ -1,0 +1,199 @@
+---
+import checkIcon from '../assets/maker/icon-check.svg';
+
+interface Props {
+	plan: 'free' | 'premium';
+	title: string;
+	description: string;
+	price: string;
+	priceSuffix?: string;
+	features: string[];
+	icon: string;
+	iconWidth: number;
+	iconHeight: number;
+}
+
+const {
+	plan,
+	title,
+	description,
+	price,
+	priceSuffix,
+	features,
+	icon,
+	iconWidth,
+	iconHeight,
+} = Astro.props;
+---
+
+<article class:list={['pricing-card', `pricing-card--${plan}`]}>
+	<img
+		class="pricing-card__plan-icon"
+		src={icon}
+		alt=""
+		width={iconWidth}
+		height={iconHeight}
+		aria-hidden="true"
+	/>
+
+	<div class="pricing-card__header">
+		<h3 class="pricing-card__title">{title}</h3>
+		<p class="pricing-card__description">{description}</p>
+	</div>
+
+	<div class="pricing-card__price" aria-label={priceSuffix ? `${price} ${priceSuffix}` : price}>
+		<span class="pricing-card__price-value">{price}</span>
+		{priceSuffix && <span class="pricing-card__price-suffix" aria-hidden="true">{priceSuffix}</span>}
+	</div>
+
+	<ul class="pricing-card__features">
+		{features.map((feature) => (
+			<li class="pricing-card__feature">
+				<span class="pricing-card__check" aria-hidden="true"></span>
+				<span>{feature}</span>
+			</li>
+		))}
+	</ul>
+</article>
+
+<style>
+	.pricing-card {
+		position: relative;
+		display: flex;
+		min-width: 0;
+		width: min(100%, 445px);
+		flex-direction: column;
+		align-items: flex-start;
+		gap: var(--space-24);
+		border-radius: var(--radius-8);
+	}
+
+	.pricing-card--free {
+		padding: var(--space-48) var(--space-20) var(--space-32);
+		background: var(--color-blue-800);
+		color: var(--color-neutral-0);
+	}
+
+	.pricing-card--premium {
+		padding: var(--space-64) var(--space-20) var(--space-32);
+		background: var(--color-cyan-400);
+		color: var(--color-neutral-900);
+	}
+
+	.pricing-card__plan-icon {
+		position: absolute;
+		top: 0;
+		left: var(--space-20);
+		max-width: none;
+		transform: translateY(-50%);
+	}
+
+	.pricing-card__header {
+		display: flex;
+		min-width: 0;
+		width: 100%;
+		flex-direction: column;
+		gap: var(--space-16);
+	}
+
+	.pricing-card__title,
+	.pricing-card__description {
+		width: 100%;
+		margin: 0;
+	}
+
+	.pricing-card__title {
+		font-size: var(--font-heading-small);
+		font-weight: var(--font-weight-extra-bold);
+		line-height: var(--line-heading);
+	}
+
+	.pricing-card__description,
+	.pricing-card__price-suffix,
+	.pricing-card__feature {
+		font-size: var(--font-body-medium);
+		font-weight: var(--font-weight-medium);
+		line-height: var(--line-body);
+	}
+
+	.pricing-card__description,
+	.pricing-card__price-suffix {
+		opacity: 0.6;
+	}
+
+	.pricing-card__price {
+		display: flex;
+		min-width: 0;
+		align-items: center;
+		gap: var(--space-8);
+	}
+
+	.pricing-card__price-value {
+		font-size: var(--font-display-medium);
+		font-weight: var(--font-weight-extra-bold);
+		line-height: var(--line-display-medium);
+	}
+
+	.pricing-card__price-suffix {
+		white-space: nowrap;
+	}
+
+	.pricing-card__features {
+		display: flex;
+		min-width: 0;
+		width: 100%;
+		margin: 0;
+		padding: 0;
+		flex-direction: column;
+		gap: var(--space-12);
+		list-style: none;
+	}
+
+	.pricing-card__feature {
+		display: flex;
+		min-width: 0;
+		align-items: flex-start;
+		gap: var(--space-12);
+	}
+
+	.pricing-card__check {
+		width: 12px;
+		height: 9px;
+		margin-block-start: 7px;
+		flex: none;
+		background: currentColor;
+		-webkit-mask: url('../assets/maker/icon-check.svg') center / contain no-repeat;
+		mask: url('../assets/maker/icon-check.svg') center / contain no-repeat;
+	}
+
+	.pricing-card--free .pricing-card__check {
+		color: var(--color-cyan-400);
+	}
+
+	.pricing-card--premium .pricing-card__check {
+		color: var(--color-blue-800);
+	}
+
+	@media (min-width: 40rem) {
+		.pricing-card--free {
+			padding: var(--space-48) var(--space-32);
+		}
+
+		.pricing-card--premium {
+			padding: var(--space-64) var(--space-32);
+		}
+
+		.pricing-card__plan-icon {
+			left: 38px;
+		}
+
+		.pricing-card__header {
+			max-width: 369px;
+			gap: var(--space-20);
+		}
+
+		.pricing-card__feature {
+			gap: var(--space-16);
+		}
+	}
+</style>
