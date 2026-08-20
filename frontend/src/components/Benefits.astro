@@ -1,0 +1,114 @@
+---
+import BenefitCard from './BenefitCard.astro';
+import passionIllustration from '../assets/maker/illustration-passions.svg';
+import financialIllustration from '../assets/maker/illustration-financial-freedom.svg';
+import lifestyleIllustration from '../assets/maker/illustration-lifestyle.svg';
+import anywhereIllustration from '../assets/maker/illustration-work-anywhere.svg';
+
+const benefits = [
+	{
+		kind: 'passion' as const,
+		title: 'Indulge your passions',
+		body: "Your passions shouldn't be just for the weekend. Earn a living doing what you love.",
+		illustration: passionIllustration.src,
+		illustrationWidth: 88,
+		illustrationHeight: 106,
+	},
+	{
+		kind: 'financial' as const,
+		title: 'Gain financial freedom',
+		body: 'Start making money work for you. There’s nothing quite like earning while you sleep.',
+		illustration: financialIllustration.src,
+		illustrationWidth: 74,
+		illustrationHeight: 89,
+	},
+	{
+		kind: 'lifestyle' as const,
+		title: 'Choose your lifestyle',
+		body: 'Own your daily schedule. Fancy a lie-in? Go for it! Take charge of your week.',
+		illustration: lifestyleIllustration.src,
+		illustrationWidth: 80,
+		illustrationHeight: 94,
+	},
+	{
+		kind: 'anywhere' as const,
+		title: 'Work from anywhere',
+		body: 'Selling online means not being pinned down. Want to work AND travel? Go for it!',
+		illustration: anywhereIllustration.src,
+		illustrationWidth: 104,
+		illustrationHeight: 74,
+	},
+];
+---
+
+<section class="benefits" aria-label="Benefits">
+	<ul class="benefits__list">
+		{benefits.map((benefit) => (
+			<li class="benefits__item">
+				<BenefitCard {...benefit} />
+			</li>
+		))}
+	</ul>
+</section>
+
+<style>
+	.benefits {
+		width: 100%;
+		margin-block-start: var(--space-80);
+		padding-inline: var(--space-16);
+	}
+
+	.benefits__list {
+		display: flex;
+		width: min(100%, 343px);
+		margin: 0 auto;
+		padding: 0;
+		flex-direction: column;
+		gap: var(--space-48);
+		list-style: none;
+	}
+
+	.benefits__item {
+		min-width: 0;
+	}
+
+	/* At 40rem, a 120px icon + 48px gap + readable copy fit within the bounded row. */
+	@media (min-width: 40rem) {
+		.benefits {
+			margin-block-start: var(--space-96);
+			padding-inline: var(--space-32);
+		}
+
+		.benefits__list {
+			width: min(100%, 704px);
+			gap: var(--space-32);
+		}
+
+		.benefits__item:nth-child(odd) {
+			padding-inline-start: var(--space-48);
+		}
+	}
+
+	/* At 75rem, four equal cards and three 32px gaps fit inside the 1110px content boundary. */
+	@media (min-width: 75rem) {
+		.benefits {
+			margin-block-start: var(--space-160);
+		}
+
+		.benefits__list {
+			display: grid;
+			width: min(100%, var(--content-max));
+			grid-template-columns: repeat(4, minmax(0, 1fr));
+			gap: var(--space-32);
+			align-items: start;
+		}
+
+		.benefits__item:nth-child(odd) {
+			padding-inline-start: 0;
+		}
+
+		.benefits__item:nth-child(even) {
+			padding-block-start: var(--space-48);
+		}
+	}
+</style>

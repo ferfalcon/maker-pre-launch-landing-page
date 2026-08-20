@@ -13,7 +13,7 @@
       "SRC-REPO-001"
     ],
     "currentTask": null,
-    "latestOutput": "SRC-REPO-003",
+    "latestOutput": "SRC-REPO-005",
     "latestValidationRuntime": null,
     "architectureDecision": {
       "result": "Not required",
@@ -56,6 +56,26 @@
       "commit": "6da2632135ca0597829a12a01998fc6646d8ad33",
       "parent": "SRC-REPO-002",
       "task": "P01-T01"
+    },
+    {
+      "id": "SRC-REPO-004",
+      "role": "Task start",
+      "pinStrength": "Immutable",
+      "status": "Active",
+      "reference": "https://github.com/ferfalcon/maker-pre-launch-landing-page",
+      "commit": "3eb630403c962a92ae66f36dd13a5347350a7e8f",
+      "parent": "SRC-REPO-003",
+      "task": "P02-T01"
+    },
+    {
+      "id": "SRC-REPO-005",
+      "role": "Implementation output",
+      "pinStrength": "Immutable",
+      "status": "Active",
+      "reference": "https://github.com/ferfalcon/maker-pre-launch-landing-page",
+      "commit": "2777253595c9475074c516e7c4aa92e77cd1c43e",
+      "parent": "SRC-REPO-004",
+      "task": "P02-T01"
     }
   ],
   "verifications": [
@@ -970,26 +990,32 @@
     },
     {
       "id": "P02-T01",
-      "status": "Ready",
-      "baseline": "SRC-REPO-001",
+      "status": "Complete",
+      "baseline": "SRC-REPO-004",
       "prerequisites": [
         "P01-T01"
       ],
       "references": [],
-      "output": null,
+      "output": "SRC-REPO-005",
       "blocker": null,
       "validation": [
         {
           "name": "Task acceptance validation",
           "kind": "Other",
           "required": true,
-          "status": "Not executed",
+          "status": "Passed",
           "expected": "pnpm build exits 0 and every manual check defined in Phase-02--Task-01.md Section 12 passes against the verified task-start snapshots.",
           "command": "pnpm build",
           "environment": "frontend/ plus browser/manual review",
-          "evidence": [],
-          "reason": "Defined during Stage 9; execution is deferred to Stage 10 implementation.",
-          "references": []
+          "evidence": [
+            "Vercel deployment dpl_7tDuCMLHQ7p2SqYqKbKBNPKbn4qp cloned exact commit 2777253595c9475074c516e7c4aa92e77cd1c43e and successfully ran pnpm run build -> astro build, producing one static page and a READY preview. Manual Figma-to-implementation comparison covered Hero/Header/Benefits at the supplied 375/768/1440 references plus fit transitions: mobile uses the 343px centered vertical card stack with 120px icon containers and 80px Hero-to-Benefits spacing; tablet uses a bounded 704px list, 120px horizontal cards, 32px row gaps, alternating 48px inset and 96px section spacing; desktop uses the 1110px four-column grid with 32px gaps, 160x164 icon containers, alternating 48px vertical offset and 160px section spacing. The 40rem and 75rem transitions were verified from content fit rather than copied frame widths; 640px leaves sufficient row copy width and 1200px fits four minmax columns inside the 1110px boundary. All four benefit titles, bodies and canonical local artwork are in source order; card text remains flexible/min-width:0 with no fixed readable height, primary content stays bounded without horizontal page overflow, decorative benefit/Hero artwork and scroll cue remain non-focusable/silent, and the heading/source order remains logical. No Pricing, Signup, backend, persistence, analytics, authentication, billing, extra route, or client-framework scope was introduced."
+          ],
+          "references": [],
+          "actual": "Vercel deployment dpl_7tDuCMLHQ7p2SqYqKbKBNPKbn4qp cloned exact commit 2777253595c9475074c516e7c4aa92e77cd1c43e and successfully ran pnpm run build -> astro build, producing one static page and a READY preview. Manual Figma-to-implementation comparison covered Hero/Header/Benefits at the supplied 375/768/1440 references plus fit transitions: mobile uses the 343px centered vertical card stack with 120px icon containers and 80px Hero-to-Benefits spacing; tablet uses a bounded 704px list, 120px horizontal cards, 32px row gaps, alternating 48px inset and 96px section spacing; desktop uses the 1110px four-column grid with 32px gaps, 160x164 icon containers, alternating 48px vertical offset and 160px section spacing. The 40rem and 75rem transitions were verified from content fit rather than copied frame widths; 640px leaves sufficient row copy width and 1200px fits four minmax columns inside the 1110px boundary. All four benefit titles, bodies and canonical local artwork are in source order; card text remains flexible/min-width:0 with no fixed readable height, primary content stays bounded without horizontal page overflow, decorative benefit/Hero artwork and scroll cue remain non-focusable/silent, and the heading/source order remains logical. No Pricing, Signup, backend, persistence, analytics, authentication, billing, extra route, or client-framework scope was introduced.",
+          "executedAt": "2026-08-20T03:18:06.437Z",
+          "subject": {
+            "commit": "2777253595c9475074c516e7c4aa92e77cd1c43e"
+          }
         }
       ]
     },
