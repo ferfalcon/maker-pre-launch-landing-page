@@ -277,11 +277,13 @@
       "id": "ART-TASK-P01-T01",
       "type": "TASK",
       "path": "Phase-01--Task-01.md",
-      "status": "Draft",
+      "status": "Reviewed",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
-      ]
+      ],
+      "statusChangedAt": "2026-08-20T01:58:26.523Z",
+      "statusEvidence": "Stage 9 decomposition review: the foundation task has an independently verifiable objective, source/repository references, prerequisites, bounded file scope, non-code ordered steps, integrated responsive/accessibility/state/error requirements, repository-supported validation, acceptance criteria, risks, discovery/deviation handling, and definition of done."
     },
     {
       "id": "ART-TASK-P02-T01",
