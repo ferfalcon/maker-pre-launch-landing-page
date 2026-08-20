@@ -1,14 +1,6 @@
 ---
 artifact: TASK
 id: P01-T01
-  design:
-    - SRC-DS-001
-  repository:
-    - SRC-REPO-001
-  runtime: []
-  documentation:
-    - SRC-DOC-001
-  assets: []
 created: 2026-08-20
 updated: 2026-08-20
 project: Maker pre-launch landing page
@@ -16,203 +8,187 @@ profile: Lite
 execution_mode: Gated
 ---
 
-The repository snapshot in metadata is the task-start state. Record the Implementation output snapshot after the task is committed.
+Workflow-owned task status, baseline, validation state, and output lineage are recorded by `design-workflow`; this narrative defines the implementation contract only.
 
 # Phase 01 — Task 01: Establish Maker page foundation and authorized assets
 
-
-
 ## 2. Objective
 
-Describe the single concrete result this task must produce.
+Replace the Astro starter shell with the semantic, source-authorized Maker landing-page foundation: global visual tokens and base styles, Header/Hero structure, local Maker design assets, and the page composition entry point needed by downstream section tasks, without adding product behavior outside the approved static scope.
 
 ## 3. Source References
 
-- Source baseline: `SOURCE-BASELINE.md`
-- Design inputs: `SRC-DS-*`
-- Task-start repository snapshot: `SRC-REPO-*`
-- Supporting runtime inputs: `SRC-RUN-*` / None
-- Documentation inputs: `SRC-DOC-*` / None
-- Asset inputs: `SRC-ASSET-*` / None
-- `PLAN.md`:
-- `PLAN-REVIEW.md`:
-- Requirement IDs:
-- Specification IDs or sections:
-- `DESIGN.md` references:
-- Design-source evidence:
-- `ARCHITECTURE.md` references, when applicable:
-- Related tasks:
+- Source baseline: `SOURCE-BASELINE.md`.
+- Consolidated Lite documentation: `IMPLEMENTATION-BRIEF.md`, especially `PLAN-001` and the Stage 7 traceability table.
+- Design snapshot: `SRC-DS-001` — authorized Figma page `29:4756` (`🤖 Workflow`).
+- Repository baseline: `SRC-REPO-001`.
+- Main-page references: Desktop `32:10924`, Tablet `32:11410`, Mobile `32:11529`.
+- Component references: Header `78:3069`, Hero `79:3868`.
+- Requirements: `REQ-FR-001`, `REQ-NFR-001`, `REQ-AR-001`, `REQ-AR-005`, `REQ-CON-001`, `REQ-CON-002`.
+- Specifications: `SPEC-BEH-001`, `SPEC-ACC-001`, `SPEC-ACC-003`.
+- Design intent: `DES-001`–`DES-005`.
+- Related tasks: prerequisite for `P02-T01`, `P02-T02`, and `P02-T03`.
 
 ## 4. Snapshot Verification
 
-Complete before implementation begins.
+Complete immediately before implementation starts.
 
-- Verification date and method:
-- Design inputs applicable: Yes / No / Unverified
-- Task-start repository commit checked out: Yes / No / Unverified
-- Difference classification: Unchanged / Expected previous-task output / Unexpected concurrent change / Unavailable
-- Upstream rebaseline required: Yes / No
-- Action or limitation:
-
-An approved previous-task output may become this task's start snapshot without reopening upstream stages. Do not begin affected implementation when an unexpected material change remains unresolved.
+- Re-verify `SRC-DS-001` against the authorized Figma scope and confirm the referenced Header/Hero/Main-page evidence remains materially unchanged.
+- Confirm the task-start repository snapshot is the expected descendant of `SRC-REPO-001` and contains only approved workflow output beyond that baseline.
+- Classify any difference as `Unchanged`, `Expected previous-task output`, `Unexpected concurrent change`, or `Unavailable`.
+- Do not implement against an unexpected material source or repository change; record and resolve rebaseline/discovery requirements first.
 
 ## 5. Prerequisites
 
-List tasks, repository conditions, assets, decisions, access requirements, and required snapshot verification.
-
-- ...
-
-Use `None` when no prerequisite exists.
+- Stage 9 task set and this task artifact approved.
+- `SRC-DS-001` and `SRC-REPO-001` verification clear at task start.
+- Authorized Figma asset export remains accessible.
+- No implementation-task prerequisite; this is the first implementation task.
 
 ## 6. Scope
 
 ### Included
 
-- Work required to produce the objective
-- Relevant accessibility, responsive, state, error, and testing work
+- Replace starter page/layout presentation with the Maker semantic page shell.
+- Establish source-derived global color, spacing, radius, typography, focus, and bounded-layout foundations.
+- Add Header and Hero components sufficient to establish the top-of-page structure and downstream composition contract.
+- Export/store required Maker logo, Hero artwork, scroll cue, and shared authorized visual assets locally under the implementation root.
+- Resolve a licensed, repository-appropriate Manrope delivery approach; document any dependency if one is required.
+- Remove Astro starter component/assets only after all references are removed.
+- Establish one primary H1, logical landmark/heading order, decorative-image semantics, and no page-level primary-content horizontal overflow.
 
 ### Excluded
 
-- Nearby work assigned to other tasks
-- Deferred or unapproved capabilities
-- Unrelated refactoring
+- Full Benefits implementation (`P02-T01`).
+- Pricing implementation (`P02-T02`).
+- Signup validation/interaction (`P02-T03`).
+- Final cross-section fidelity regression (`P03-T01`).
+- Backend delivery, persistence, authentication, analytics, billing, extra routes, or a client UI framework.
 
 ## 7. Repository Context
 
-Record current state at the task-start `SRC-REPO-*` commit:
-
-- Existing files and modules
-- Established patterns and conventions
-- Reusable components, utilities, tokens, or tests
-- Confirmed scripts and commands
-- Constraints or technical debt
-
-Distinguish observed paths from proposed paths and unrelated later changes.
+At `SRC-REPO-001`, `frontend/` is an Astro static starter. Existing relevant paths include `frontend/src/layouts/Layout.astro`, `frontend/src/pages/index.astro`, `frontend/src/components/Welcome.astro`, and starter assets under `frontend/src/assets/`. The package exposes `dev`, `build`, `preview`, and `astro`; `pnpm build` is the only confirmed automated validation command. No project lint, test, accessibility, or visual-regression harness is configured. Follow `frontend/AGENTS.md` and keep implementation inside `frontend/`.
 
 ## 8. Files and Modules
 
 | Path | Action | Existing or proposed | Responsibility | Repository evidence |
 |---|---|---|---|---|
-| `path/to/file` | Create / Modify / Delete | Existing / Proposed | ... | task-start `SRC-REPO-*` |
+| `frontend/src/layouts/Layout.astro` | Modify | Existing | Document shell, metadata, global-style entry point | `SRC-REPO-001` |
+| `frontend/src/pages/index.astro` | Modify | Existing | Maker page composition in approved reading order | `SRC-REPO-001` |
+| `frontend/src/styles/global.css` | Create | Proposed | Source-derived tokens, reset/base rules, shared bounded-layout/focus foundations | `PLAN-001` |
+| `frontend/src/components/Header.astro` | Create | Proposed | Maker brand/header structure | `PLAN-001`, Figma `78:3069` |
+| `frontend/src/components/Hero.astro` | Create | Proposed | Hero semantic/content/artwork structure | `PLAN-001`, Figma `79:3868` |
+| `frontend/src/assets/maker/` | Create/populate | Proposed | Authorized local Maker visual assets | `SRC-DS-001` |
+| `frontend/src/components/Welcome.astro` | Delete after unreferenced | Existing | Remove starter-only UI | `SRC-REPO-001` |
+| `frontend/src/assets/astro.svg` | Delete after unreferenced | Existing | Remove starter-only asset | `SRC-REPO-001` |
+| `frontend/src/assets/background.svg` | Delete after unreferenced | Existing | Remove starter-only asset | `SRC-REPO-001` |
 
 ## 9. Dependencies and Interfaces
 
-Document module and task dependencies, public interfaces, data or component contracts, compatibility requirements, and downstream effects.
+- Provides the shared page/layout/CSS/assets contract consumed by all Phase 02 tasks.
+- Header/Hero markup must remain semantic and source-ordered so later responsive styling cannot require DOM reordering.
+- Shared CSS must stay foundational; section-specific styling belongs to owning components/tasks.
+- Local asset filenames/paths should be stable enough for downstream Benefits, Pricing, and Signup tasks.
+- Do not add a package or external font service silently; any new delivery dependency must be justified and remain within the approved static boundary.
 
 ## 10. Implementation Steps
 
-1. Verify input and task-start snapshots.
-2. Inspect affected files and confirm repository assumptions.
-3. ...
-4. Update relevant tests and documentation.
-5. Run required validation.
-6. Commit the approved result and create an Implementation output `SRC-REPO-*` record.
+1. Re-verify design and repository snapshots and classify differences.
+2. Inspect current layout/page/starter references and confirm the deletion set.
+3. Export the required authorized Maker logo/Hero/shared artwork into a local Maker asset directory with appropriate semantic treatment.
+4. Establish global source-derived visual tokens, reset/base rules, typography roles, focus foundations, and bounded responsive page primitives.
+5. Update `Layout.astro` for Maker metadata/document shell and global-style loading.
+6. Create Header and Hero components with one primary H1, logical DOM order, accessible brand treatment, and decorative Hero/scroll artwork excluded from interaction.
+7. Replace starter composition in `index.astro` with the approved top-level Maker page structure, leaving clear integration points for downstream sections.
+8. Remove starter-only component/assets after verifying no references remain.
+9. Resolve/document the Manrope delivery strategy without exceeding approved dependency/runtime scope.
+10. Run required automated and manual validation, then commit the task result through the workflow lineage process.
 
-Do not include implementation code during task decomposition.
+Do not implement downstream section behavior in this task.
 
 ## 11. State, Responsive, and Accessibility Requirements
 
 ### States and errors
 
-- Default:
-- Loading:
-- Empty:
-- Error:
-- Success:
-- Disabled or unavailable:
-- Other:
+- Default: static Header/Hero/page foundation only.
+- Loading: Not applicable; no source-authorized loading state.
+- Empty: Not applicable; source-authored content is static.
+- Error: Not applicable at this layer.
+- Success/disabled: Not applicable.
 
 ### Responsive behavior
 
-- Small viewports:
-- Intermediate widths:
-- Large viewports:
-- Content and overflow edge cases:
+- Use bounded/mobile-first foundations that can reproduce the supplied 375/768/1440 compositions without treating those widths as mandatory breakpoint values.
+- Preserve major source reading order regardless of visual positioning.
+- Avoid fixed dimensions that cause primary-content clipping or horizontal page scrolling at intermediate/narrower widths.
+- Leave section-specific layout transitions to their owning tasks.
 
 ### Accessibility
 
-- Semantic structure:
-- Keyboard interaction:
-- Focus behavior:
-- Accessible names and relationships:
-- Announcements:
-- Contrast, reflow, touch targets, or reduced motion:
-
-Use `Not applicable` only with a reason.
+- Exactly one page-level H1.
+- Semantic document/landmark/heading order follows Header/Hero → Benefits → Pricing → Signup.
+- Maker brand equivalent has an accessible name; decorative Hero illustration and scroll cue are silent and non-focusable.
+- Shared focus-visible styles must remain clearly perceivable and not depend on animation.
+- Global styles must support zoom/reflow and readable wrapping rather than fixed clipping.
 
 ## 12. Validation
 
-List only commands and checks supported by the task-start repository snapshot.
-
 ### Automated validation
 
-- Unit tests:
-- Component or integration tests:
-- End-to-end tests:
-- Type checking:
-- Linting:
-- Build:
-- Other:
+- Build: from `frontend/`, run `pnpm build`; expected result is exit 0 with the Maker foundation compiled successfully.
+- Unit/component/E2E tests, linting, and separate type-checking: no configured repository scripts at task start; do not invent commands.
 
 ### Manual validation
 
-- Interaction checks:
-- Responsive checks:
-- Accessibility checks:
-- Visual comparison against `SRC-DS-*`:
-- Error and edge-case checks:
-- Regression checks:
-
-For each check, define the expected result. Do not claim a check passed until it ran successfully.
+- Inspect rendered/compiled DOM for exactly one H1 and correct major-section source order/integration placeholders.
+- Verify the Maker logo is meaningfully named and decorative Hero/scroll artwork is absent from the tab order/accessibility noise.
+- Verify Astro starter copy/artwork/components are no longer rendered and deleted files are unreferenced.
+- Check narrow, intermediate, 375, 768, and 1440 widths for bounded content and no primary-content horizontal page scrolling.
+- Compare Header/Hero foundation and source-derived visual roles against `SRC-DS-001` without claiming final section fidelity.
+- Confirm no new backend, persistence, analytics, billing, authentication, extra route, or unsupported runtime dependency was introduced.
 
 ## 13. Acceptance Criteria
 
-- [ ] `[Requirement or specification ID]` Objective result is observable and correct.
-- [ ] Required accessibility behavior is verified.
-- [ ] Required responsive and state behavior is verified.
-- [ ] Relevant automated and manual validation passes.
-- [ ] Snapshot verification or approved upstream rebaseline is complete.
-- [ ] The committed result has an Implementation output snapshot.
-- [ ] Documentation and task status are updated.
+- [ ] `REQ-FR-001` / `SPEC-BEH-001`: the single-page Maker composition shell preserves approved logical reading order.
+- [ ] `REQ-NFR-001`: global visual foundations derive from the approved Maker system rather than Astro starter styling.
+- [ ] `REQ-AR-001` / `SPEC-ACC-001`: semantic page and heading structure is valid with exactly one primary H1.
+- [ ] `REQ-AR-005` / `SPEC-ACC-003`: brand/decorative asset semantics are correct; the scroll cue is not focusable.
+- [ ] `REQ-CON-001` / `REQ-CON-002`: implementation stays within the existing Astro/static boundary and supported toolchain.
+- [ ] Starter-only component/assets are removed after reference cleanup.
+- [ ] `pnpm build` passes and the defined manual checks pass.
+- [ ] Task-start verification and implementation-output lineage are recorded by the workflow.
 
 ## 14. Risks and Considerations
 
 | Risk or assumption | Impact | Mitigation or validation |
 |---|---|---|
-| ... | ... | ... |
+| Manrope delivery is not present in the baseline | Visual mismatch or unapproved dependency | Choose a licensed repository-appropriate approach; record/justify any dependency before adding it |
+| Figma artwork export sizing/cropping differs from source | Hero/header fidelity drift | Export from authorized nodes and compare at supplied viewports |
+| Premature global breakpoints overfit reference frames | Downstream reflow defects | Keep foundations fit-driven; defer section transitions to owning tasks |
+| Starter asset deletion occurs too early | Broken imports/build | Delete only after reference inspection and build verification |
 
 ## 15. Implementation Discoveries
 
-| Discovery | Impact | Owning artifact | Required update |
-|---|---|---|---|
-| ... | ... | `SOURCE-BASELINE.md` / `REQUIREMENTS.md` / `DESIGN.md` / `SPEC.md` / `ARCHITECTURE.md` / `PLAN.md` / Task | ... |
-
-Do not silently work around documentation or source-baseline errors.
+None recorded during decomposition. Any material source, repository, typography, or asset discrepancy discovered during implementation must be recorded against the owning upstream artifact/task before workaround.
 
 ## 16. Deviations
 
-| Planned approach or baseline | Actual approach or baseline | Reason | Approval or evidence | Impact |
-|---|---|---|---|---|
-| ... | ... | ... | ... | ... |
-
-Use `None` when implementation followed the task exactly.
-
-
+None during decomposition. Record any approved departure from paths, source semantics, dependency assumptions, or validation here during implementation.
 
 ## 18. Definition of Done
 
-- [ ] The objective is implemented within scope.
-- [ ] Acceptance criteria pass.
-- [ ] Required validation executed successfully.
+- [ ] Objective is implemented within the defined scope.
+- [ ] Acceptance criteria and required validation pass.
 - [ ] No required validation remains failing or unverified.
-- [ ] Input snapshot references remain valid or an approved upstream rebaseline was completed.
-- [ ] The implementation output snapshot and parent lineage are recorded.
-- [ ] Relevant documentation was updated.
-- [ ] `TASKS-INDEX.md` and `WORKFLOW-STATE.md` reflect current status and lineage.
-- [ ] Deviations and remaining risks are recorded.
-- [ ] Downstream tasks have the information they need.
+- [ ] Input snapshots remain valid or an approved rebaseline is recorded.
+- [ ] Implementation-output repository snapshot and parent lineage are recorded.
+- [ ] Relevant task documentation/deviations/risks are updated.
+- [ ] Canonical task/workflow projections reflect completion; no manual edit is made to `.workflow/generated/` or the workflow record.
+- [ ] Phase 02 tasks have stable shared foundations/assets and enough context to start.
 
 ## 19. Completion Report
+
+Complete during Stage 10 implementation:
 
 - Files created, modified, or deleted:
 - Input snapshot IDs used:
@@ -220,9 +196,8 @@ Use `None` when implementation followed the task exactly.
 - Implementation-output repository snapshot:
 - Source verification performed:
 - Behavior implemented:
-- Validation executed:
-- Validation results:
-- Deviations:
+- Validation executed and results:
+- Deviations/discoveries:
 - Remaining risks:
 - Documentation updated:
-- Next unblocked task:
+- Next unblocked task(s):
