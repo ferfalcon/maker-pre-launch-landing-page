@@ -244,13 +244,13 @@
       "id": "ART-IMPLEMENTATION-BRIEF",
       "type": "IMPLEMENTATION-BRIEF",
       "path": "IMPLEMENTATION-BRIEF.md",
-      "status": "Approved",
+      "status": "Draft",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
       ],
-      "statusChangedAt": "2026-08-19T23:55:18.552Z",
-      "statusEvidence": "Stage 6 architecture decision approved by the project owner after successful Stage 6 preflight. Approval is limited to Stage 6 and explicitly does not authorize starting or advancing to Stage 7.",
+      "statusChangedAt": "2026-08-20T00:01:43.900Z",
+      "statusEvidence": "Stage 7 requires replacing the consolidated Lite brief's repository-context and implementation-plan placeholders with the repository-aware PLAN-* work, source-change handling, risks, traceability, and Stage 7 readiness before review.",
       "statusBy": "Fernando Falcon",
       "approvedRevision": {
         "algorithm": "sha256",
