@@ -7,12 +7,12 @@
   },
   "state": {
     "stage": 10,
-    "status": "Ready",
+    "status": "In progress",
     "activeInputs": [
       "SRC-DS-001",
       "SRC-REPO-001"
     ],
-    "currentTask": null,
+    "currentTask": "P02-T01",
     "latestOutput": "SRC-REPO-003",
     "latestValidationRuntime": null,
     "architectureDecision": {
@@ -56,6 +56,16 @@
       "commit": "6da2632135ca0597829a12a01998fc6646d8ad33",
       "parent": "SRC-REPO-002",
       "task": "P01-T01"
+    },
+    {
+      "id": "SRC-REPO-004",
+      "role": "Task start",
+      "pinStrength": "Immutable",
+      "status": "Active",
+      "reference": "https://github.com/ferfalcon/maker-pre-launch-landing-page",
+      "commit": "3eb630403c962a92ae66f36dd13a5347350a7e8f",
+      "parent": "SRC-REPO-003",
+      "task": "P02-T01"
     }
   ],
   "verifications": [
@@ -970,8 +980,8 @@
     },
     {
       "id": "P02-T01",
-      "status": "Ready",
-      "baseline": "SRC-REPO-001",
+      "status": "In progress",
+      "baseline": "SRC-REPO-004",
       "prerequisites": [
         "P01-T01"
       ],
