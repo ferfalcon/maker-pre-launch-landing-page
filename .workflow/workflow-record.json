@@ -345,13 +345,18 @@
       "id": "ART-TASK-P03-T01",
       "type": "TASK",
       "path": "Phase-03--Task-01.md",
-      "status": "Reviewed",
+      "status": "Approved",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
       ],
-      "statusChangedAt": "2026-08-20T02:00:04.224Z",
-      "statusEvidence": "Stage 9 decomposition review: final integration has a verifiable end-to-end objective, complete prerequisite graph, bounded residual-fix scope, explicit anti-scope-creep constraints, full responsive/visual/accessibility/state regression, repository-supported validation, acceptance criteria, risks, and implementation-free ordered steps."
+      "statusChangedAt": "2026-08-20T02:18:05.280Z",
+      "statusEvidence": "Human approval received in ChatGPT on 2026-08-19: approved Stage 9 task set; do not start the next stage.",
+      "statusBy": "Fernando Falcon",
+      "approvedRevision": {
+        "algorithm": "sha256",
+        "digest": "4ee5f5a4f5c4653abac4697e779ec8818899f837398298a6596966ccc8f4f547"
+      }
     }
   ],
   "traceItems": [],
