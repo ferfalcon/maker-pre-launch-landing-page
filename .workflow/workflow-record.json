@@ -260,13 +260,13 @@
       "id": "ART-IMPLEMENTATION-BRIEF",
       "type": "IMPLEMENTATION-BRIEF",
       "path": "IMPLEMENTATION-BRIEF.md",
-      "status": "Draft",
+      "status": "Reviewed",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
       ],
-      "statusChangedAt": "2026-08-20T00:01:43.900Z",
-      "statusEvidence": "Stage 7 requires replacing the consolidated Lite brief's repository-context and implementation-plan placeholders with the repository-aware PLAN-* work, source-change handling, risks, traceability, and Stage 7 readiness before review.",
+      "statusChangedAt": "2026-08-20T00:07:30.698Z",
+      "statusEvidence": "Stage 7 repository-aware implementation-plan review completed in two passes against the approved requirements/design/specification, Stage 6 not-required architecture decision, actual frontend Astro repository structure and commands, fresh unchanged Figma verification, and fresh repository ancestry/change verification. Sections 5-6 and 8-10 now define observed versus proposed paths, PLAN-001 through PLAN-005 with dependencies/order, integrated semantics/accessibility/responsive/state/error work, source asset handling, fit-driven responsive decisions, exact validation behavior, supported validation, source-change handling, risks, and traceability. The plan adds no backend, persistence, billing, extra route, client UI framework, arbitrary breakpoint, browser/performance target, or unsupported success flow. Non-blocking uncertainties for Manrope delivery, exact fit thresholds, source-asset export, and absence of an automated test/a11y harness are explicitly documented.",
       "statusBy": "Fernando Falcon",
       "approvedRevision": {
         "algorithm": "sha256",
