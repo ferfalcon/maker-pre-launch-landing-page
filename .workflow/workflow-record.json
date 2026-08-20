@@ -260,17 +260,17 @@
       "id": "ART-IMPLEMENTATION-BRIEF",
       "type": "IMPLEMENTATION-BRIEF",
       "path": "IMPLEMENTATION-BRIEF.md",
-      "status": "Reviewed",
+      "status": "Approved",
       "baseline": [
         "SRC-DS-001",
         "SRC-REPO-001"
       ],
-      "statusChangedAt": "2026-08-20T00:07:30.698Z",
-      "statusEvidence": "Stage 7 repository-aware implementation-plan review completed in two passes against the approved requirements/design/specification, Stage 6 not-required architecture decision, actual frontend Astro repository structure and commands, fresh unchanged Figma verification, and fresh repository ancestry/change verification. Sections 5-6 and 8-10 now define observed versus proposed paths, PLAN-001 through PLAN-005 with dependencies/order, integrated semantics/accessibility/responsive/state/error work, source asset handling, fit-driven responsive decisions, exact validation behavior, supported validation, source-change handling, risks, and traceability. The plan adds no backend, persistence, billing, extra route, client UI framework, arbitrary breakpoint, browser/performance target, or unsupported success flow. Non-blocking uncertainties for Manrope delivery, exact fit thresholds, source-asset export, and absence of an automated test/a11y harness are explicitly documented.",
+      "statusChangedAt": "2026-08-20T00:11:44.968Z",
+      "statusEvidence": "Stage 7 repository-aware implementation plan approved by the project owner after successful Stage 7 preflight. Approval is limited to Stage 7 and explicitly does not authorize starting or advancing to Stage 8.",
       "statusBy": "Fernando Falcon",
       "approvedRevision": {
         "algorithm": "sha256",
-        "digest": "40d728e367a00494ba1ce8cb6b8ac219a9c4e045e0e8aa7ec047e7684ccc1165"
+        "digest": "98b49d1ba5e06d9421481dc095b3786e6186075861b36e8ddf32890eed82c34c"
       }
     }
   ],
