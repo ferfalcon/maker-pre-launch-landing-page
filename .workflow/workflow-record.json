@@ -136,6 +136,14 @@
       "commit": "a06d14b1299b0a9ad29d3d1fd92e3cc64132bf1e",
       "parent": "SRC-REPO-010",
       "task": "P03-T01"
+    },
+    {
+      "id": "SRC-RUN-001",
+      "role": "Validation runtime",
+      "pinStrength": "Versioned",
+      "status": "Active",
+      "reference": "https://maker-pre-launch-landing-page-dislju1e8-fer-falcons-team.vercel.app/",
+      "parent": "SRC-REPO-011"
     }
   ],
   "verifications": [
