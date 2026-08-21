@@ -298,6 +298,14 @@
       "method": "Stage 11 live Figma re-verification",
       "evidence": "Authorized Workflow page 29:4756 remains present. Main page references 32:10924/32:11410/32:11529 still resolve to Desktop 1440, Tablet 768, and Mobile 375, and the Header, Hero, Benefit Card, Benefits, Pricing Card, Pricing, Signup, Email Input, and Button component families remain under Components. Fresh screenshots of all three reference frames were captured during this continuation; no material scoped design change was detected.",
       "checkedAt": "2026-08-21T02:24:51.059Z"
+    },
+    {
+      "id": "VER-021",
+      "snapshot": "SRC-REPO-011",
+      "result": "Expected workflow output",
+      "method": "Stage 11 GitHub lineage and exact-commit Vercel verification",
+      "evidence": "SRC-REPO-011 pins a06d14b1299b0a9ad29d3d1fd92e3cc64132bf1e. GitHub shows this as an intentional no-code integration-validation commit with no file diff, and comparison from task-start SRC-REPO-010 reaches it without implementation-file changes. Vercel deployment dpl_jNo7XHzwyDqHEfUJHMT5MkvxujLz cloned exact commit a06d14b, ran pnpm run build / astro build successfully, generated one static /index.html, completed deployment, and the deployment currently returns HTTP 200 with the expected Maker page markup.",
+      "checkedAt": "2026-08-21T02:25:28.416Z"
     }
   ],
   "artifacts": [
